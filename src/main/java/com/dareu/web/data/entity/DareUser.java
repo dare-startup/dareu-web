@@ -1,51 +1,82 @@
 package com.dareu.web.data.entity;
 
-
 import java.security.Principal;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Table;
 
 /**
  * Created by Alberto Rubalcaba on 4/7/2015.
  */
 @Entity(name = "User")
-public class DareUser extends BaseEntity{
+@Table(name = "dareu_user")
+public class DareUser extends BaseEntity {
+
+    @Column(name = "name")
     private String name;
+
+    @Column(name = "email")
     private String email;
+
+    @Column(name = "password")
     private String password;
+
+    @Column(name = "username")
     private String nickname;
+
+    @Column(name = "user_since_date")
     private String userSince;
+
+    @Column(name = "gcm_reg_id")
     private String GCM;
+
+    @Column(name = "coins")
     private int coins;
+
+    @Column(name = "uscore")
     private int uScore;
+
+    @Column(name = "verified")
     private boolean verified;
+
+    @Column(name = "role")
     private String role;
+
+    @Column(name = "image_path")
     private String imagePath;
-    private String gender;
+
+    @Column(name = "birthday")
     private String birthday;
 
     public DareUser() {
     }
 
-    public DareUser(String email, String name,
-                    String password, String nickname,
-                    String userSince, String GCM,
-                    int coins, int uScore, boolean verified,
-                    String role, String imagePath,
-                    String gender, String birthday) {
+    public DareUser(String name, String email, String password,
+            String nickname, String userSince, String gCM, int coins,
+            int uScore, boolean verified, String role, String imagePath,
+            String birthday) {
+        super();
+        this.name = name;
         this.email = email;
         this.password = password;
         this.nickname = nickname;
         this.userSince = userSince;
-        this.GCM = GCM;
+        GCM = gCM;
         this.coins = coins;
         this.uScore = uScore;
         this.verified = verified;
         this.role = role;
-        this.name = name;
         this.imagePath = imagePath;
-        this.gender = gender;
         this.birthday = birthday;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getEmail() {
@@ -79,13 +110,13 @@ public class DareUser extends BaseEntity{
     public void setUserSince(String userSince) {
         this.userSince = userSince;
     }
-    
+
     public String getGCM() {
         return GCM;
     }
 
-    public void setGCM(String GMC) {
-        this.GCM = GMC;
+    public void setGCM(String gCM) {
+        GCM = gCM;
     }
 
     public int getCoins() {
@@ -120,29 +151,12 @@ public class DareUser extends BaseEntity{
         this.role = role;
     }
 
-    @Override
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public String getImagePath() {
         return imagePath;
     }
 
     public void setImagePath(String imagePath) {
         this.imagePath = imagePath;
-    }
-
-    public String getGender() {
-        return gender;
-    }
-
-    public void setGender(String gender) {
-        this.gender = gender;
     }
 
     public String getBirthday() {

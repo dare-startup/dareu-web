@@ -1,31 +1,48 @@
 package com.dareu.web.data.entity;
 
-import com.dareu.core.pagination.Page;
-
 import java.util.Date;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 /**
  * Created by Alberto Rubalcaba on 4/8/2015.
  */
+@Entity(name = "Dare")
+@Table(name = "dare")
 public class Dare extends BaseEntity{
 
+    @Column(name = "name")
     private String name;
+    
+    @Column(name = "description")
     private String description;
+    
+    @Column(name = "category_id")
     private String category;
+    
+    @Column(name = "estimated_dare_time")
     private int estimatedDareTime;
+    
+    @Column(name = "coins_prize")
     private int dareCoinsPrize;
+    
+    @Column(name = "approved")
     private boolean approved;
+    
+    @Column(name = "accepted")
     private boolean accepted;
+    
+    @Column(name = "creation_date")
+    @Temporal(TemporalType.TIMESTAMP)
     private Date creationDate;
-    private String userId;
-    private String daredUserId;
-    private String acceptedDate;
-    private boolean active;
+    
 
     public Dare(String name, String description, String category,
                 int estimatedDareTime, int dareCoinsPrize, boolean approved,
-                boolean accepted, Date creationDate, String userId,
-                String daredUserId, String acceptedDate, boolean active) {
+                boolean accepted, Date creationDate) {
         this.name = name;
         this.description = description;
         this.category = category;
@@ -34,10 +51,6 @@ public class Dare extends BaseEntity{
         this.approved = approved;
         this.accepted = accepted;
         this.creationDate = creationDate;
-        this.userId = userId;
-        this.daredUserId = daredUserId;
-        this.acceptedDate = acceptedDate;
-        this.active = active;
     }
 
     public Dare() {
@@ -106,36 +119,6 @@ public class Dare extends BaseEntity{
     public String getCategory(){
         return this.category;
     }
-
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
-
-    public String getDaredUserId() {
-        return daredUserId;
-    }
-
-    public void setDaredUserId(String daredUserId) {
-        this.daredUserId = daredUserId;
-    }
-
-    public String getAcceptedDate() {
-        return acceptedDate;
-    }
-
-    public void setAcceptedDate(String acceptedDate) {
-        this.acceptedDate = acceptedDate;
-    }
-
-    public boolean isActive() {
-        return active;
-    }
-
-    public void setActive(boolean active) {
-        this.active = active;
-    }
+    
+    
 }
