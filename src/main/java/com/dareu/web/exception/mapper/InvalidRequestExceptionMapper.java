@@ -5,7 +5,12 @@
  */
 package com.dareu.web.exception.mapper;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import com.dareu.web.data.response.BadRequestResponse;
 import com.dareu.web.exception.InvalidRequestException;
+
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
@@ -19,7 +24,10 @@ public class InvalidRequestExceptionMapper implements ExceptionMapper<InvalidReq
 
     public Response toResponse(InvalidRequestException exception) {
         //return response
-        return null; 
+        return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+        		.entity(new BadRequestResponse(exception.getMessage(), 
+        				new SimpleDateFormat("").format(new Date()), 500))
+        		.build(); 
     }
     
 }

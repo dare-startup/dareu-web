@@ -1,5 +1,39 @@
 package com.dareu.web.resource;
 
-public class DareResource {
+import java.util.logging.Logger;
 
+import javax.inject.Inject;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+
+import com.dareu.web.core.annotation.Secured;
+import com.dareu.web.core.service.AccountService;
+import com.dareu.web.core.service.DareService;
+import com.dareu.web.data.request.CreateDareRequest;
+import com.dareu.web.exception.InternalApplicationException;
+
+@Path("dare/")
+public class DareResource {
+	
+	@Inject
+	private DareService dareService; 
+	
+	@Inject
+	private AccountService accountService;
+	
+	@Inject
+	private Logger log; 
+	
+	@Path("create")
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@Secured
+	public Response createNewDare(CreateDareRequest request)throws InternalApplicationException{
+		return dareService.createNewDare(request); 
+	}
 }

@@ -19,4 +19,5 @@ public interface BaseRepository<T extends BaseEntity> {
     public  List<T> list()throws DataAccessException; 
     public  void persist(T entity)throws DataAccessException; 
     public  void remove(T entity)throws DataAccessException; 
+    public List<T> getPage(int pageNumber, int pageSize)throws DataAccessException;
 }

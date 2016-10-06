@@ -4,23 +4,22 @@ import com.dareu.web.core.annotation.Secured;
 import com.dareu.web.core.service.AccountService;
 import com.dareu.web.core.service.MultipartService;
 import com.dareu.web.data.request.SignupRequest;
-import com.dareu.web.exception.InvalidRequestException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.List;
-import java.util.Map;
+import com.dareu.web.exception.InternalApplicationException;
+
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import org.jboss.resteasy.plugins.providers.multipart.InputPart;
+import javax.ws.rs.PathParam;
+
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 
-@Path("rest/account/")
+@Path("account/")
 public class AccountResource {
 
 
@@ -64,7 +63,7 @@ public class AccountResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Secured
     @GET
-    public Response findFriends(){
+    public Response findFriends(@HeaderParam("authorization")String authorization){
         return null; 
     }
     
@@ -123,22 +122,22 @@ public class AccountResource {
      * check if a nickname is available
      * @return 
      */
-    @Path("nicknameAvailable")
+    @Path("nicknameAvailable/{nickname}")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response nicknameAvailable(){
-        return null; 
+    public Response nicknameAvailable(@PathParam("nickname")String nickname)throws InternalApplicationException{
+        return accountService.isNicknameAvailable(nickname); 
     }
     
     /**
      * check if a nickname is available
      * @return 
      */
-    @Path("emailAvailable")
+    @Path("emailAvailable/{email}")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response emailAvailable(){
-        return null; 
+    public Response emailAvailable(@PathParam("email")String email)throws InternalApplicationException{
+        return accountService.isEmailAvailable(email);
     }    
     
     /**
@@ -146,23 +145,12 @@ public class AccountResource {
      * @return 
      */
     @Path("registerUser")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.MULTIPART_FORM_DATA)
-    @POST
-    public Response registerUser(MultipartFormDataInput input){
-        return null; 
-    }
-    
-    /**
-     * Signin using a google account
-     * @return 
-     */
-    @Path("signin")
-    @POST
-    @Consumes(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response signin(){
-        return null; 
+    @POST
+    public Response registerUser(MultipartFormDataInput input)throws Exception{
+    	SignupRequest request = multipartService.getSignupRequest(input); 
+        return  accountService.registerDareUser(request); 
     }
     
      

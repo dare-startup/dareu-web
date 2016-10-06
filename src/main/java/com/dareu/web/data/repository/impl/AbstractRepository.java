@@ -6,9 +6,12 @@
 package com.dareu.web.data.repository.impl;
 
 import com.dareu.web.data.entity.BaseEntity;
+import com.dareu.web.data.repository.BaseRepository;
 import com.dareu.web.exception.DataAccessException;
+
 import java.util.List;
 import java.util.logging.Logger;
+
 import javax.annotation.Resource;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -23,7 +26,7 @@ import javax.transaction.UserTransaction;
  *
  * @author MACARENA
  */
-public class AbstractRepository<T extends BaseEntity>{
+public class AbstractRepository<T extends BaseEntity> implements BaseRepository<T>{
     private final Class<T> type;
     
     @Inject 
@@ -40,6 +43,7 @@ public class AbstractRepository<T extends BaseEntity>{
         this.type = type;
     }
 
+    @Override
     public T find(String id) throws DataAccessException {
         T t = null;
         try {
@@ -50,6 +54,7 @@ public class AbstractRepository<T extends BaseEntity>{
         }
     }
 
+    @Override
     public List<T> list() throws DataAccessException {
         try {
             CriteriaBuilder builder = em.getCriteriaBuilder();
@@ -65,6 +70,7 @@ public class AbstractRepository<T extends BaseEntity>{
 
     }
 
+    @Override
     public void persist(T entity) throws DataAccessException {
         try{
             utx.begin();
@@ -77,6 +83,7 @@ public class AbstractRepository<T extends BaseEntity>{
         }
     }
 
+    @Override
     public void remove(T entity) throws DataAccessException {
         try{
             T t = find(entity.getId()); 
@@ -90,6 +97,7 @@ public class AbstractRepository<T extends BaseEntity>{
         }
     }
     
+    @Override
     public List<T> getPage(int pageNumber, int pageSize)throws DataAccessException{
         try {
             CriteriaBuilder builder = em.getCriteriaBuilder();

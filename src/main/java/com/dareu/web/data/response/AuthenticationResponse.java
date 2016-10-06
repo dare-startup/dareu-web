@@ -10,5 +10,44 @@ package com.dareu.web.data.response;
  * @author MACARENA
  */
 public class AuthenticationResponse {
+    private String token; 
+    private String date; 
+    private String message;
+    
+	public AuthenticationResponse() {
+		super();
+	}
+
+	public AuthenticationResponse(String token, String date, String message) {
+		super();
+		this.token = token;
+		this.date = date;
+		this.message = message;
+	}
+
+	public String getToken() {
+		return token;
+	}
+
+	public void setToken(String token) {
+		this.token = token;
+	}
+
+	public String getDate() {
+		return date;
+	}
+
+	public void setDate(String date) {
+		this.date = date;
+	}
+
+	public String getMessage() {
+		return message;
+	}
+
+	public void setMessage(String message) {
+		this.message = message;
+	} 
+    
     
 }

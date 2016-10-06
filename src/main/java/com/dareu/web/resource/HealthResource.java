@@ -5,7 +5,9 @@
  */
 package com.dareu.web.resource;
 
+import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -13,8 +15,11 @@ import javax.ws.rs.core.Response;
  *
  * @author MACARENA
  */
-@Path("health")
+@Path("health/")
 public class HealthResource {
+	
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
     public Response health(){
         return Response.ok("DareU version 1.0")
                 .type(MediaType.TEXT_PLAIN)
