@@ -20,97 +20,148 @@ import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import javax.transaction.Status;
+import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
 
 /**
  *
  * @author MACARENA
  */
-public class AbstractRepository<T extends BaseEntity> implements BaseRepository<T>{
-    private final Class<T> type;
-    
-    @Inject 
-    private transient Logger LOG;
+public class AbstractRepository<T extends BaseEntity> implements
+		BaseRepository<T> {
 
-    @PersistenceContext
-    protected EntityManager em;
+	private final Class<T> type;
 
-    @Resource
-    protected UserTransaction utx;
+	@Inject
+	private transient Logger log;
 
-    
-    public AbstractRepository(Class<T> type) {
-        this.type = type;
-    }
+	@PersistenceContext
+	protected EntityManager em;
 
-    @Override
-    public T find(String id) throws DataAccessException {
-        T t = null;
-        try {
-            t = em.find(type, id);
-            return t;
-        } catch (Exception ex) {
-            throw new DataAccessException("Could not find entity: " + ex.getMessage()); 
-        }
-    }
+	@Resource
+	protected UserTransaction utx;
 
-    @Override
-    public List<T> list() throws DataAccessException {
-        try {
-            CriteriaBuilder builder = em.getCriteriaBuilder();
-            CriteriaQuery<T> query = builder.createQuery(type);
-            Root<T> root = query.from(type);
-            query.select(root);
-            TypedQuery<T> typedQuery = em.createQuery(query);
-            List<T> resultList = typedQuery.getResultList();
-            return resultList;
-        } catch (Exception ex) {
-            throw new DataAccessException("Could not get entities list: "+ ex.getMessage()); 
-        }
+	public AbstractRepository(Class<T> type) {
+		this.type = type;
+	}
 
-    }
+	@Override
+	public T find(String id) throws DataAccessException {
+		T t = null;
+		try {
+			t = em.find(type, id);
 
-    @Override
-    public void persist(T entity) throws DataAccessException {
-        try{
-            utx.begin();
-            em.persist(entity);
-            utx.commit();
-        }catch(IllegalStateException ex){
-            throw new DataAccessException("Could not persist entity: " + ex.getMessage()); 
-        }catch(Exception ex){
-            throw new DataAccessException("Exception persisting entity: " + ex.getMessage()); 
-        }
-    }
+			return t;
+		} catch (Exception ex) {
+			throw new DataAccessException("Could not find entity: "
+					+ ex.getMessage());
+		}
+	}
 
-    @Override
-    public void remove(T entity) throws DataAccessException {
-        try{
-            T t = find(entity.getId()); 
-            if(t != null){
-                utx.begin();
-                em.remove(entity);
-                utx.commit();
-            }
-        }catch(Exception ex){
-            throw new DataAccessException("Could not remove entity: " + ex.getMessage()); 
-        }
-    }
-    
-    @Override
-    public List<T> getPage(int pageNumber, int pageSize)throws DataAccessException{
-        try {
-            CriteriaBuilder builder = em.getCriteriaBuilder();
-            CriteriaQuery<T> query = builder.createQuery(type);
-            Root<T> root = query.from(type);
-            query.select(root);
-            TypedQuery<T> typedQuery = em.createQuery(query);
-            typedQuery.setMaxResults(pageSize);
-            typedQuery.setFirstResult(pageSize * pageNumber); 
-            List<T> resultList = typedQuery.getResultList();
-            return resultList;
-        } catch (Exception ex) {
-            throw new DataAccessException("Could not get entities list: "+ ex.getMessage()); 
-        }
-    }
+	@Override
+	public List<T> list() throws DataAccessException {
+		try {
+			CriteriaBuilder builder = em.getCriteriaBuilder();
+			CriteriaQuery<T> query = builder.createQuery(type);
+			Root<T> root = query.from(type);
+			query.select(root);
+			TypedQuery<T> typedQuery = em.createQuery(query);
+			List<T> resultList = typedQuery.getResultList();
+			return resultList;
+		} catch (Exception ex) {
+			throw new DataAccessException("Could not get entities list: "
+					+ ex.getMessage());
+		}
+
+	}
+
+	@Override
+	public void persist(T entity) throws DataAccessException {
+		try {
+			logTransactionStatus();
+			utx.begin();
+			em.persist(entity);
+			utx.commit();
+		} catch (IllegalStateException ex) {
+			throw new DataAccessException("Could not persist entity: "
+					+ ex.getMessage());
+		} catch (Exception ex) {
+			throw new DataAccessException("Exception persisting entity: "
+					+ ex.getMessage());
+		}
+	}
+
+	private void logTransactionStatus() {
+		try {
+			switch (utx.getStatus()) {
+				case Status.STATUS_ACTIVE:
+					log.info("UserTransaction status: Active"); 
+					break;
+				case Status.STATUS_COMMITTED:
+					log.info("UserTransaction status: Commited");
+					break;
+				case Status.STATUS_COMMITTING:
+					log.info("UserTransaction status: Commiting");
+					break;
+				case Status.STATUS_MARKED_ROLLBACK:
+					log.info("UserTransaction status: Marked rollback");
+					break;
+				case Status.STATUS_NO_TRANSACTION:
+					log.info("UserTransaction status: No transaction");
+					break;
+				case Status.STATUS_PREPARED:
+					log.info("UserTransaction status: Prepared");
+					break;
+				case Status.STATUS_PREPARING:
+					log.info("UserTransaction status: Preparing");
+					break;
+				case Status.STATUS_ROLLEDBACK:
+					log.info("UserTransaction status: Rolledback");
+					break;
+				case Status.STATUS_ROLLING_BACK:
+					log.info("UserTransaction status: Rolling back");
+					break;
+				case Status.STATUS_UNKNOWN:
+					log.info("UserTransaction status: Unknown");
+					break;
+			}
+		} catch (SystemException ex) {
+
+		}
+	}
+
+	@Override
+	public void remove(T entity) throws DataAccessException {
+		try {
+			T t = find(entity.getId());
+			if (t != null) {
+				utx.begin();
+				em.remove(entity);
+				utx.commit();
+			}
+		} catch (Exception ex) {
+			throw new DataAccessException("Could not remove entity: "
+					+ ex.getMessage());
+		}
+	}
+
+	@Override
+	public List<T> getPage(int pageNumber, int pageSize)
+			throws DataAccessException {
+		try {
+			CriteriaBuilder builder = em.getCriteriaBuilder();
+			CriteriaQuery<T> query = builder.createQuery(type);
+			Root<T> root = query.from(type);
+			query.select(root);
+			TypedQuery<T> typedQuery = em.createQuery(query);
+			typedQuery.setMaxResults(pageSize);
+			typedQuery.setFirstResult(pageSize * pageNumber);
+			List<T> resultList = typedQuery.getResultList();
+			return resultList;
+		} catch (Exception ex) {
+			throw new DataAccessException("Could not get entities list: "
+					+ ex.getMessage());
+		}
+	}
 }

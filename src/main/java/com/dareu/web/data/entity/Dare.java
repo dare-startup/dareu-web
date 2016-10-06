@@ -1,8 +1,16 @@
 package com.dareu.web.data.entity;
 
 import java.util.Date;
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -20,14 +28,12 @@ public class Dare extends BaseEntity{
     @Column(name = "description")
     private String description;
     
-    @Column(name = "category_id")
-    private String category;
+    @OneToOne(fetch = FetchType.EAGER, cascade = { CascadeType.ALL }, 
+    		optional = true, targetEntity = Category.class)
+    private Category category; 
     
     @Column(name = "estimated_dare_time")
     private int estimatedDareTime;
-    
-    @Column(name = "coins_prize")
-    private int dareCoinsPrize;
     
     @Column(name = "approved")
     private boolean approved;
@@ -39,15 +45,18 @@ public class Dare extends BaseEntity{
     @Temporal(TemporalType.TIMESTAMP)
     private Date creationDate;
     
+    @ManyToMany
+    @JoinTable(name = "dareu_user_dare",
+    		   joinColumns = @JoinColumn(name = "challenger_id", referencedColumnName = "id"), 
+    		   inverseJoinColumns = @JoinColumn(name = "challenged_id", referencedColumnName = "id"))
+    private List<DareUser> users; 
 
     public Dare(String name, String description, String category,
-                int estimatedDareTime, int dareCoinsPrize, boolean approved,
+                int estimatedDareTime, boolean approved,
                 boolean accepted, Date creationDate) {
         this.name = name;
         this.description = description;
-        this.category = category;
         this.estimatedDareTime = estimatedDareTime;
-        this.dareCoinsPrize = dareCoinsPrize;
         this.approved = approved;
         this.accepted = accepted;
         this.creationDate = creationDate;
@@ -80,14 +89,6 @@ public class Dare extends BaseEntity{
         this.estimatedDareTime = estimatedDareTime;
     }
 
-    public int getDareCoinsPrize() {
-        return dareCoinsPrize;
-    }
-
-    public void setDareCoinsPrize(int dareCoinsPrize) {
-        this.dareCoinsPrize = dareCoinsPrize;
-    }
-
     public boolean isApproved() {
         return approved;
     }
@@ -112,13 +113,13 @@ public class Dare extends BaseEntity{
         this.creationDate = creationDate;
     }
 
-    public void setCategory(String category){
-        this.category = category;
-    }
+	public Category getCategory() {
+		return category;
+	}
 
-    public String getCategory(){
-        return this.category;
-    }
+	public void setCategory(Category category) {
+		this.category = category;
+	}
     
     
 }

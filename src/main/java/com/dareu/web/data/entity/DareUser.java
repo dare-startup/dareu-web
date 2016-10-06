@@ -6,6 +6,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
 import com.dareu.web.core.security.SecurityRole;
@@ -55,7 +56,8 @@ public class DareUser extends BaseEntity {
     private String birthday;
     
     @Column(name = "security_token")
-    private String securityToken; 
+    private String securityToken;
+    
 
     public DareUser() {
     	super(); 

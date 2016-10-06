@@ -14,6 +14,7 @@ import com.dareu.web.data.repository.DareUserRepository;
 import com.dareu.web.exception.AuthenticationException;
 import com.dareu.web.exception.DataAccessException;
 
+import javax.ejb.Singleton;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.NoResultException;
@@ -23,7 +24,7 @@ import javax.persistence.Query;
  *
  * @author MACARENA
  */
-@Stateless
+@Singleton
 public class DareUserRepositoryImpl extends AbstractRepository<DareUser> implements DareUserRepository{
 	
 	@Inject

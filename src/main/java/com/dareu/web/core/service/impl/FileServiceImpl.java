@@ -9,6 +9,7 @@ import com.dareu.web.core.service.FileService;
 import com.github.roar109.syring.annotation.ApplicationProperty;
 import com.github.roar109.syring.annotation.ApplicationProperty.Types;
 
+import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -27,11 +28,11 @@ import javax.inject.Inject;
 public class FileServiceImpl implements FileService {
 	
 	@Inject
-	@ApplicationProperty(name = "profile.images.directory", type = Types.FILE)
+	@ApplicationProperty(name = "profile.images.directory", type = Types.SYSTEM)
 	private String profileImagesDirectory; 
 	
 	@Inject
-	@ApplicationProperty(name = "dare.videos.directory", type = Types.FILE)
+	@ApplicationProperty(name = "dare.videos.directory", type = Types.SYSTEM)
 	private String dareVideosDirectory; 
 
     public FileServiceImpl(){
@@ -49,9 +50,11 @@ public class FileServiceImpl implements FileService {
 		
 		//create a new file 
 		DataOutputStream out = new DataOutputStream(new FileOutputStream(new File(outputDirectory))); 
-		//read the input stream 
-		byte[] buff = null; 
-		while(stream.read(buff) != -1)
+		DataInputStream in = new DataInputStream(stream); 
+		//read the input stream
+		byte[] buff = new byte[1024];
+		int i = 0; 
+		while((i = in.read(buff)) != -1)
 			out.write(buff);
 		
 		//close stream

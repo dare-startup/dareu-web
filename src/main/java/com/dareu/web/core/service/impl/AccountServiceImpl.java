@@ -76,7 +76,8 @@ public class AccountServiceImpl implements AccountService{
 		//save image 
 		String path = ""; 
 		try{
-			path = fileService.saveFile(request.getImage(), FileType.PROFILE_IMAGE, user.getId() + ".jpg");
+			fileService.saveFile(request.getImage(), FileType.PROFILE_IMAGE, user.getId() + ".jpg");
+			user.setImagePath(user.getId() + ".jpg");
 		}catch(IOException ex){
 			log.severe("Could not save profile image file: " + ex.getMessage());
 			throw new InternalApplicationException("Error writing image file, try again", ex); 

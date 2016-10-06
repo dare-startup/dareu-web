@@ -5,10 +5,14 @@
  */
 package com.dareu.web.data.repository;
 
+import java.util.List;
+
+import com.dareu.web.data.entity.Dare;
+
 /**
  *
  * @author MACARENA
  */
 public interface DareRepository {
-    
+	
 }

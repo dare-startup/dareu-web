@@ -27,12 +27,10 @@ create table dare(
     name varchar(100)not null, 
     description varchar(500) not null, 
     category_id varchar(32) not null, 
-    estimated_dare_time int not null default 24, 
-    coins_prize int, 
+    estimated_dare_time int not null default 24,  
     approved tinyint default 0, 
     accepted tinyint default 0,
     creation_date datetime not null, 
-	current_security_token varchar(50)not null,
     foreign key(category_id)references category(id));
     
 create table dare_package(

@@ -5,15 +5,19 @@
  */
 package com.dareu.web.data.repository.impl;
 
+import java.util.List;
+
 import com.dareu.web.data.entity.Dare;
 import com.dareu.web.data.repository.DareRepository;
+
+import javax.ejb.Singleton;
 import javax.ejb.Stateless;
 
 /**
  *
  * @author MACARENA
  */
-@Stateless
+@Singleton
 public class DareRepositoryImpl extends AbstractRepository<Dare> implements DareRepository {
     public DareRepositoryImpl(){
         super(Dare.class); 
