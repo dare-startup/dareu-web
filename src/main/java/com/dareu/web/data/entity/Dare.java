@@ -1,5 +1,6 @@
 package com.dareu.web.data.entity;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -60,6 +61,7 @@ public class Dare extends BaseEntity{
         this.approved = approved;
         this.accepted = accepted;
         this.creationDate = creationDate;
+        this.users = new ArrayList<DareUser>();
     }
 
     public Dare() {
@@ -120,6 +122,12 @@ public class Dare extends BaseEntity{
 	public void setCategory(Category category) {
 		this.category = category;
 	}
-    
-    
+
+	public List<DareUser> getUsers() {
+		return users;
+	}
+
+	public void setUsers(List<DareUser> users) {
+		this.users = users;
+	}
 }

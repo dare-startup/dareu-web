@@ -9,6 +9,7 @@ import javax.ws.rs.core.Response;
 import com.dareu.web.core.DareUtils;
 import com.dareu.web.core.service.DareService;
 import com.dareu.web.data.entity.Dare;
+import com.dareu.web.data.entity.DareUser;
 import com.dareu.web.data.repository.DareRepository;
 import com.dareu.web.data.request.CreateDareRequest;
 import com.dareu.web.exception.InternalApplicationException;
@@ -51,6 +52,16 @@ public class DareServiceImpl implements DareService{
 		dare.setEstimatedDareTime(request.getTimer()); //time is in hours
 		dare.setName(request.getName());
 		
+		DareUser user = null; 
+		//create relationships
+		for(String friendId : request.getFriendsIds()){
+			//create a new user 
+			user = new DareUser(); 
+			user.setId(friendId);
+			dare.getUsers().add(user); 
+		}
+		
+		//dareRepository.
 		//TODO: fetch category here
 		return null;
 	}

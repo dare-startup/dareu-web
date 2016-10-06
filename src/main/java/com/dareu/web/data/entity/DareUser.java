@@ -10,7 +10,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
-import javax.persistence.JoinColumn;;
+import javax.persistence.JoinColumn;
 
 import com.dareu.web.core.security.SecurityRole;
 

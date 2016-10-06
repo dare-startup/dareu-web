@@ -8,11 +8,14 @@ package com.dareu.web.data.repository;
 import java.util.List;
 
 import com.dareu.web.data.entity.Dare;
+import com.dareu.web.exception.DataAccessException;
 
 /**
  *
  * @author MACARENA
  */
 public interface DareRepository {
+	
+	public String createDare(Dare dare)throws DataAccessException; 
 	
 }
