@@ -60,6 +60,16 @@ public class AccountServiceImpl implements AccountService{
 		//check entity 
 		if(request == null)
 			throw new EntityRegistrationException("No entity found on request");
+		
+		//validate email for duplicates 
+		if(! dareUserRepository.isEmailAvailable(request.getEmail()))
+			throw new EntityRegistrationException("An account with the email " + request.getEmail() + " already exists"); 
+		
+		//check username for duplicates
+		if(! dareUserRepository.isNicknameAvailable(request.getUsername()))
+			throw new EntityRegistrationException("An account with the username " + request.getUsername() + " already exists"); 
+		
+		
 		//create an entity 
 		DareUser user = new DareUser();
 		

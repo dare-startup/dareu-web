@@ -13,6 +13,15 @@
 	</properties>
 
 	<dependencies>
+		<!-- https://mvnrepository.com/artifact/javax.transaction/javax.transaction-api -->
+		<dependency>
+			<groupId>javax.transaction</groupId>
+			<artifactId>javax.transaction-api</artifactId>
+			<version>1.2</version>
+			<scope>provided</scope>
+		</dependency>
+
+
 		<dependency>
 			<groupId>com.github.roar109</groupId>
 			<artifactId>syring</artifactId>

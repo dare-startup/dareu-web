@@ -13,6 +13,9 @@ import com.dareu.web.exception.AuthenticationException;
 @Provider
 public class AuthenticationExceptionMapper implements ExceptionMapper<AuthenticationException>{
 
+	/**
+	 * returns an authentication response object
+	 */
 	@Override
 	public Response toResponse(AuthenticationException ex) {
 		return Response.status(Response.Status.UNAUTHORIZED)

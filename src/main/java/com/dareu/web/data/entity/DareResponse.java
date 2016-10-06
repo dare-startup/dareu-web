@@ -20,6 +20,9 @@ public class DareResponse extends BaseEntity {
     
     @Column(name = "views_count")
     private int viewsCount; 
+    
+    @Column(name = "likes")
+    private int likes; 
 
     public DareResponse() {
     }
@@ -47,6 +50,14 @@ public class DareResponse extends BaseEntity {
     public void setViewsCount(int viewsCount) {
         this.viewsCount = viewsCount;
     }
+
+	public int getLikes() {
+		return likes;
+	}
+
+	public void setLikes(int likes) {
+		this.likes = likes;
+	}
     
     
     

@@ -17,7 +17,6 @@ import javax.ejb.Stateless;
  *
  * @author MACARENA
  */
-@Singleton
 public class DareRepositoryImpl extends AbstractRepository<Dare> implements DareRepository {
     public DareRepositoryImpl(){
         super(Dare.class); 

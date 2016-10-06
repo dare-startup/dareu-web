@@ -8,3 +8,8 @@
 	```xml 
 		<property name="dare.videos.directory" value="${jboss.server.config.dir}/dareu/dares/" />
 	```
+	
+#Application Error Codes
+<ul>
+	<li></li>
+</ul>

@@ -22,6 +22,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import javax.transaction.Status;
 import javax.transaction.SystemException;
+import javax.transaction.Transactional;
 import javax.transaction.UserTransaction;
 
 /**
@@ -77,12 +78,15 @@ public class AbstractRepository<T extends BaseEntity> implements
 	}
 
 	@Override
+	@Transactional
 	public void persist(T entity) throws DataAccessException {
 		try {
 			logTransactionStatus();
-			utx.begin();
+			/**if(utx.getStatus() == Status.STATUS_ACTIVE)
+				utx.rollback();**/
+			//utx.begin();
 			em.persist(entity);
-			utx.commit();
+			//utx.commit();
 		} catch (IllegalStateException ex) {
 			throw new DataAccessException("Could not persist entity: "
 					+ ex.getMessage());
@@ -132,13 +136,14 @@ public class AbstractRepository<T extends BaseEntity> implements
 	}
 
 	@Override
+	@Transactional
 	public void remove(T entity) throws DataAccessException {
 		try {
 			T t = find(entity.getId());
 			if (t != null) {
-				utx.begin();
+				//utx.begin();
 				em.remove(entity);
-				utx.commit();
+				//utx.commit();
 			}
 		} catch (Exception ex) {
 			throw new DataAccessException("Could not remove entity: "

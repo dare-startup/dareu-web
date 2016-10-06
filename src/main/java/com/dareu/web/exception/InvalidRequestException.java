@@ -9,17 +9,17 @@ package com.dareu.web.exception;
  *
  * @author MACARENA
  */
-public class InvalidRequestException extends Exception{
+public class InvalidRequestException extends DareuException{
 
     public InvalidRequestException() {
     }
 
     public InvalidRequestException(String message) {
-        super(message);
+        super(message, ErrorCode.INVALID_REQUEST_ERROR);
     }
 
     public InvalidRequestException(String message, Throwable cause) {
-        super(message, cause);
+        super(message, cause, ErrorCode.INVALID_REQUEST_ERROR);
     }
     
 }

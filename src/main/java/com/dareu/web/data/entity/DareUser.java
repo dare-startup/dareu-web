@@ -1,13 +1,16 @@
 package com.dareu.web.data.entity;
 
 import java.security.Principal;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import javax.persistence.JoinColumn;;
 
 import com.dareu.web.core.security.SecurityRole;
 
@@ -57,7 +60,6 @@ public class DareUser extends BaseEntity {
     
     @Column(name = "security_token")
     private String securityToken;
-    
 
     public DareUser() {
     	super(); 

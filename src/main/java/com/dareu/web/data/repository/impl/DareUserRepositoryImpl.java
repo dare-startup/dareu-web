@@ -14,17 +14,17 @@ import com.dareu.web.data.repository.DareUserRepository;
 import com.dareu.web.exception.AuthenticationException;
 import com.dareu.web.exception.DataAccessException;
 
-import javax.ejb.Singleton;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
+import javax.transaction.Transactional;
 
 /**
  *
  * @author MACARENA
  */
-@Singleton
+@Stateless
 public class DareUserRepositoryImpl extends AbstractRepository<DareUser> implements DareUserRepository{
 	
 	@Inject
@@ -96,6 +96,7 @@ public class DareUserRepositoryImpl extends AbstractRepository<DareUser> impleme
 	}
 
 	@Override
+	@Transactional
 	public void updateSecurityToken(String token, String userId) {
 		DareUser user = null; 
 		try{
@@ -110,6 +111,15 @@ public class DareUserRepositoryImpl extends AbstractRepository<DareUser> impleme
 		}catch(Exception ex){
 			log.info("Exception updating user security token: " + ex.getMessage()); 
 		}
+	}
+
+	@Override
+	public List<DareUser> findFriends(String userId) throws DataAccessException {
+		List<DareUser> users = null; 
+		/**try{
+			Query q = em.createQuery("SELECT u FROM User u WHERE "); 
+		}**/
+		return users;
 	}
 
 	

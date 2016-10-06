@@ -33,7 +33,7 @@ create table dare(
     creation_date datetime not null, 
     foreign key(category_id)references category(id));
     
-create table dare_package(
+create table package(
 	id varchar(32) not null primary key, 
     description varchar(500)not null, 
     price double not null, 
@@ -44,13 +44,9 @@ create table dare_response(
 	id varchar(32) not null primary key, 
     response_date datetime not null, 
     video_url varchar(500)not null, 
-    views_count int not null default 0); 
-    
-create table response_like(
-	id varchar(32) not null primary key, 
-    like_date datetime not null, 
-    user_id varchar(32) not null, 
-    foreign key(user_id)references dareu_user(id)); 
+    views_count int not null default 0, 
+	likes int not null default 0); 
+   
     
 create table response_comment(
 	id varchar(32) not null primary key, 
@@ -58,15 +54,16 @@ create table response_comment(
     comment varchar(200)not null,
     user_id varchar(32) not null, 
     foreign key(user_id)references dareu_user(id)); 
-    
-create table response_comment_like(
-	id varchar(32) not null primary key, 
-    creation_date datetime not null, 
-    comment_id varchar(32) not null, 
-    user_id varchar(32) not null, 
-    foreign key(comment_id)references response_comment(id), 
-    foreign key(user_id)references dareu_user(id)); 
-    
+   
+create table friendship(
+	id varchar(32)not null primary key, 
+	user_id varchar(32)not null, 
+	requested_user_id varchar(32)not null, 
+	request_date varchar(8)not null, 
+	accepted int default 0, 
+	foreign key(user_id)references dareu_user(id), 
+	foreign key(requested_user_id)references dareu_user(id)
+);
     
 create table dareu_user_dare(
 	id varchar(32) not null primary key, 
@@ -87,9 +84,11 @@ create table dareu_user_package(
 create table dare_dare_response(
 	id varchar(32) not null primary key , 
     dare_id varchar(32) not null, 
+	user_id varchar(32)not null,
     dare_response_id varchar(32) not null, 
     foreign key(dare_id)references dare(id), 
-    foreign key(dare_response_id)references dare_response(id)); 
+    foreign key(dare_response_id)references dare_response(id), 
+	foreign key(user_id)references dareu_user(id)); 
     
 create table dare_response_response_comment(
 	id varchar(32) not null primary key , 
@@ -97,17 +96,4 @@ create table dare_response_response_comment(
     response_comment_id varchar(32) not null, 
     foreign key(dare_response_id)references dare_response(id), 
     foreign key(response_comment_id)references response_comment(id)); 
-    
-create table dare_response_response_like(
-	id varchar(32) not null primary key, 
-    dare_response_id varchar(32) not null, 
-    response_like_id varchar(32) not null, 
-    foreign key(dare_response_id)references dare_response(id), 
-    foreign key(response_like_id)references response_like(id)); 
-    
-create table response_comment_comment_like(
-	id varchar(32) not null primary key, 
-    response_comment_id varchar(32) not null, 
-    comment_like_id varchar(32) not null
-    ); 
     
