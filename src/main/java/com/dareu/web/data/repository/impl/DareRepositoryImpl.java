@@ -8,11 +8,14 @@ package com.dareu.web.data.repository.impl;
 import java.util.List;
 
 import com.dareu.web.data.entity.Dare;
+import com.dareu.web.data.entity.Category;
 import com.dareu.web.data.repository.DareRepository;
 import com.dareu.web.exception.DataAccessException;
 
 import javax.ejb.Singleton;
 import javax.ejb.Stateless;
+import javax.persistence.Query;
+import javax.transaction.Transactional;
 
 /**
  *
@@ -25,7 +28,6 @@ public class DareRepositoryImpl extends AbstractRepository<Dare> implements Dare
 
 	@Override
 	public String createDare(Dare dare) throws DataAccessException{
-		
-		return null;
+		return persist(dare); 
 	}
 }

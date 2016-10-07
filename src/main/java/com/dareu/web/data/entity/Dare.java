@@ -45,12 +45,6 @@ public class Dare extends BaseEntity{
     @Column(name = "creation_date")
     @Temporal(TemporalType.TIMESTAMP)
     private Date creationDate;
-    
-    @ManyToMany
-    @JoinTable(name = "dareu_user_dare",
-    		   joinColumns = @JoinColumn(name = "challenger_id", referencedColumnName = "id"), 
-    		   inverseJoinColumns = @JoinColumn(name = "challenged_id", referencedColumnName = "id"))
-    private List<DareUser> users; 
 
     public Dare(String name, String description, String category,
                 int estimatedDareTime, boolean approved,
@@ -61,10 +55,10 @@ public class Dare extends BaseEntity{
         this.approved = approved;
         this.accepted = accepted;
         this.creationDate = creationDate;
-        this.users = new ArrayList<DareUser>();
     }
 
     public Dare() {
+    	super(); 
     }
 
     public String getName() {
@@ -121,13 +115,5 @@ public class Dare extends BaseEntity{
 
 	public void setCategory(Category category) {
 		this.category = category;
-	}
-
-	public List<DareUser> getUsers() {
-		return users;
-	}
-
-	public void setUsers(List<DareUser> users) {
-		this.users = users;
 	}
 }

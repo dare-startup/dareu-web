@@ -11,6 +11,7 @@ import java.util.logging.Logger;
 import com.dareu.web.core.DareUtils;
 import com.dareu.web.data.entity.DareUser;
 import com.dareu.web.data.repository.DareUserRepository;
+import com.dareu.web.data.entity.Friendship;
 import com.dareu.web.exception.AuthenticationException;
 import com.dareu.web.exception.DataAccessException;
 
@@ -62,6 +63,7 @@ public class DareUserRepositoryImpl extends AbstractRepository<DareUser> impleme
 	}
 
 	@Override
+	@Transactional
 	public String registerDareUser(DareUser register)
 			throws DataAccessException {
 		persist(register); 

@@ -7,6 +7,7 @@ package com.dareu.web.data.repository;
 
 import com.dareu.web.data.entity.BaseEntity;
 import com.dareu.web.exception.DataAccessException;
+
 import java.util.List;
 
 /**
@@ -17,7 +18,8 @@ import java.util.List;
 public interface BaseRepository<T extends BaseEntity> {
     public  T find(String id)throws DataAccessException; 
     public  List<T> list()throws DataAccessException; 
-    public  void persist(T entity)throws DataAccessException; 
+    public  String persist(T entity)throws DataAccessException; 
+    public String persist(Class<?extends BaseEntity> entity)throws DataAccessException;
     public  void remove(T entity)throws DataAccessException; 
     public List<T> getPage(int pageNumber, int pageSize)throws DataAccessException;
 }

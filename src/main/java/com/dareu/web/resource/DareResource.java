@@ -13,6 +13,7 @@ import javax.ws.rs.core.Response;
 import com.dareu.web.core.annotation.Secured;
 import com.dareu.web.core.service.AccountService;
 import com.dareu.web.core.service.DareService;
+import com.dareu.web.data.request.CreateCategoryRequest;
 import com.dareu.web.data.request.CreateDareRequest;
 import com.dareu.web.exception.InternalApplicationException;
 import com.dareu.web.exception.InvalidRequestException;
@@ -37,5 +38,16 @@ public class DareResource {
 	public Response createNewDare(CreateDareRequest request)throws InternalApplicationException, 
 								  InvalidRequestException, InternalApplicationException{
 		return dareService.createNewDare(request); 
+	}
+	
+	@Path("category/create")
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@Secured
+	public Response createNewCategory(CreateCategoryRequest request)
+								   throws InvalidRequestException, 
+								   InternalApplicationException{
+		return dareService.createNewCategory(request); 
 	}
 }

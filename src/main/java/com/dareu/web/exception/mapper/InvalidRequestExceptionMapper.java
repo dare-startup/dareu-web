@@ -32,7 +32,7 @@ public class InvalidRequestExceptionMapper implements ExceptionMapper<InvalidReq
     public Response toResponse(InvalidRequestException ex) {
         //return response
         return Response
-				.status(Response.Status.INTERNAL_SERVER_ERROR)
+				.status(Response.Status.BAD_REQUEST)
 				.entity(new ApplicationErrorResponse(ex.getMessage(), 
 						DareUtils.DATE_FORMAT.format(new Date()), ex.getErrorCode().getValue()))
 				.type(MediaType.APPLICATION_JSON)

@@ -15,15 +15,21 @@ import com.dareu.web.core.service.AccountService;
 import com.dareu.web.core.service.FileService;
 import com.dareu.web.core.service.FileService.FileType;
 import com.dareu.web.data.entity.DareUser;
+import com.dareu.web.data.entity.Friendship;
 import com.dareu.web.data.repository.DareUserRepository;
+import com.dareu.web.data.repository.FriendshipRepository;
+import com.dareu.web.data.request.FriendshipRequest;
 import com.dareu.web.data.request.SigninRequest;
 import com.dareu.web.data.request.SignupRequest;
 import com.dareu.web.data.response.AuthenticationResponse;
+import com.dareu.web.data.response.EntityRegistrationResponse;
+import com.dareu.web.data.response.EntityRegistrationResponse.RegistrationType;
 import com.dareu.web.data.response.ResourceAvailableResponse;
 import com.dareu.web.exception.AuthenticationException;
 import com.dareu.web.exception.DataAccessException;
 import com.dareu.web.exception.EntityRegistrationException;
 import com.dareu.web.exception.InternalApplicationException;
+import com.dareu.web.exception.InvalidRequestException;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -38,6 +44,9 @@ public class AccountServiceImpl implements AccountService{
     
     @Inject
     private DareUserRepository dareUserRepository;
+    
+    @Inject
+    private FriendshipRepository friendshipRepository; 
     
     @Inject
     private FileService fileService; 
@@ -161,5 +170,51 @@ public class AccountServiceImpl implements AccountService{
 			throws AuthenticationException, InternalApplicationException {
 		//validate header 
 		return null; 
+	}
+
+	@Override
+	public Response requestFriendship(FriendshipRequest request)
+			throws InvalidRequestException, InternalApplicationException {
+		//validate 
+		if(request == null)
+			throw new InvalidRequestException("Invalid request body"); 
+		if(request.getRequestedUserId() == null || request.getRequestedUserId().isEmpty())
+			throw new InvalidRequestException("Invalid requestedUserId field");
+		if(request.getUserId() == null || request.getUserId().isEmpty())
+			throw new InvalidRequestException("Invalid userId field");
+		
+		//create a friendship if not exists 
+		Friendship friendship = new Friendship();
+		friendship.setAccepted(false);
+		friendship.setRequestDate(DareUtils.DATE_FORMAT.format(new Date()));
+		
+		//get requested user 
+		DareUser requestedUser = null, user = null; 
+		try{
+			requestedUser = dareUserRepository.find(request.getRequestedUserId());
+			user = dareUserRepository.find(request.getUserId()); 
+			
+			if(requestedUser != null && user != null){
+				//set users 
+				friendship.setRequestedUser(requestedUser);
+				friendship.setUser(user);
+				
+				//try to persist
+				String id = friendshipRepository.persist(friendship);
+				
+				//TODO send PUSH notification to both users 
+				
+				return Response
+						.ok(new EntityRegistrationResponse("Friendship request sent", 
+								RegistrationType.FRIENDSHIP_REQUEST, 
+								DareUtils.DATE_FORMAT.format(new Date()), id))
+						.build(); 
+			}else
+				//return bad response
+				throw new InvalidRequestException("Users identificators are not valid, try again"); 
+			
+		}catch(DataAccessException ex){
+			throw new InternalApplicationException("Error creating a friendship request: " + ex.getMessage()); 
+		}
 	}
 }

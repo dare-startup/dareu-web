@@ -29,8 +29,7 @@ import javax.transaction.UserTransaction;
  *
  * @author MACARENA
  */
-public class AbstractRepository<T extends BaseEntity> implements
-		BaseRepository<T> {
+public class AbstractRepository<T extends BaseEntity>{
 
 	private final Class<T> type;
 
@@ -47,7 +46,6 @@ public class AbstractRepository<T extends BaseEntity> implements
 		this.type = type;
 	}
 
-	@Override
 	public T find(String id) throws DataAccessException {
 		T t = null;
 		try {
@@ -60,7 +58,6 @@ public class AbstractRepository<T extends BaseEntity> implements
 		}
 	}
 
-	@Override
 	public List<T> list() throws DataAccessException {
 		try {
 			CriteriaBuilder builder = em.getCriteriaBuilder();
@@ -77,15 +74,15 @@ public class AbstractRepository<T extends BaseEntity> implements
 
 	}
 
-	@Override
 	@Transactional
-	public void persist(T entity) throws DataAccessException {
+	public String persist(T entity) throws DataAccessException {
 		try {
 			logTransactionStatus();
 			/**if(utx.getStatus() == Status.STATUS_ACTIVE)
 				utx.rollback();**/
 			//utx.begin();
 			em.persist(entity);
+			return entity.getId(); 
 			//utx.commit();
 		} catch (IllegalStateException ex) {
 			throw new DataAccessException("Could not persist entity: "
@@ -94,6 +91,11 @@ public class AbstractRepository<T extends BaseEntity> implements
 			throw new DataAccessException("Exception persisting entity: "
 					+ ex.getMessage());
 		}
+	}
+	
+	@Transactional
+	public String persist(Class<?extends BaseEntity> entity)throws DataAccessException{
+		return persist(entity); 
 	}
 
 	private void logTransactionStatus() {
@@ -135,7 +137,6 @@ public class AbstractRepository<T extends BaseEntity> implements
 		}
 	}
 
-	@Override
 	@Transactional
 	public void remove(T entity) throws DataAccessException {
 		try {
@@ -151,7 +152,6 @@ public class AbstractRepository<T extends BaseEntity> implements
 		}
 	}
 
-	@Override
 	public List<T> getPage(int pageNumber, int pageSize)
 			throws DataAccessException {
 		try {

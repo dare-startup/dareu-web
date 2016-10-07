@@ -8,6 +8,7 @@ package com.dareu.web.data.repository;
 import java.util.List;
 
 import com.dareu.web.data.entity.DareUser;
+import com.dareu.web.data.entity.Friendship;
 import com.dareu.web.exception.AuthenticationException;
 import com.dareu.web.exception.DataAccessException;
 
@@ -15,7 +16,7 @@ import com.dareu.web.exception.DataAccessException;
  *
  * @author MACARENA
  */
-public interface DareUserRepository{
+public interface DareUserRepository extends BaseRepository<DareUser>{
 	/**
 	 * Check if a nickname is available 
 	 * @param nickname
@@ -68,6 +69,6 @@ public interface DareUserRepository{
      * @return
      * @throws DataAccessException
      */
-    public List<DareUser> findFriends(String userId) throws DataAccessException; 
+    public List<DareUser> findFriends(String userId) throws DataAccessException;
     
 }

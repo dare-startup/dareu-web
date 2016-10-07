@@ -3,8 +3,10 @@ package com.dareu.web.resource;
 import com.dareu.web.core.annotation.Secured;
 import com.dareu.web.core.service.AccountService;
 import com.dareu.web.core.service.MultipartService;
+import com.dareu.web.data.request.FriendshipRequest;
 import com.dareu.web.data.request.SignupRequest;
 import com.dareu.web.exception.InternalApplicationException;
+import com.dareu.web.exception.InvalidRequestException;
 
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -44,14 +46,16 @@ public class AccountResource {
     /**
      * Request a friendship to another dareu user
      * @return 
+     * @throws InternalApplicationException 
+     * @throws InvalidRequestException 
      */
     @Path("requestFriendship")
     @Produces(MediaType.APPLICATION_JSON)
     @Secured
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response requestFriendship(){
-        return null; 
+    public Response requestFriendship(FriendshipRequest request) throws InvalidRequestException, InternalApplicationException{
+        return accountService.requestFriendship(request); 
     }
     
     
