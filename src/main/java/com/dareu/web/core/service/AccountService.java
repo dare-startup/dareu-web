@@ -8,6 +8,7 @@ package com.dareu.web.core.service;
 import javax.ws.rs.core.Response;
 
 import com.dareu.web.data.request.FriendshipRequest;
+import com.dareu.web.data.request.FriendshipRequestResponse;
 import com.dareu.web.data.request.SigninRequest;
 import com.dareu.web.data.request.SignupRequest;
 import com.dareu.web.exception.AuthenticationException;
@@ -62,5 +63,15 @@ public interface AccountService {
      * @throws InvalidRequestException
      * @throws InternalApplicationException
      */
-    public Response requestFriendship(FriendshipRequest request)throws InvalidRequestException, InternalApplicationException; 
+    public Response requestFriendship(FriendshipRequest request)throws InvalidRequestException, InternalApplicationException;
+    
+    
+    /**
+     * Process a friendhip request response between two users
+     * @param response
+     * @return
+     * @throws InvalidRequestException
+     * @throws InternalApplicationException
+     */
+    public Response friendshipResponse(FriendshipRequestResponse response)throws InvalidRequestException, InternalApplicationException;
 }

@@ -19,6 +19,7 @@ import com.dareu.web.data.entity.Friendship;
 import com.dareu.web.data.repository.DareUserRepository;
 import com.dareu.web.data.repository.FriendshipRepository;
 import com.dareu.web.data.request.FriendshipRequest;
+import com.dareu.web.data.request.FriendshipRequestResponse;
 import com.dareu.web.data.request.SigninRequest;
 import com.dareu.web.data.request.SignupRequest;
 import com.dareu.web.data.response.AuthenticationResponse;
@@ -198,14 +199,13 @@ public class AccountServiceImpl implements AccountService{
 				//set users 
 				friendship.setRequestedUser(requestedUser);
 				friendship.setUser(user);
-				
 				//try to persist
 				String id = friendshipRepository.persist(friendship);
 				
 				//TODO send PUSH notification to both users 
 				
 				return Response
-						.ok(new EntityRegistrationResponse("Friendship request sent", 
+						.ok(new EntityRegistrationResponse("Friendship request sent to " + requestedUser.getName(), 
 								RegistrationType.FRIENDSHIP_REQUEST, 
 								DareUtils.DATE_FORMAT.format(new Date()), id))
 						.build(); 
@@ -215,6 +215,40 @@ public class AccountServiceImpl implements AccountService{
 			
 		}catch(DataAccessException ex){
 			throw new InternalApplicationException("Error creating a friendship request: " + ex.getMessage()); 
+		}
+	}
+
+	@Override
+	public Response friendshipResponse(FriendshipRequestResponse response)
+			throws InvalidRequestException, InternalApplicationException {
+		if(response == null)
+			throw new InvalidRequestException("Invalid friendship response body");
+		
+		if(response.getFriendshipid() == null || response.getFriendshipid().isEmpty())
+			throw new InvalidRequestException("Invalid friendship id provided");
+		
+		//get the friendhip 
+		Friendship f = null; 
+		try{
+			f = friendshipRepository.find(response.getFriendshipid()); 
+			
+			if(f == null)
+				throw new InvalidRequestException("Friendship id not valid");
+			
+			f.setAccepted(response.isApproved());
+			
+			friendshipRepository.updateFriendhip(f.isAccepted(), f.getId());
+			
+			//TODO: send push notifications to both users here
+			
+			return Response
+					.ok(new EntityRegistrationResponse("You are now friends with " + f.getRequestedUser().getName(), 
+							RegistrationType.FRIENDSHIP_RESPONSE, 
+							DareUtils.DATE_FORMAT.format(new Date()), 
+							f.getId()))
+					.build();
+		}catch(DataAccessException ex){
+			throw new InternalApplicationException("Could process friendhip: " + ex.getMessage()); 
 		}
 	}
 }

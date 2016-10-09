@@ -4,6 +4,7 @@ import com.dareu.web.core.annotation.Secured;
 import com.dareu.web.core.service.AccountService;
 import com.dareu.web.core.service.MultipartService;
 import com.dareu.web.data.request.FriendshipRequest;
+import com.dareu.web.data.request.FriendshipRequestResponse;
 import com.dareu.web.data.request.SignupRequest;
 import com.dareu.web.exception.InternalApplicationException;
 import com.dareu.web.exception.InvalidRequestException;
@@ -155,6 +156,13 @@ public class AccountResource {
     public Response registerUser(MultipartFormDataInput input)throws Exception{
     	SignupRequest request = multipartService.getSignupRequest(input); 
         return  accountService.registerDareUser(request); 
+    }
+    
+    @Path("responseFriendship")
+    @POST
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response responseFriendship(FriendshipRequestResponse response)throws InvalidRequestException, InternalApplicationException{
+    	return accountService.friendshipResponse(response); 
     }
     
      

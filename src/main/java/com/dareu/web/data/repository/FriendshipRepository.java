@@ -13,4 +13,12 @@ public interface FriendshipRepository extends BaseRepository<Friendship>{
      * @throws DataAccessException
      */
     public Friendship findFriendship(String userId, String requestedUserId)throws DataAccessException;
+    
+    /**
+     * Update the provided friendship id to the value of accepted
+     * @param approved
+     * @param friendhipId
+     * @throws DataAccessException
+     */
+    public void updateFriendhip(boolean approved, String friendhipId)throws DataAccessException; 
 }
