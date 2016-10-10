@@ -16,19 +16,17 @@ public class SignupRequest {
     private String email; 
     private String username; 
     private String password; 
-    private String regId; 
     private InputStream image; 
     private String birthday; 
 
     public SignupRequest() {
     }
 
-    public SignupRequest(String name, String email, String username, String password, String regId, InputStream image, String birthday) {
+    public SignupRequest(String name, String email, String username, String password, InputStream image, String birthday) {
         this.name = name;
         this.email = email;
         this.username = username;
         this.password = password;
-        this.regId = regId;
         this.image = image;
         this.birthday = birthday;
     }
@@ -66,15 +64,6 @@ public class SignupRequest {
     public void setPassword(String password) {
         this.password = password;
     }
-
-    public String getRegId() {
-        return regId;
-    }
-
-    public void setRegId(String regId) {
-        this.regId = regId;
-    }
-
     public InputStream getImage() {
         return image;
     }

@@ -88,7 +88,6 @@ public class AccountServiceImpl implements AccountService{
 		user.setNickname(request.getUsername()); 
 		user.setPassword(request.getPassword()); //TODO:must encrypt password here
 		user.setUserSince(DareUtils.DATE_FORMAT.format(new Date()));
-		user.setGCM(request.getRegId());
 		user.setCoins(0);
 		user.setRole(SecurityRole.USER);
 		user.setuScore(0);
