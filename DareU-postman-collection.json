@@ -1,0 +1,181 @@
+{
+	"id": "7e0c5f43-9ffb-af38-bb3e-916867b1bf5f",
+	"name": "DareU",
+	"description": "",
+	"order": [
+		"02546a3c-4bc2-53ff-055d-d9c01fea7043",
+		"5ea96fc7-1994-38a4-bd48-6566e03c4658",
+		"6d909a71-40c9-10ed-3e78-b5d2016148b0",
+		"1d8af81b-a0d1-d4d9-1c37-c47a84d9ef26",
+		"8ad68157-cfa6-48fb-c0aa-b0c6bbbdbcbc",
+		"332a3abc-e279-4850-859d-0e57e5b6d733"
+	],
+	"folders": [],
+	"timestamp": 1475703754763,
+	"owner": 0,
+	"public": false,
+	"published": false,
+	"requests": [
+		{
+			"id": "02546a3c-4bc2-53ff-055d-d9c01fea7043",
+			"headers": "Content-Type: multipart/form-data; boundary=----WebKitFormBoundaryzeZR8KqAYJyI2jPL\nAccept: application/json\n",
+			"url": "localhost:8080/dareu/rest/account/registerUser",
+			"pathVariables": {},
+			"preRequestScript": null,
+			"method": "POST",
+			"collectionId": "7e0c5f43-9ffb-af38-bb3e-916867b1bf5f",
+			"data": [
+				{
+					"key": "name",
+					"value": "Alberto Rubalcaba",
+					"type": "text",
+					"enabled": true
+				},
+				{
+					"key": "email",
+					"value": "albertoruvel@gmail.com",
+					"type": "text",
+					"enabled": true
+				},
+				{
+					"key": "username",
+					"value": "albertoruvel",
+					"type": "text",
+					"enabled": true
+				},
+				{
+					"key": "password",
+					"value": "123",
+					"type": "text",
+					"enabled": true
+				},
+				{
+					"key": "regId",
+					"value": "123123123",
+					"type": "text",
+					"enabled": true
+				},
+				{
+					"key": "birthday",
+					"value": "12/19/90",
+					"type": "text",
+					"enabled": true
+				},
+				{
+					"key": "file",
+					"value": "2015-12-11 17.25.00.jpg",
+					"type": "file",
+					"enabled": true
+				}
+			],
+			"dataMode": "params",
+			"name": "localhost:8080/dareu/rest/account/registerUser",
+			"description": "Register user",
+			"descriptionFormat": "html",
+			"time": 1475707295193,
+			"version": 2,
+			"responses": [],
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {}
+		},
+		{
+			"id": "1d8af81b-a0d1-d4d9-1c37-c47a84d9ef26",
+			"headers": "",
+			"url": "localhost:8080/dareu/rest/account/nicknameAvailable/albertoruvel@gmail.com",
+			"pathVariables": {},
+			"preRequestScript": null,
+			"method": "GET",
+			"collectionId": "7e0c5f43-9ffb-af38-bb3e-916867b1bf5f",
+			"data": null,
+			"dataMode": "params",
+			"name": "localhost:8080/dareu/rest/account/nicknameAvailable/albertoruvel@gmail.com",
+			"description": "Nickname availability",
+			"descriptionFormat": "html",
+			"time": 1475711873565,
+			"version": 2,
+			"responses": [],
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {}
+		},
+		{
+			"id": "332a3abc-e279-4850-859d-0e57e5b6d733",
+			"headers": "Content-Type: application/json\nAccept: application/json\n",
+			"url": "localhost:8080/dareu/rest/dare/category/create",
+			"pathVariables": {},
+			"preRequestScript": null,
+			"method": "POST",
+			"collectionId": "7e0c5f43-9ffb-af38-bb3e-916867b1bf5f",
+			"data": [],
+			"dataMode": "raw",
+			"name": "localhost:8080/dareu/rest/dare/category/create",
+			"description": "Create a category",
+			"descriptionFormat": "html",
+			"time": 1475810003294,
+			"version": 2,
+			"responses": [],
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"rawModeData": "{\n\t\"name\": \"Category 1\", \n\t\"description\" : \"Category 1 description here\"\n}"
+		},
+		{
+			"id": "5ea96fc7-1994-38a4-bd48-6566e03c4658",
+			"headers": "Content-Type: application/json\nAccept: application/json\n",
+			"url": "localhost:8080/dareu/rest/security/authenticate",
+			"preRequestScript": null,
+			"pathVariables": {},
+			"method": "POST",
+			"data": [],
+			"dataMode": "raw",
+			"version": 2,
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"time": 1475779005175,
+			"name": "localhost:8080/dareu/rest/security/authenticate",
+			"description": "Authenticate to DareU application",
+			"collectionId": "7e0c5f43-9ffb-af38-bb3e-916867b1bf5f",
+			"responses": [],
+			"rawModeData": "{\n\t\"user\" : \"albertoruvel\", \n\t\"password\" : \"123\"\n}"
+		},
+		{
+			"id": "6d909a71-40c9-10ed-3e78-b5d2016148b0",
+			"headers": "",
+			"url": "localhost:8080/dareu/rest/account/nicknameAvailable/albertoruvel@gmail.com",
+			"preRequestScript": null,
+			"pathVariables": {},
+			"method": "GET",
+			"data": null,
+			"dataMode": "params",
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"time": 1475711858111,
+			"name": "localhost:8080/dareu/rest/account/emailAvailable/albertoruvel@gmail.com",
+			"description": "Email availability",
+			"collectionId": "7e0c5f43-9ffb-af38-bb3e-916867b1bf5f",
+			"responses": []
+		},
+		{
+			"id": "8ad68157-cfa6-48fb-c0aa-b0c6bbbdbcbc",
+			"headers": "Content-Type: application/json\nAccept: application/json\nAuthorization: 1106017777591724244172693036842689779223\n",
+			"url": "localhost:8080/dareu/rest/dare/create",
+			"preRequestScript": null,
+			"pathVariables": {},
+			"method": "POST",
+			"data": [],
+			"dataMode": "raw",
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"time": 1475866332029,
+			"name": "localhost:8080/dareu/rest/dare/create",
+			"description": "Create Dare",
+			"collectionId": "7e0c5f43-9ffb-af38-bb3e-916867b1bf5f",
+			"responses": [],
+			"rawModeData": "{\n\t\"name\" : \"Dare 1\",\n\t\"friendsIds\": [\"friend1\", \"friend2\"], \n\t\"description\" : \"description of the dare\", \n\t\"categoryId\" : \"categoryId\", \n\t\"timer\" : 6\n}"
+		}
+	]
+}
