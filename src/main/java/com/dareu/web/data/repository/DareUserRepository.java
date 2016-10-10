@@ -71,4 +71,12 @@ public interface DareUserRepository extends BaseRepository<DareUser>{
      */
     public List<DareUser> findFriends(String userId) throws DataAccessException;
     
+    /**
+     * Find a user using an authentication token
+     * @param token
+     * @return
+     * @throws DataAccessException
+     */
+    public DareUser findUserByToken(String token) throws DataAccessException;
+    
 }

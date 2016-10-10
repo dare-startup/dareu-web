@@ -74,4 +74,16 @@ public interface AccountService {
      * @throws InternalApplicationException
      */
     public Response friendshipResponse(FriendshipRequestResponse response)throws InvalidRequestException, InternalApplicationException;
+    
+    
+    /**
+     * Update a FCM reg id from an existing user using the authentication token
+     * @param regId
+     * @param auth
+     * @return
+     * @throws AuthenticationException
+     * @throws InvalidRequestException
+     * @throws InternalApplicationException
+     */
+    public Response updateRegId(String regId, String auth)throws InvalidRequestException, InternalApplicationException;
 }

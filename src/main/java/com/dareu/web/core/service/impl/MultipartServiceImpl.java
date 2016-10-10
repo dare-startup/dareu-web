@@ -53,6 +53,6 @@ public class MultipartServiceImpl implements MultipartService{
             throw new InvalidRequestException("No birthday field provided"); 
         if(file == null)
             throw new InvalidRequestException("No file field provided"); 
-        return new SignupRequest(name, email, username, password, regId, file, birthday); 
+        return new SignupRequest(name, email, username, password, file, birthday); 
     }
 }

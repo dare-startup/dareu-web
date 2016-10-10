@@ -250,4 +250,12 @@ public class AccountServiceImpl implements AccountService{
 			throw new InternalApplicationException("Could process friendhip: " + ex.getMessage()); 
 		}
 	}
+
+	@Override
+	public Response updateRegId(String regId, String auth)
+			throws InvalidRequestException,
+			InternalApplicationException {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

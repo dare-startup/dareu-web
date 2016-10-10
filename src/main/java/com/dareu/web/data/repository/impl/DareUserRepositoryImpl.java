@@ -124,5 +124,18 @@ public class DareUserRepositoryImpl extends AbstractRepository<DareUser> impleme
 		return users;
 	}
 
+	@Override
+	public DareUser findUserByToken(String token) throws DataAccessException {
+		try{
+			Query q = em.createQuery("SELECT u FROM User u WHERE u.securityToken = :token")
+					.setParameter("token", token); 
+			return (DareUser)q.getSingleResult(); 
+		}catch(NoResultException ex){
+			return null; 
+		}catch(Exception ex){
+			throw new DataAccessException("Could not get user: " + ex.getMessage()); 
+		}
+	}
+
 	
 }

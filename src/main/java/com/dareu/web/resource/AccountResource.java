@@ -6,6 +6,7 @@ import com.dareu.web.core.service.MultipartService;
 import com.dareu.web.data.request.FriendshipRequest;
 import com.dareu.web.data.request.FriendshipRequestResponse;
 import com.dareu.web.data.request.SignupRequest;
+import com.dareu.web.exception.AuthenticationException;
 import com.dareu.web.exception.InternalApplicationException;
 import com.dareu.web.exception.InvalidRequestException;
 
@@ -16,6 +17,7 @@ import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.PathParam;
@@ -80,8 +82,8 @@ public class AccountResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Secured
     @POST
-    public Response updateGcmRegId(){
-        return null; 
+    public Response updateGcmRegId(@QueryParam("regId")String regId, @HeaderParam("Authorization")String auth)throws InvalidRequestException, InternalApplicationException{
+        return accountService.updateRegId(regId, auth); 
     }
     
     /**
