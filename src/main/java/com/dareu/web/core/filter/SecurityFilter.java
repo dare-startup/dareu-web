@@ -8,24 +8,18 @@ package com.dareu.web.core.filter;
 import com.dareu.web.core.annotation.Secured;
 import com.dareu.web.data.entity.DareUser;
 import com.dareu.web.data.repository.DareUserRepository;
-import com.dareu.web.data.response.AuthenticationResponse;
 import com.dareu.web.data.response.AuthorizationResponse;
 import com.dareu.web.exception.DataAccessException;
 
 import java.io.IOException;
 import java.util.logging.Logger;
 
-import javax.annotation.Priority;
-import javax.ejb.Stateless;
 import javax.inject.Inject;
-import javax.ws.rs.Priorities;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
-import javax.ws.rs.container.PreMatching;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.Provider;
 
-import org.jboss.resteasy.annotations.interception.Precedence;
 
 /**
  *
@@ -33,7 +27,6 @@ import org.jboss.resteasy.annotations.interception.Precedence;
  */
 @Secured
 @Provider
-@Priority(Priorities.AUTHENTICATION)
 public class SecurityFilter implements ContainerRequestFilter{
 
 	@Inject

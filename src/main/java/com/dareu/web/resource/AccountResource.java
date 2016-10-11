@@ -6,7 +6,6 @@ import com.dareu.web.core.service.MultipartService;
 import com.dareu.web.data.request.FriendshipRequest;
 import com.dareu.web.data.request.FriendshipRequestResponse;
 import com.dareu.web.data.request.SignupRequest;
-import com.dareu.web.exception.AuthenticationException;
 import com.dareu.web.exception.InternalApplicationException;
 import com.dareu.web.exception.InvalidRequestException;
 
@@ -25,6 +24,8 @@ import javax.ws.rs.PathParam;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 
 @Path("account/")
+//Uncomment to secure all the operations
+//@Secured
 public class AccountResource {
 
 
@@ -40,7 +41,6 @@ public class AccountResource {
      */
     @Path("me")
     @Produces(MediaType.APPLICATION_JSON)
-    @Secured
     @GET
     public Response me(){
         return null; 
@@ -54,7 +54,6 @@ public class AccountResource {
      */
     @Path("requestFriendship")
     @Produces(MediaType.APPLICATION_JSON)
-    @Secured
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public Response requestFriendship(FriendshipRequest request) throws InvalidRequestException, InternalApplicationException{
@@ -68,7 +67,6 @@ public class AccountResource {
      */
     @Path("findFriends")
     @Produces(MediaType.APPLICATION_JSON)
-    @Secured
     @GET
     public Response findFriends(@HeaderParam("authorization")String authorization){
         return null; 
@@ -80,7 +78,6 @@ public class AccountResource {
      */
     @Path("updateGcmRegId")
     @Produces(MediaType.APPLICATION_JSON)
-    @Secured
     @POST
     public Response updateGcmRegId(@QueryParam("regId")String regId, @HeaderParam("Authorization")String auth)throws InvalidRequestException, InternalApplicationException{
         return accountService.updateRegId(regId, auth); 
@@ -92,7 +89,6 @@ public class AccountResource {
      */
     @Path("registerSponsor")
     @Produces(MediaType.APPLICATION_JSON)
-    @Secured
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public Response registerSponsorUser(){
