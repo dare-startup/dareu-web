@@ -39,8 +39,8 @@ public class AbstractRepository<T extends BaseEntity>{
 	@PersistenceContext
 	protected EntityManager em;
 
-	@Resource
-	protected UserTransaction utx;
+	//@Resource
+	//protected UserTransaction utx;
 
 	public AbstractRepository(Class<T> type) {
 		this.type = type;
@@ -99,7 +99,7 @@ public class AbstractRepository<T extends BaseEntity>{
 	}
 
 	private void logTransactionStatus() {
-		try {
+		/*try {
 			switch (utx.getStatus()) {
 				case Status.STATUS_ACTIVE:
 					log.info("UserTransaction status: Active"); 
@@ -134,7 +134,7 @@ public class AbstractRepository<T extends BaseEntity>{
 			}
 		} catch (SystemException ex) {
 
-		}
+		}*/
 	}
 
 	@Transactional
