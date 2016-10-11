@@ -57,12 +57,7 @@ public class AccountServiceImpl implements AccountService{
     
     @Inject
     private Logger log; 
-    
-    public AccountServiceImpl(){
-        
-    }
 
-	@Override
 	public Response registerDareUser(SignupRequest request)
 			throws EntityRegistrationException, InternalApplicationException {
 		Response response = null; 
@@ -124,7 +119,6 @@ public class AccountServiceImpl implements AccountService{
 		return response;
 	}
 
-	@Override
 	public Response authenticate(SigninRequest request)
 			throws AuthenticationException {
 		if(request == null)
@@ -144,7 +138,6 @@ public class AccountServiceImpl implements AccountService{
 		}
 	}
 
-	@Override
 	public Response isEmailAvailable(String email)
 			throws InternalApplicationException {
 		
@@ -155,7 +148,6 @@ public class AccountServiceImpl implements AccountService{
 				.build(); 
 	}
 
-	@Override
 	public Response isNicknameAvailable(String nickname)
 			throws InternalApplicationException {
 		if(dareUserRepository.isNicknameAvailable(nickname))
@@ -165,14 +157,12 @@ public class AccountServiceImpl implements AccountService{
 				.build();
 	}
 
-	@Override
 	public Response findFriends(String authorizationHeader)
 			throws AuthenticationException, InternalApplicationException {
 		//validate header 
 		return null; 
 	}
 
-	@Override
 	public Response requestFriendship(FriendshipRequest request)
 			throws InvalidRequestException, InternalApplicationException {
 		//validate 
@@ -217,7 +207,6 @@ public class AccountServiceImpl implements AccountService{
 		}
 	}
 
-	@Override
 	public Response friendshipResponse(FriendshipRequestResponse response)
 			throws InvalidRequestException, InternalApplicationException {
 		if(response == null)
@@ -251,7 +240,6 @@ public class AccountServiceImpl implements AccountService{
 		}
 	}
 
-	@Override
 	public Response updateRegId(String regId, String auth)
 			throws InvalidRequestException,
 			InternalApplicationException {

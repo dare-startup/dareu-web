@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.dareu.web.data.repository.impl;
 
 import java.util.List;
@@ -11,7 +6,6 @@ import java.util.logging.Logger;
 import com.dareu.web.core.DareUtils;
 import com.dareu.web.data.entity.DareUser;
 import com.dareu.web.data.repository.DareUserRepository;
-import com.dareu.web.data.entity.Friendship;
 import com.dareu.web.exception.AuthenticationException;
 import com.dareu.web.exception.DataAccessException;
 
@@ -38,7 +32,6 @@ public class DareUserRepositoryImpl extends AbstractRepository<DareUser> impleme
         super(DareUser.class); 
     }
 
-	@Override
 	public boolean isNicknameAvailable(String nickname) {
 		//get a list of users where the nickname is the same 
 		Query q = em.createQuery("SELECT u.nickname FROM User u WHERE u.nickname = :nickname")
@@ -51,7 +44,6 @@ public class DareUserRepositoryImpl extends AbstractRepository<DareUser> impleme
 		else return false;
 	}
 
-	@Override
 	public boolean isEmailAvailable(String email) {
 		Query q = em.createQuery("SELECT u.email FROM User u WHERE u.email = :email")
 				.setParameter("email", email); 
@@ -62,7 +54,6 @@ public class DareUserRepositoryImpl extends AbstractRepository<DareUser> impleme
 		else return false;
 	}
 
-	@Override
 	@Transactional
 	public String registerDareUser(DareUser register)
 			throws DataAccessException {
@@ -70,13 +61,11 @@ public class DareUserRepositoryImpl extends AbstractRepository<DareUser> impleme
 		return register.getId();
 	}
 
-	@Override
 	public String loginFacebook(String email, String name) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	@Override
 	public DareUser login(String nickname, String pass)throws AuthenticationException {
 		DareUser user = null;
 		try{
@@ -97,17 +86,14 @@ public class DareUserRepositoryImpl extends AbstractRepository<DareUser> impleme
 		}
 	}
 
-	@Override
 	@Transactional
 	public void updateSecurityToken(String token, String userId) {
 		DareUser user = null; 
 		try{
-			utx.begin();
 			user = find(userId);
 			if(user != null)
 				//update 
 				user.setSecurityToken(token);
-			utx.commit();
 		}catch(DataAccessException ex){
 			log.info("User with id " + userId + " not found"); 
 		}catch(Exception ex){
@@ -115,7 +101,6 @@ public class DareUserRepositoryImpl extends AbstractRepository<DareUser> impleme
 		}
 	}
 
-	@Override
 	public List<DareUser> findFriends(String userId) throws DataAccessException {
 		List<DareUser> users = null; 
 		/**try{
@@ -124,7 +109,6 @@ public class DareUserRepositoryImpl extends AbstractRepository<DareUser> impleme
 		return users;
 	}
 
-	@Override
 	public DareUser findUserByToken(String token) throws DataAccessException {
 		try{
 			Query q = em.createQuery("SELECT u FROM User u WHERE u.securityToken = :token")
