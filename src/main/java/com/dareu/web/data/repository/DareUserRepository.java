@@ -79,4 +79,13 @@ public interface DareUserRepository extends BaseRepository<DareUser>{
      */
     public DareUser findUserByToken(String token) throws DataAccessException;
     
+    
+    /**
+     * Updated a Firebase Cloud Messaging registration id using a security token
+     * @param regid
+     * @param token
+     * @throws DataAccessException
+     */
+    public void updateFcmRegId(String regid, String token)throws DataAccessException; 
+    
 }

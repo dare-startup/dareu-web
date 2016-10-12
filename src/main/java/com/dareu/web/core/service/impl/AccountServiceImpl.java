@@ -58,6 +58,7 @@ public class AccountServiceImpl implements AccountService{
     @Inject
     private Logger log; 
 
+    @Override
 	public Response registerDareUser(SignupRequest request)
 			throws EntityRegistrationException, InternalApplicationException {
 		Response response = null; 
@@ -119,6 +120,7 @@ public class AccountServiceImpl implements AccountService{
 		return response;
 	}
 
+	@Override
 	public Response authenticate(SigninRequest request)
 			throws AuthenticationException {
 		if(request == null)
@@ -138,6 +140,7 @@ public class AccountServiceImpl implements AccountService{
 		}
 	}
 
+	@Override
 	public Response isEmailAvailable(String email)
 			throws InternalApplicationException {
 		
@@ -148,6 +151,7 @@ public class AccountServiceImpl implements AccountService{
 				.build(); 
 	}
 
+	@Override
 	public Response isNicknameAvailable(String nickname)
 			throws InternalApplicationException {
 		if(dareUserRepository.isNicknameAvailable(nickname))
@@ -157,12 +161,14 @@ public class AccountServiceImpl implements AccountService{
 				.build();
 	}
 
+	@Override
 	public Response findFriends(String authorizationHeader)
 			throws AuthenticationException, InternalApplicationException {
 		//validate header 
 		return null; 
 	}
 
+	@Override
 	public Response requestFriendship(FriendshipRequest request)
 			throws InvalidRequestException, InternalApplicationException {
 		//validate 
@@ -207,6 +213,7 @@ public class AccountServiceImpl implements AccountService{
 		}
 	}
 
+	@Override
 	public Response friendshipResponse(FriendshipRequestResponse response)
 			throws InvalidRequestException, InternalApplicationException {
 		if(response == null)
@@ -239,11 +246,22 @@ public class AccountServiceImpl implements AccountService{
 			throw new InternalApplicationException("Could process friendhip: " + ex.getMessage()); 
 		}
 	}
-
+	
+	@Override
 	public Response updateRegId(String regId, String auth)
 			throws InvalidRequestException,
 			InternalApplicationException {
-		// TODO Auto-generated method stub
-		return null;
+		if(regId == null || regId.isEmpty())
+			throw new InvalidRequestException(); 
+		try{
+			//try to update
+			dareUserRepository.updateFcmRegId(regId, auth);
+			
+			//return response 
+			return Response.ok()
+					.build(); 
+		}catch(DataAccessException ex){
+			throw new InternalApplicationException("Could not update FCM: " + ex.getMessage()); 
+		}
 	}
 }

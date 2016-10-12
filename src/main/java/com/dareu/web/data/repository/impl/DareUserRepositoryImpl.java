@@ -121,5 +121,24 @@ public class DareUserRepositoryImpl extends AbstractRepository<DareUser> impleme
 		}
 	}
 
+	@Override
+	@Transactional
+	public void updateFcmRegId(String regId, String token)
+			throws DataAccessException {
+		try{
+			Query q = em.createQuery("SELECT u FROM User u WHERE u.securityToken = :token")
+					.setParameter("token", token); 
+			DareUser user = (DareUser)q.getSingleResult(); 
+			if(user != null){
+				//update 
+				user.setGCM(regId);
+			}
+		}catch(NoResultException ex){
+			log.info("User with token " + token + " not found"); 
+		}catch(Exception ex){
+			throw new DataAccessException("Could not update user FCM: " + ex.getMessage()); 
+		}
+	}
+
 	
 }

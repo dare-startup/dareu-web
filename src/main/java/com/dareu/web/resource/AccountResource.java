@@ -1,11 +1,18 @@
 package com.dareu.web.resource;
 
+import io.swagger.annotations.Api;
+
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+
 import com.dareu.web.core.annotation.Secured;
 import com.dareu.web.core.service.AccountService;
 import com.dareu.web.core.service.MultipartService;
 import com.dareu.web.data.request.FriendshipRequest;
 import com.dareu.web.data.request.FriendshipRequestResponse;
 import com.dareu.web.data.request.SignupRequest;
+import com.dareu.web.data.response.DareUserProfile;
 import com.dareu.web.exception.InternalApplicationException;
 import com.dareu.web.exception.InvalidRequestException;
 
@@ -24,8 +31,8 @@ import javax.ws.rs.PathParam;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 
 @Path("account/")
-//Uncomment to secure all the operations
-//@Secured
+@Api(basePath = "account", description = "Process requests regarding to Account operations", value="/account", 
+			consumes = "application/json") //swagger documentation
 public class AccountResource {
 
 
@@ -39,9 +46,16 @@ public class AccountResource {
      * Get current profile from a logged user
      * @return 
      */
+    
     @Path("me")
     @Produces(MediaType.APPLICATION_JSON)
     @GET
+    @ApiOperation(value = "Retrieve a user profile", 
+    			response = DareUserProfile.class, 
+    			httpMethod = "GET", 
+    			nickname = "me")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "The request has been processed successfully"), 
+    						@ApiResponse(code = 401, message = "Unauthorized to process request")})
     public Response me(){
         return null; 
     }
@@ -79,6 +93,7 @@ public class AccountResource {
     @Path("updateGcmRegId")
     @Produces(MediaType.APPLICATION_JSON)
     @POST
+    @Secured
     public Response updateGcmRegId(@QueryParam("regId")String regId, @HeaderParam("Authorization")String auth)throws InvalidRequestException, InternalApplicationException{
         return accountService.updateRegId(regId, auth); 
     }

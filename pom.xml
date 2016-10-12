@@ -22,29 +22,36 @@
 		</dependency>
 
 
+		<!-- Syring to inject properties from file, jndi,... -->
 		<dependency>
 			<groupId>com.github.roar109</groupId>
 			<artifactId>syring</artifactId>
 			<version>1.0.1</version>
 		</dependency>
+
+		<!-- Junit dependency -->
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>3.8.1</version>
 			<scope>test</scope>
 		</dependency>
+
+		<!-- Jaba EE web api -->
 		<dependency>
 			<groupId>javax</groupId>
 			<artifactId>javaee-web-api</artifactId>
 			<version>${javax.version}</version>
 			<scope>provided</scope>
 		</dependency>
+
 		<!-- https://mvnrepository.com/artifact/javax.ws.rs/javax.ws.rs-api -->
 		<dependency>
 			<groupId>javax.ws.rs</groupId>
 			<artifactId>javax.ws.rs-api</artifactId>
 			<version>2.0</version>
 		</dependency>
+
 		<!-- https://mvnrepository.com/artifact/org.jboss.spec/jboss-javaee-6.0 -->
 		<dependency>
 			<groupId>org.jboss.resteasy</groupId>
@@ -53,6 +60,7 @@
 			<scope>provided</scope>
 		</dependency>
 
+		<!-- Multipart support -->
 		<dependency>
 			<groupId>org.jboss.resteasy</groupId>
 			<artifactId>resteasy-multipart-provider</artifactId>
@@ -60,11 +68,26 @@
 			<scope>provided</scope>
 		</dependency>
 
+		<!-- Firebase server sdk -->
 		<dependency>
 			<groupId>com.google.firebase</groupId>
 			<artifactId>firebase-server-sdk</artifactId>
 			<version>3.0.1</version>
 		</dependency>
+
+		<!-- Swagger -->
+		<dependency>
+            <groupId>io.swagger</groupId>
+            <artifactId>swagger-jaxrs</artifactId>
+            <version>1.5.10</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.swagger</groupId>
+            <artifactId>swagger-annotations</artifactId>
+            <version>1.5.10</version>
+            <scope>compile</scope>
+        </dependency>
 	</dependencies>
 	<build>
 		<finalName>dareu</finalName>
