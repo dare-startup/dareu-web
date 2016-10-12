@@ -37,7 +37,7 @@
 			<scope>test</scope>
 		</dependency>
 
-		<!-- Jaba EE web api -->
+		<!-- Java EE web api -->
 		<dependency>
 			<groupId>javax</groupId>
 			<artifactId>javaee-web-api</artifactId>
