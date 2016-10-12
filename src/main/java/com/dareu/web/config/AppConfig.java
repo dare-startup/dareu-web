@@ -11,10 +11,10 @@ public class AppConfig extends Application{
 	public AppConfig(){
 		BeanConfig config = new BeanConfig();
 		config.setVersion("1.0.0");
-		config.setTitle("Dare‹ API documentation");
+		config.setTitle("DareU API documentation");
 		config.setContact("Alberto Rubalcaba: albertoruvel@gmail.com");
 		
-		config.setBasePath("api-docs");
+		config.setBasePath("dareu/rest");
 		config.setResourcePackage("com.dareu.web.resource");
 		config.setScan(true); 
 	}
