@@ -30,6 +30,7 @@ create table dare(
     estimated_dare_time int not null default 24,  
     approved tinyint default 0, 
     accepted tinyint default 0,
+    accepted_date varchar(30),
     creation_date datetime not null, 
     foreign key(category_id)references category(id));
     

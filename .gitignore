@@ -34,3 +34,5 @@ Thumbs.db
 
 #remove google-services file
 google-services.json
+
+.externalToolBuilders/
