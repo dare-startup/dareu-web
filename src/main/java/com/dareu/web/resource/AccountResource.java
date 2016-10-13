@@ -13,6 +13,7 @@ import com.dareu.web.data.request.FriendshipRequest;
 import com.dareu.web.data.request.FriendshipRequestResponse;
 import com.dareu.web.data.request.SignupRequest;
 import com.dareu.web.data.response.DareUserProfile;
+import com.dareu.web.exception.AuthenticationException;
 import com.dareu.web.exception.InternalApplicationException;
 import com.dareu.web.exception.InvalidRequestException;
 
@@ -78,12 +79,14 @@ public class AccountResource {
     /**
      * Find friends using a keyword
      * @return 
+     * @throws AuthenticationException 
+     * @throws InternalApplicationException 
      */
+    @GET
     @Path("findFriends")
     @Produces(MediaType.APPLICATION_JSON)
-    @GET
-    public Response findFriends(@HeaderParam("authorization")String authorization){
-        return null; 
+    public Response findFriends(@HeaderParam("Authorization") String authorization) throws InternalApplicationException, AuthenticationException{
+        return accountService.findFriends(authorization); 
     }
     
     /**

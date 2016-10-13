@@ -5,12 +5,11 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity(name = "Friendship")
-@Table(name = "dareu_user_dare")
+@Table(name = "friendship")
 public class Friendship extends BaseEntity{
 	
 	@OneToOne(cascade = { CascadeType.ALL }, fetch = FetchType.EAGER, 

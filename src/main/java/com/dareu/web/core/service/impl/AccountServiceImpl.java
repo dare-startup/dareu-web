@@ -7,6 +7,7 @@ package com.dareu.web.core.service.impl;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.List;
 import java.util.logging.Logger;
 
 import com.dareu.web.core.DareUtils;
@@ -164,8 +165,23 @@ public class AccountServiceImpl implements AccountService{
 	@Override
 	public Response findFriends(String authorizationHeader)
 			throws AuthenticationException, InternalApplicationException {
-		//validate header 
-		return null; 
+		
+		List<Friendship> friends = null;
+		//validate header
+		//first get the user if exist
+		try{
+			final DareUser currentUser = dareUserRepository.findUserByToken(authorizationHeader);
+			if(currentUser == null){
+				throw new InternalApplicationException("User not found");
+			}
+			System.out.println(currentUser.getEmail());
+			System.out.println(currentUser.getId());
+			
+			friends = friendshipRepository.findFriends(currentUser.getId());
+		}catch(Exception e){
+			throw new InternalApplicationException(e.getMessage(), e);
+		}
+		return Response.ok(friends).build(); 
 	}
 
 	@Override
@@ -189,7 +205,7 @@ public class AccountServiceImpl implements AccountService{
 		try{
 			requestedUser = dareUserRepository.find(request.getRequestedUserId());
 			user = dareUserRepository.find(request.getUserId()); 
-			
+
 			if(requestedUser != null && user != null){
 				//set users 
 				friendship.setRequestedUser(requestedUser);

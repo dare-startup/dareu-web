@@ -1,5 +1,6 @@
 package com.dareu.web.data.repository.impl;
 
+import java.util.List;
 import java.util.logging.Logger;
 
 import javax.inject.Inject;
@@ -41,7 +42,7 @@ public class FriendshipRepositoryImpl extends AbstractRepository<Friendship> imp
 	public void updateFriendhip(boolean approved, String friendhipId)
 			throws DataAccessException {
 		//create a query 
-		Query q = em.createQuery("UPDATE u Friendship SET u.approved = :approved WHERE u.friendshipId = :friendshipId")
+		Query q = em.createQuery("UPDATE Friendship SET accepted = :approved WHERE id = :friendshipId")
 				.setParameter("approved", approved)
 				.setParameter("friendshipId", friendhipId);
 		
@@ -49,4 +50,9 @@ public class FriendshipRepositoryImpl extends AbstractRepository<Friendship> imp
 		log.info("Updated friendship " + friendhipId);
 	}
 
+	public List<Friendship> findFriends(final String id) throws DataAccessException{
+		Query q = em.createQuery("SELECT f FROM Friendship f WHERE f.user.id = :userId and f.accepted = true ")
+				.setParameter("userId", id);
+		return q.getResultList();
+	}
 }

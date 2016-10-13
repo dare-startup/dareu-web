@@ -1,5 +1,7 @@
 package com.dareu.web.data.repository;
 
+import java.util.List;
+
 import com.dareu.web.data.entity.Friendship;
 import com.dareu.web.exception.DataAccessException;
 
@@ -20,5 +22,12 @@ public interface FriendshipRepository extends BaseRepository<Friendship>{
      * @param friendhipId
      * @throws DataAccessException
      */
-    public void updateFriendhip(boolean approved, String friendhipId)throws DataAccessException; 
+    public void updateFriendhip(boolean approved, String friendhipId)throws DataAccessException;
+    
+    /**
+     * Get all the friends of a given user
+     * @param id
+     * @throws DataAccessException
+     */
+    public List<Friendship> findFriends(final String id) throws DataAccessException;
 }
