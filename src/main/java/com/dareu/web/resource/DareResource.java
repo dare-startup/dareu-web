@@ -19,6 +19,9 @@ import com.dareu.web.data.request.CreateDareRequest;
 import com.dareu.web.exception.InternalApplicationException;
 import com.dareu.web.exception.InvalidRequestException;
 
+import io.swagger.annotations.Api;
+
+@Api(value="dare")
 @Path("dare/")
 public class DareResource {
 	

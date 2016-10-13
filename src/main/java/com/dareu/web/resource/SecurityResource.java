@@ -12,6 +12,9 @@ import com.dareu.web.core.service.AccountService;
 import com.dareu.web.data.request.SigninRequest;
 import com.dareu.web.exception.AuthenticationException;
 
+import io.swagger.annotations.Api;
+
+@Api(value="security")
 @Path("security/")
 public class SecurityResource {
 	
