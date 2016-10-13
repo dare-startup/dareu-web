@@ -4,6 +4,7 @@ import java.util.logging.Logger;
 
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -36,7 +37,7 @@ public class DareResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Secured
 	public Response createNewDare(CreateDareRequest request)throws InternalApplicationException, 
-								  InvalidRequestException, InternalApplicationException{
+								  InvalidRequestException{
 		return dareService.createNewDare(request); 
 	}
 	
@@ -51,5 +52,11 @@ public class DareResource {
 		return dareService.createNewCategory(request); 
 	}
 	
-	
+	@Path("category")
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@Secured
+	public Response getCategories()throws InternalApplicationException{
+		return dareService.getCategories(); 
+	}
 }

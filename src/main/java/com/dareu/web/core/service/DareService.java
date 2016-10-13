@@ -26,5 +26,13 @@ public interface DareService {
 	 * @throws InvalidRequestException
 	 * @throws InternalApplicationException
 	 */
-	public Response createNewCategory(CreateCategoryRequest request)throws InvalidRequestException, InternalApplicationException; 
+	public Response createNewCategory(CreateCategoryRequest request)throws InvalidRequestException, InternalApplicationException;
+	
+	
+	/**
+	 * Returns a list with available categories
+	 * @return
+	 * @throws InternalApplicationException
+	 */
+	public Response getCategories()throws InternalApplicationException; 
 }

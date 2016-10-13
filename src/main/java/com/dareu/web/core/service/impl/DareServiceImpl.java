@@ -21,6 +21,7 @@ import com.dareu.web.data.request.CreateCategoryRequest;
 import com.dareu.web.data.request.CreateDareRequest;
 import com.dareu.web.data.response.EntityRegistrationResponse;
 import com.dareu.web.data.response.EntityRegistrationResponse.RegistrationType;
+import com.dareu.web.data.response.ListResponse;
 import com.dareu.web.exception.DataAccessException;
 import com.dareu.web.exception.InternalApplicationException;
 import com.dareu.web.exception.InvalidRequestException;
@@ -120,6 +121,19 @@ public class DareServiceImpl implements DareService{
 					.build(); 
 		}catch(DataAccessException ex){
 			throw new InternalApplicationException("Could not add category: " + ex.getMessage()); 
+		}
+	}
+
+	public Response getCategories() throws InternalApplicationException {
+		//get all categories 
+		try{
+			List<Category> categories = categoryRepository.list(); 
+			return Response
+					.ok(new ListResponse<Category>(categories, 
+						DareUtils.DATE_FORMAT.format(new Date()), "Category"))
+					.build(); 
+		}catch(DataAccessException ex){
+			throw new InternalApplicationException("Could not get categories: " + ex.getMessage()); 
 		}
 	}
 
