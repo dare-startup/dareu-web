@@ -3,6 +3,7 @@ package com.dareu.web.data.repository;
 import java.util.List;
 
 import com.dareu.web.data.entity.Friendship;
+import com.dareu.web.data.response.FriendshipResponse;
 import com.dareu.web.exception.DataAccessException;
 
 public interface FriendshipRepository extends BaseRepository<Friendship>{
@@ -27,7 +28,8 @@ public interface FriendshipRepository extends BaseRepository<Friendship>{
     /**
      * Get all the friends of a given user
      * @param id
+     * @param aceptedOnly
      * @throws DataAccessException
      */
-    public List<Friendship> findFriends(final String id) throws DataAccessException;
+    public List<FriendshipResponse> findFriends(final String id, final boolean aceptedOnly) throws DataAccessException;
 }

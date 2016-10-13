@@ -26,6 +26,7 @@ import com.dareu.web.data.request.SignupRequest;
 import com.dareu.web.data.response.AuthenticationResponse;
 import com.dareu.web.data.response.EntityRegistrationResponse;
 import com.dareu.web.data.response.EntityRegistrationResponse.RegistrationType;
+import com.dareu.web.data.response.FriendshipResponse;
 import com.dareu.web.data.response.ResourceAvailableResponse;
 import com.dareu.web.exception.AuthenticationException;
 import com.dareu.web.exception.DataAccessException;
@@ -166,7 +167,7 @@ public class AccountServiceImpl implements AccountService{
 	public Response findFriends(String authorizationHeader)
 			throws AuthenticationException, InternalApplicationException {
 		
-		List<Friendship> friends = null;
+		List<FriendshipResponse> friends = null;
 		//validate header
 		//first get the user if exist
 		try{
@@ -177,7 +178,7 @@ public class AccountServiceImpl implements AccountService{
 			System.out.println(currentUser.getEmail());
 			System.out.println(currentUser.getId());
 			
-			friends = friendshipRepository.findFriends(currentUser.getId());
+			friends = friendshipRepository.findFriends(currentUser.getId(), Boolean.TRUE);
 		}catch(Exception e){
 			throw new InternalApplicationException(e.getMessage(), e);
 		}

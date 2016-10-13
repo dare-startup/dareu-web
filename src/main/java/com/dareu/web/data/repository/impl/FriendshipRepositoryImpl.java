@@ -9,6 +9,7 @@ import javax.persistence.Query;
 
 import com.dareu.web.data.entity.Friendship;
 import com.dareu.web.data.repository.FriendshipRepository;
+import com.dareu.web.data.response.FriendshipResponse;
 import com.dareu.web.exception.DataAccessException;
 
 public class FriendshipRepositoryImpl extends AbstractRepository<Friendship> implements FriendshipRepository{
@@ -21,13 +22,11 @@ public class FriendshipRepositoryImpl extends AbstractRepository<Friendship> imp
 		super(Friendship.class);
 	}
 	
-	@Override
 	public Friendship findFriendship(String userId, String requestedUserId)
 			throws DataAccessException {
-		Query q = em.createQuery("SELECT f FROM Friendship f WHERE f.userId = :userId AND f.requestedUserId = :requestedUserId")
+		Query q = em.createQuery("SELECT f FROM Friendship f WHERE f.user.id = :userId AND f.requestedUser.id = :requestedUserId")
 				.setParameter("requestedUserId", requestedUserId)
 				.setParameter("userId", userId);
-		
 		
 		Friendship f = null; 
 		try{
@@ -38,7 +37,6 @@ public class FriendshipRepositoryImpl extends AbstractRepository<Friendship> imp
 		}
 	}
 
-	@Override
 	public void updateFriendhip(boolean approved, String friendhipId)
 			throws DataAccessException {
 		//create a query 
@@ -50,9 +48,14 @@ public class FriendshipRepositoryImpl extends AbstractRepository<Friendship> imp
 		log.info("Updated friendship " + friendhipId);
 	}
 
-	public List<Friendship> findFriends(final String id) throws DataAccessException{
-		Query q = em.createQuery("SELECT f FROM Friendship f WHERE f.user.id = :userId and f.accepted = true ")
-				.setParameter("userId", id);
+	public List<FriendshipResponse> findFriends(final String id, final boolean aceptedOnly) throws DataAccessException{
+		//TODO fetch the requestedUser too... do some magic here :D
+		StringBuilder sbHql = new StringBuilder("SELECT new com.dareu.web.data.response.FriendshipResponse(f.user.id, f.user.name) ");
+		sbHql.append("FROM Friendship f WHERE (f.user.id = :userId or f.requestedUser.id = :userId) ");
+		sbHql.append("and f.accepted = :acepted ");
+		final Query q = em.createQuery(sbHql.toString())
+				.setParameter("userId", id)
+				.setParameter("acepted", aceptedOnly);
 		return q.getResultList();
 	}
 }
