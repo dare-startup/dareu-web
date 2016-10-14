@@ -32,4 +32,7 @@ public interface FriendshipRepository extends BaseRepository<Friendship>{
      * @throws DataAccessException
      */
     public List<FriendshipResponse> findFriends(final String id, final boolean aceptedOnly) throws DataAccessException;
+    
+    
+    
 }

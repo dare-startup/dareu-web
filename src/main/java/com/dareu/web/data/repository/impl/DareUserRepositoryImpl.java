@@ -140,5 +140,17 @@ public class DareUserRepositoryImpl extends AbstractRepository<DareUser> impleme
 		}
 	}
 
+    public boolean isUserFriend(String userId, String anotherUserId) throws DataAccessException {
+        try{
+            Query q = em.createQuery("SELECT count(c) FROM Friendship c WHERE c.user_id = :userId AND u.requested_user_id = :anotherUserId AND u.accepted = 1")
+                    .setParameter("userId", userId)
+                    .setParameter("anotherUserId", anotherUserId); 
+            Integer count = (Integer)q.getSingleResult(); 
+            return count > 0; 
+        }catch(Exception ex){
+            throw new DataAccessException("Could not get count: " + ex.getMessage()); 
+        }
+    }
+
 	
 }

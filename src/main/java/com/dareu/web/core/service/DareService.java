@@ -16,7 +16,7 @@ public interface DareService {
 	 * @throws InvalidRequestException
 	 * @throws InternalApplicationException
 	 */
-	public Response createNewDare(CreateDareRequest request)throws InvalidRequestException ,InternalApplicationException;
+	public Response createNewDare(CreateDareRequest request, String authenticationToken)throws InvalidRequestException ,InternalApplicationException;
 
 	/**
 	 * Creates a new dare category 

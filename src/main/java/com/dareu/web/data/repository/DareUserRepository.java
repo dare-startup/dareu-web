@@ -16,76 +16,95 @@ import com.dareu.web.exception.DataAccessException;
  *
  * @author MACARENA
  */
-public interface DareUserRepository extends BaseRepository<DareUser>{
-	/**
-	 * Check if a nickname is available 
-	 * @param nickname
-	 * @return
-	 */
-	public boolean isNicknameAvailable(String nickname);
-	
-	/**
-	 * Update a security token 
-	 * @param token
-	 * @param userId
-	 */
-	public void updateSecurityToken(String token, String userId);
-	
-	/**
-	 * Check if an email is available
-	 * @param email
-	 * @return
-	 */
+public interface DareUserRepository extends BaseRepository<DareUser> {
+
+    /**
+     * Check if a nickname is available
+     *
+     * @param nickname
+     * @return
+     */
+    public boolean isNicknameAvailable(String nickname);
+
+    /**
+     * Update a security token
+     *
+     * @param token
+     * @param userId
+     */
+    public void updateSecurityToken(String token, String userId);
+
+    /**
+     * Check if an email is available
+     *
+     * @param email
+     * @return
+     */
     public boolean isEmailAvailable(String email);
-    
+
     /**
      * Register a new DareU user
+     *
      * @param register
      * @return
      * @throws DataAccessException
      */
     public String registerDareUser(DareUser register) throws DataAccessException;
-    
+
     /**
      * Login using a facebook account
+     *
      * @param email
      * @param name
      * @return
      */
     public String loginFacebook(String email, String name);
-    
+
     /**
      * Login using a nickname and a password
+     *
      * @param nickname
      * @param pass
      * @return
      * @throws AuthenticationException
      */
-    public DareUser login(String nickname, String pass)throws AuthenticationException;
+    public DareUser login(String nickname, String pass) throws AuthenticationException;
 
     /**
      * Find a list of friends in function of a user id
+     *
      * @param userId
      * @return
      * @throws DataAccessException
      */
     public List<DareUser> findFriends(String userId) throws DataAccessException;
-    
+
     /**
      * Find a user using an authentication token
+     *
      * @param token
      * @return
      * @throws DataAccessException
      */
     public DareUser findUserByToken(String token) throws DataAccessException;
-    
-    
+
     /**
      * Updated a Firebase Cloud Messaging registration id using a security token
+     *
      * @param regid
      * @param token
      * @throws DataAccessException
      */
-    public void updateFcmRegId(String regid, String token)throws DataAccessException; 
+    public void updateFcmRegId(String regid, String token) throws DataAccessException;
     
+    
+    /**
+     * Checks if a user has a friendship relationship with another user
+     * @param userId
+     * @param anotherUserId
+     * @return
+     * @throws DataAccessException 
+     */
+    public boolean isUserFriend(String userId, String anotherUserId)throws DataAccessException; 
+
 }
