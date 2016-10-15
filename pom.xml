@@ -1,82 +1,82 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<groupId>com.dareu.web</groupId>
-	<artifactId>DareU</artifactId>
-	<packaging>war</packaging>
-	<version>0.0.1-SNAPSHOT</version>
-	<name>DareU Maven Webapp</name>
-	<url>http://maven.apache.org</url>
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.dareu.web</groupId>
+    <artifactId>DareU</artifactId>
+    <packaging>war</packaging>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>DareU</name>
+    <url>http://maven.apache.org</url>
 
-	<properties>
-		<javax.version>6.0</javax.version>
-	</properties>
+    <properties>
+        <javax.version>6.0</javax.version>
+    </properties>
 
-	<dependencies>
-		<!-- https://mvnrepository.com/artifact/javax.transaction/javax.transaction-api -->
-		<dependency>
-			<groupId>javax.transaction</groupId>
-			<artifactId>javax.transaction-api</artifactId>
-			<version>1.2</version>
-			<scope>provided</scope>
-		</dependency>
+    <dependencies>
+        <!-- https://mvnrepository.com/artifact/javax.transaction/javax.transaction-api -->
+        <dependency>
+            <groupId>javax.transaction</groupId>
+            <artifactId>javax.transaction-api</artifactId>
+            <version>1.2</version>
+            <scope>provided</scope>
+        </dependency>
 
 
-		<!-- Syring to inject properties from file, jndi,... -->
-		<dependency>
-			<groupId>com.github.roar109</groupId>
-			<artifactId>syring</artifactId>
-			<version>1.0.1</version>
-		</dependency>
+        <!-- Syring to inject properties from file, jndi,... -->
+        <dependency>
+            <groupId>com.github.roar109</groupId>
+            <artifactId>syring</artifactId>
+            <version>1.0.1</version>
+        </dependency>
 
-		<!-- Junit dependency -->
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>3.8.1</version>
-			<scope>test</scope>
-		</dependency>
+        <!-- Junit dependency -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>3.8.1</version>
+            <scope>test</scope>
+        </dependency>
 
-		<!-- Java EE web api -->
-		<dependency>
-			<groupId>javax</groupId>
-			<artifactId>javaee-web-api</artifactId>
-			<version>${javax.version}</version>
-			<scope>provided</scope>
-		</dependency>
+        <!-- Java EE web api -->
+        <dependency>
+            <groupId>javax</groupId>
+            <artifactId>javaee-web-api</artifactId>
+            <version>${javax.version}</version>
+            <scope>provided</scope>
+        </dependency>
 
-		<!-- https://mvnrepository.com/artifact/javax.ws.rs/javax.ws.rs-api -->
-		<dependency>
-			<groupId>javax.ws.rs</groupId>
-			<artifactId>javax.ws.rs-api</artifactId>
-			<version>2.0</version>
-		</dependency>
+        <!-- https://mvnrepository.com/artifact/javax.ws.rs/javax.ws.rs-api -->
+        <dependency>
+            <groupId>javax.ws.rs</groupId>
+            <artifactId>javax.ws.rs-api</artifactId>
+            <version>2.0</version>
+        </dependency>
 
-		<!-- https://mvnrepository.com/artifact/org.jboss.spec/jboss-javaee-6.0 -->
-		<dependency>
-			<groupId>org.jboss.resteasy</groupId>
-			<artifactId>resteasy-jaxrs</artifactId>
-			<version>3.0.11.Final</version>
-			<scope>provided</scope>
-		</dependency>
+        <!-- https://mvnrepository.com/artifact/org.jboss.spec/jboss-javaee-6.0 -->
+        <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-jaxrs</artifactId>
+            <version>3.0.11.Final</version>
+            <scope>provided</scope>
+        </dependency>
 
-		<!-- Multipart support -->
-		<dependency>
-			<groupId>org.jboss.resteasy</groupId>
-			<artifactId>resteasy-multipart-provider</artifactId>
-			<version>3.0.11.Final</version>
-			<scope>provided</scope>
-		</dependency>
+        <!-- Multipart support -->
+        <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-multipart-provider</artifactId>
+            <version>3.0.11.Final</version>
+            <scope>provided</scope>
+        </dependency>
 
-		<!-- Firebase server sdk -->
-		<dependency>
-			<groupId>com.google.firebase</groupId>
-			<artifactId>firebase-server-sdk</artifactId>
-			<version>3.0.1</version>
-		</dependency>
+        <!-- Firebase server sdk -->
+        <dependency>
+            <groupId>com.google.firebase</groupId>
+            <artifactId>firebase-server-sdk</artifactId>
+            <version>3.0.1</version>
+        </dependency>
 
-		<!-- Swagger -->
-		<dependency>
+        <!-- Swagger -->
+        <dependency>
             <groupId>io.swagger</groupId>
             <artifactId>swagger-jaxrs</artifactId>
             <version>1.5.10</version>
@@ -88,18 +88,18 @@
             <version>1.5.10</version>
             <scope>compile</scope>
         </dependency>
-	</dependencies>
-	<build>
-		<finalName>dareu</finalName>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-war-plugin</artifactId>
-				<version>2.1.1</version>
-				<configuration>
-					<failOnMissingWebXml>false</failOnMissingWebXml>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
+    </dependencies>
+    <build>
+        <finalName>dareu</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>2.1.1</version>
+                <configuration>
+                    <failOnMissingWebXml>false</failOnMissingWebXml>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>

@@ -13,7 +13,11 @@
     <param-name>resteasy.scan</param-name>
     <param-value>true</param-value>
   </context-param>
-  
+  <context-param>
+      <param-name>resteasy.role.based.security</param-name>
+      <param-value>true</param-value>
+   </context-param>
+   
   <welcome-file-list>
       <welcome-file>index.jsp</welcome-file>
   </welcome-file-list>

@@ -1,5 +1,6 @@
 package com.dareu.web.resource;
 
+import com.dareu.web.core.annotation.AllowedUsers;
 import java.util.logging.Logger;
 
 import javax.inject.Inject;
@@ -12,6 +13,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.dareu.web.core.annotation.Secured;
+import com.dareu.web.core.security.SecurityRole;
 import com.dareu.web.core.service.AccountService;
 import com.dareu.web.core.service.DareService;
 import com.dareu.web.data.request.CreateCategoryRequest;
@@ -20,6 +22,7 @@ import com.dareu.web.exception.InternalApplicationException;
 import com.dareu.web.exception.InvalidRequestException;
 
 import io.swagger.annotations.Api;
+import javax.ws.rs.HeaderParam;
 
 @Api(value="dare")
 @Path("dare/")
@@ -39,9 +42,9 @@ public class DareResource {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@Secured
-	public Response createNewDare(CreateDareRequest request)throws InternalApplicationException, 
+	public Response createNewDare(CreateDareRequest request, @HeaderParam("Authorization")String auth)throws InternalApplicationException, 
 								  InvalidRequestException{
-		return dareService.createNewDare(request); 
+		return dareService.createNewDare(request, auth); 
 	}
 	
 	@Path("category/create")
