@@ -24,45 +24,37 @@ import com.dareu.web.exception.InvalidRequestException;
 import io.swagger.annotations.Api;
 import javax.ws.rs.HeaderParam;
 
-@Api(value="dare")
+@Api(value = "dare")
 @Path("dare/")
+@AllowedUsers(securityRoles = {SecurityRole.SPONSOR, SecurityRole.USER, SecurityRole.ADMIN})
 public class DareResource {
-	
-	@Inject
-	private DareService dareService; 
-	
-	@Inject
-	private AccountService accountService;
-	
-	@Inject
-	private Logger log; 
-	
-	@Path("create")
-	@POST
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	@Secured
-	public Response createNewDare(CreateDareRequest request, @HeaderParam("Authorization")String auth)throws InternalApplicationException, 
-								  InvalidRequestException{
-		return dareService.createNewDare(request, auth); 
-	}
-	
-	@Path("category/create")
-	@POST
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	@Secured
-	public Response createNewCategory(CreateCategoryRequest request)
-								   throws InvalidRequestException, 
-								   InternalApplicationException{
-		return dareService.createNewCategory(request); 
-	}
-	
-	@Path("category")
-	@GET
-	@Produces(MediaType.APPLICATION_JSON)
-	@Secured
-	public Response getCategories()throws InternalApplicationException{
-		return dareService.getCategories(); 
-	}
+
+    @Inject
+    private DareService dareService;
+
+    @Inject
+    private AccountService accountService;
+
+    @Inject
+    private Logger log;
+
+    @Path("create")
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Secured
+    public Response createNewDare(CreateDareRequest request, @HeaderParam("Authorization") String auth) throws InternalApplicationException,
+            InvalidRequestException {
+        return dareService.createNewDare(request, auth);
+    }
+
+    
+
+    @Path("category")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Secured
+    public Response getCategories() throws InternalApplicationException {
+        return dareService.getCategories();
+    }
 }

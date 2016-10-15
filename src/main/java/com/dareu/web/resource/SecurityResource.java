@@ -13,6 +13,7 @@ import com.dareu.web.data.request.SigninRequest;
 import com.dareu.web.exception.AuthenticationException;
 
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 
 @Api(value="security")
 @Path("security/")
@@ -29,7 +30,20 @@ public class SecurityResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @ApiOperation(value="authenticate", consumes = "application/json", httpMethod = "POST", produces = "application/json", response = SigninRequest.class)
     public Response signin(SigninRequest request)throws AuthenticationException{
         return accountService.authenticate(request);  
+    }
+    
+    /**
+     * Login using a Facebook account
+     * @return 
+     */
+    @Path("loginFacebook")
+    @Produces(MediaType.APPLICATION_JSON)
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response loginFacebook(){
+        return null; 
     }
 }
