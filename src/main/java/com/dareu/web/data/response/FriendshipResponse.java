@@ -5,8 +5,8 @@ public class FriendshipResponse {
 	private String id;
 	private String name;
 	
-	private Integer dareCount;
-	private Integer videoResponsesCount;
+	private Long dareCount;
+	private Long videoResponsesCount;
 	
 	public FriendshipResponse(){}
 	public FriendshipResponse(final String id, final String name){
@@ -26,16 +26,16 @@ public class FriendshipResponse {
 	public void setName(String name) {
 		this.name = name;
 	}
-	public Integer getDareCount() {
+	public Long getDareCount() {
 		return dareCount;
 	}
-	public void setDareCount(Integer dareCount) {
+	public void setDareCount(Long dareCount) {
 		this.dareCount = dareCount;
 	}
-	public Integer getVideoResponsesCount() {
+	public Long getVideoResponsesCount() {
 		return videoResponsesCount;
 	}
-	public void setVideoResponsesCount(Integer videoResponsesCount) {
+	public void setVideoResponsesCount(Long videoResponsesCount) {
 		this.videoResponsesCount = videoResponsesCount;
 	}
 	

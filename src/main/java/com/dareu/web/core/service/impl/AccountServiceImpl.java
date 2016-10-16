@@ -17,6 +17,7 @@ import com.dareu.web.core.service.FileService;
 import com.dareu.web.core.service.FileService.FileType;
 import com.dareu.web.data.entity.DareUser;
 import com.dareu.web.data.entity.Friendship;
+import com.dareu.web.data.repository.DareUserDareRepository;
 import com.dareu.web.data.repository.DareUserRepository;
 import com.dareu.web.data.repository.FriendshipRepository;
 import com.dareu.web.data.request.FriendshipRequest;
@@ -50,6 +51,9 @@ public class AccountServiceImpl implements AccountService{
     
     @Inject
     private FriendshipRepository friendshipRepository; 
+    
+    @Inject
+    private DareUserDareRepository dareUserDareRepository;
     
     @Inject
     private FileService fileService; 
@@ -168,17 +172,19 @@ public class AccountServiceImpl implements AccountService{
 			throws AuthenticationException, InternalApplicationException {
 		
 		List<FriendshipResponse> friends = null;
-		//validate header
 		//first get the user if exist
 		try{
 			final DareUser currentUser = dareUserRepository.findUserByToken(authorizationHeader);
 			if(currentUser == null){
 				throw new InternalApplicationException("User not found");
 			}
-			System.out.println(currentUser.getEmail());
-			System.out.println(currentUser.getId());
 			
 			friends = friendshipRepository.findFriends(currentUser.getId(), Boolean.TRUE);
+			
+			//Aggregate the dare counts 
+			for(FriendshipResponse fReq : friends){
+				fReq.setDareCount(dareUserDareRepository.countDaresByChallenger(fReq.getId()));
+			}
 		}catch(Exception e){
 			throw new InternalApplicationException(e.getMessage(), e);
 		}

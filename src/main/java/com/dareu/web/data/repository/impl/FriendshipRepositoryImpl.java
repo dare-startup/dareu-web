@@ -49,11 +49,24 @@ public class FriendshipRepositoryImpl extends AbstractRepository<Friendship> imp
 	}
 
 	public List<FriendshipResponse> findFriends(final String id, final boolean aceptedOnly) throws DataAccessException{
-		//TODO fetch the requestedUser too... do some magic here :D
-		StringBuilder sbHql = new StringBuilder("SELECT new com.dareu.web.data.response.FriendshipResponse(f.user.id, f.user.name) ");
-		sbHql.append("FROM Friendship f WHERE (f.user.id = :userId or f.requestedUser.id = :userId) ");
-		sbHql.append("and f.accepted = :acepted ");
-		final Query q = em.createQuery(sbHql.toString())
+		//TODO Found a better way of fetching all together
+		final StringBuilder userHql = new StringBuilder("SELECT new com.dareu.web.data.response.FriendshipResponse(f.user.id, f.user.name) ");
+		userHql.append("FROM Friendship f WHERE f.requestedUser.id = :userId ");
+		userHql.append("and f.accepted = :acepted ");
+		
+		final StringBuilder reqUserHql = new StringBuilder("SELECT new com.dareu.web.data.response.FriendshipResponse(f.requestedUser.id, f.requestedUser.name) ");
+		reqUserHql.append("FROM Friendship f WHERE f.user.id = :userId ");
+		reqUserHql.append("and f.accepted = :acepted ");
+		
+		final List<FriendshipResponse> userList = findFriends(id, aceptedOnly, userHql.toString());
+		final List<FriendshipResponse> userReqList = findFriends(id, aceptedOnly, reqUserHql.toString());
+		userList.addAll(userReqList);
+		
+		return userList;
+	}
+	
+	private List<FriendshipResponse> findFriends(final String id, final boolean aceptedOnly, final String hql){
+		final Query q = em.createQuery(hql)
 				.setParameter("userId", id)
 				.setParameter("acepted", aceptedOnly);
 		return q.getResultList();
