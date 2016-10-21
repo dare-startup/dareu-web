@@ -1,5 +1,6 @@
 package com.dareu.web.resource;
 
+import com.dareu.web.core.annotation.AllowedUsers;
 import io.swagger.annotations.Api;
 
 import io.swagger.annotations.ApiOperation;
@@ -7,6 +8,7 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
 import com.dareu.web.core.annotation.Secured;
+import com.dareu.web.core.security.SecurityRole;
 import com.dareu.web.core.service.AccountService;
 import com.dareu.web.core.service.MultipartService;
 import com.dareu.web.data.request.FriendshipRequest;
@@ -30,6 +32,7 @@ import javax.ws.rs.core.Response;
 @Path("account/")
 @Api(basePath = "account", description = "Process requests regarding to Account operations", value="/account", 
 			consumes = "application/json") //swagger documentation
+@AllowedUsers(securityRoles = { SecurityRole.SPONSOR, SecurityRole.ADMIN, SecurityRole.USER })
 public class AccountResource {
 
 
@@ -53,6 +56,7 @@ public class AccountResource {
     			nickname = "me")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "The request has been processed successfully"), 
     						@ApiResponse(code = 401, message = "Unauthorized to process request")})
+    @Secured
     public Response me(){
         return null; 
     }
@@ -67,6 +71,7 @@ public class AccountResource {
     @Produces(MediaType.APPLICATION_JSON)
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
+    @Secured
     public Response requestFriendship(FriendshipRequest request) throws InvalidRequestException, InternalApplicationException{
         return accountService.requestFriendship(request); 
     }
@@ -81,6 +86,7 @@ public class AccountResource {
     @GET
     @Path("findFriends")
     @Produces(MediaType.APPLICATION_JSON)
+    @Secured
     public Response findFriends(@HeaderParam("Authorization") String authorization) throws InternalApplicationException, AuthenticationException{
         return accountService.findFriends(authorization); 
     }
@@ -100,6 +106,7 @@ public class AccountResource {
     @Path("responseFriendship")
     @POST
     @Produces(MediaType.APPLICATION_JSON)
+    @Secured
     public Response responseFriendship(FriendshipRequestResponse response)throws InvalidRequestException, InternalApplicationException{
     	return accountService.friendshipResponse(response); 
     }
