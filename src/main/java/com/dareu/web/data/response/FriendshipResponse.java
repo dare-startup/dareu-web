@@ -13,6 +13,11 @@ public class FriendshipResponse {
 		this.id = id;
 		this.name = name;
 	}
+	public FriendshipResponse(final String id, final String name, Long dareCount){
+		this.id = id;
+		this.name = name;
+		this.dareCount = dareCount;
+	}
 	
 	public String getId() {
 		return id;

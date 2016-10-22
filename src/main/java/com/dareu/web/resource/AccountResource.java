@@ -87,8 +87,9 @@ public class AccountResource {
     @Path("findFriends")
     @Produces(MediaType.APPLICATION_JSON)
     @Secured
-    public Response findFriends(@HeaderParam("Authorization") String authorization) throws InternalApplicationException, AuthenticationException{
-        return accountService.findFriends(authorization); 
+    public Response findFriends(@HeaderParam("Authorization") String authorization,
+    		@QueryParam("name") String name) throws InternalApplicationException, AuthenticationException{
+        return accountService.findFriends(authorization, name); 
     }
     
     /**

@@ -168,22 +168,21 @@ public class AccountServiceImpl implements AccountService{
 	}
 
 	@Override
-	public Response findFriends(String authorizationHeader)
+	public Response findFriends(String authorizationHeader, final String name)
 			throws AuthenticationException, InternalApplicationException {
 		
 		List<FriendshipResponse> friends = null;
-		//first get the user if exist
+		//First get the user if exist
 		try{
 			final DareUser currentUser = dareUserRepository.findUserByToken(authorizationHeader);
 			if(currentUser == null){
 				throw new InternalApplicationException("User not found");
 			}
 			
-			friends = friendshipRepository.findFriends(currentUser.getId(), Boolean.TRUE);
-			
-			//Aggregate the dare counts 
-			for(FriendshipResponse fReq : friends){
-				fReq.setDareCount(dareUserDareRepository.countDaresByChallenger(fReq.getId()));
+			if(name != null){
+				friends = friendshipRepository.findFriendsByName(currentUser.getId(), name);
+			}else{
+				friends = friendshipRepository.findFriends(currentUser.getId());
 			}
 		}catch(Exception e){
 			throw new InternalApplicationException(e.getMessage(), e);

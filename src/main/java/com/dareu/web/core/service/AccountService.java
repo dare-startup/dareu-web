@@ -48,13 +48,14 @@ public interface AccountService {
     public Response isNicknameAvailable(String nickname)throws InternalApplicationException; 
     
     /**
-     * Find friends using a user authentication token
+     * Find friends using a user authentication token and/or friend name
      * @param authorizationHeader
+     * @param name part of the friend name
      * @return
      * @throws AuthenticationException
      * @throws InternalApplicationException
      */
-    public Response findFriends(String authorizationHeader)throws AuthenticationException, InternalApplicationException;
+    public Response findFriends(String authorizationHeader, final String name)throws AuthenticationException, InternalApplicationException;
     
     /**
      * Request a friendship with another user

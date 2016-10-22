@@ -98,3 +98,17 @@ create table dare_response_response_comment(
     foreign key(dare_response_id)references dare_response(id), 
     foreign key(response_comment_id)references response_comment(id)); 
     
+CREATE or REPLACE VIEW v_friendship AS
+	select f.user_id, f.friend_name, f.friend_id, IFNULL(dcount.count,0) 'dare_count'  
+	from (
+	select distinct du.id 'friend_id', du.name 'friend_name', f.user_id  from 
+		friendship f inner join dareu_user du on du.id = f.requested_user_id
+		where f.accepted = 1
+		union
+		select distinct du.id 'friend_id', du.name 'friend_name', f.requested_user_id 'user_id' from 
+		friendship f inner join dareu_user du on du.id = f.user_id
+		where f.accepted = 1
+	) f 
+	left join (
+	select count(*) 'count', challenger_id from dareu_user_dare group by challenger_id) dcount
+	on f.friend_id = dcount.challenger_id;

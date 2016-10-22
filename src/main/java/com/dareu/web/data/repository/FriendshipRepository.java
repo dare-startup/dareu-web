@@ -28,11 +28,16 @@ public interface FriendshipRepository extends BaseRepository<Friendship>{
     /**
      * Get all the friends of a given user
      * @param id
-     * @param aceptedOnly
      * @throws DataAccessException
      */
-    public List<FriendshipResponse> findFriends(final String id, final boolean aceptedOnly) throws DataAccessException;
+    public List<FriendshipResponse> findFriends(final String id) throws DataAccessException;
     
-    
+    /**
+     * Get all the friends of a given user and a given partial name
+     * @param id
+     * @param name friends name
+     * @throws DataAccessException
+     */
+    public List<FriendshipResponse> findFriendsByName(final String id, final String name) throws DataAccessException;
     
 }
