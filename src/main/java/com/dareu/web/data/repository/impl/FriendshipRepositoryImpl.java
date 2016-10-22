@@ -49,7 +49,7 @@ public class FriendshipRepositoryImpl extends AbstractRepository<Friendship> imp
 	}
 
 	public List<FriendshipResponse> findFriends(final String id) throws DataAccessException{
-		final StringBuilder userHql = new StringBuilder("SELECT new com.dareu.web.data.response.FriendshipResponse(f.friendId, f.friendName, f.dareCount) ");
+		final StringBuilder userHql = new StringBuilder("SELECT new com.dareu.web.data.response.FriendshipResponse(f.friendId, f.friendName, f.dareCount, f.videoCount) ");
 		userHql.append("FROM VFriendship f WHERE f.id = :id ");
 		final Query query = em.createQuery(userHql.toString());
 		query.setParameter("id", id);
@@ -57,11 +57,11 @@ public class FriendshipRepositoryImpl extends AbstractRepository<Friendship> imp
 	}
 	
 	public List<FriendshipResponse> findFriendsByName(final String id, final String name) throws DataAccessException{
-		final StringBuilder userHql = new StringBuilder("SELECT new com.dareu.web.data.response.FriendshipResponse(f.friendId, f.friendName, f.dareCount) ");
+		final StringBuilder userHql = new StringBuilder("SELECT new com.dareu.web.data.response.FriendshipResponse(f.friendId, f.friendName, f.dareCount, f.videoCount) ");
 		userHql.append("FROM VFriendship f WHERE f.id = :id and  f.friendName like :name ");
 		final Query query = em.createQuery(userHql.toString());
 		query.setParameter("id", id);
-		query.setParameter("name", name+"%");
+		query.setParameter("name", "%"+name+"%");
 		return query.getResultList();
 	}
 }

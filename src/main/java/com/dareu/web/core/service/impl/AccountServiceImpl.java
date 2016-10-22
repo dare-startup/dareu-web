@@ -39,6 +39,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.ws.rs.core.Response;
 
+import org.apache.commons.lang3.StringUtils;
+
 /**
  *
  * @author MACARENA
@@ -51,9 +53,6 @@ public class AccountServiceImpl implements AccountService{
     
     @Inject
     private FriendshipRepository friendshipRepository; 
-    
-    @Inject
-    private DareUserDareRepository dareUserDareRepository;
     
     @Inject
     private FileService fileService; 
@@ -175,11 +174,12 @@ public class AccountServiceImpl implements AccountService{
 		//First get the user if exist
 		try{
 			final DareUser currentUser = dareUserRepository.findUserByToken(authorizationHeader);
+			
 			if(currentUser == null){
 				throw new InternalApplicationException("User not found");
 			}
 			
-			if(name != null){
+			if(StringUtils.isNoneBlank(name)){
 				friends = friendshipRepository.findFriendsByName(currentUser.getId(), name);
 			}else{
 				friends = friendshipRepository.findFriends(currentUser.getId());

@@ -13,10 +13,11 @@ public class FriendshipResponse {
 		this.id = id;
 		this.name = name;
 	}
-	public FriendshipResponse(final String id, final String name, Long dareCount){
+	public FriendshipResponse(final String id, final String name, final Long dareCount, final Long videoCount){
 		this.id = id;
 		this.name = name;
 		this.dareCount = dareCount;
+		this.videoResponsesCount = videoCount;
 	}
 	
 	public String getId() {

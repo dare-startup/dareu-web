@@ -99,7 +99,7 @@ create table dare_response_response_comment(
     foreign key(response_comment_id)references response_comment(id)); 
     
 CREATE or REPLACE VIEW v_friendship AS
-	select f.user_id, f.friend_name, f.friend_id, IFNULL(dcount.count,0) 'dare_count'  
+	select f.user_id, f.friend_name, f.friend_id, IFNULL(dcount.count,0) 'dare_count' , IFNULL(vcount.count, 0) 'video_count'
 	from (
 	select distinct du.id 'friend_id', du.name 'friend_name', f.user_id  from 
 		friendship f inner join dareu_user du on du.id = f.requested_user_id
@@ -111,4 +111,8 @@ CREATE or REPLACE VIEW v_friendship AS
 	) f 
 	left join (
 	select count(*) 'count', challenger_id from dareu_user_dare group by challenger_id) dcount
-	on f.friend_id = dcount.challenger_id;
+	on f.friend_id = dcount.challenger_id
+	left join (
+	select user_id, count(*) 'count' from dare_dare_response group by user_id
+	) vcount
+	on vcount.user_id = f.friend_id;
