@@ -12,10 +12,12 @@ import com.github.roar109.syring.annotation.ApplicationProperty.Types;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.logging.Logger;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -26,46 +28,59 @@ import javax.inject.Inject;
  */
 @Stateless
 public class FileServiceImpl implements FileService {
-	
-	@Inject
-	@ApplicationProperty(name = "profile.images.directory", type = Types.SYSTEM)
-	private String profileImagesDirectory; 
-	
-	@Inject
-	@ApplicationProperty(name = "dare.videos.directory", type = Types.SYSTEM)
-	private String dareVideosDirectory; 
 
-    public FileServiceImpl(){
-        
+    @Inject
+    @ApplicationProperty(name = "profile.images.directory", type = Types.SYSTEM)
+    private String profileImagesDirectory;
+
+    @Inject
+    @ApplicationProperty(name = "dare.videos.directory", type = Types.SYSTEM)
+    private String dareVideosDirectory;
+    
+    @Inject
+    private Logger log; 
+
+    public FileServiceImpl() {
+
     }
 
-	@Override
-	public String saveFile(InputStream stream, FileType fileType, String fileName) throws IOException{
-		//create output directory name 
-		String outputDirectory = "";
-		if(fileType == FileType.PROFILE_IMAGE)
-			outputDirectory = profileImagesDirectory + fileName; 
-		else if(fileType == FileType.DARE_VIDEO)
-			outputDirectory = dareVideosDirectory + fileName; 
-		
-		//create a new file 
-		DataOutputStream out = new DataOutputStream(new FileOutputStream(new File(outputDirectory))); 
-		DataInputStream in = new DataInputStream(stream); 
-		//read the input stream
-		byte[] buff = new byte[1024];
-		int i = 0; 
-		while((i = in.read(buff)) != -1)
-			out.write(buff);
-		
-		//close stream
-		out.close();
-		return outputDirectory;
-	}
+    @Override
+    public String saveFile(InputStream stream, FileType fileType, String fileName) throws IOException {
+        //create output directory name 
+        String outputDirectory = "";
+        if (fileType == FileType.PROFILE_IMAGE) {
+            outputDirectory = profileImagesDirectory + fileName;
+        } else if (fileType == FileType.DARE_VIDEO) {
+            outputDirectory = dareVideosDirectory + fileName;
+        }
 
-	@Override
-	public InputStream getFile(String fileName, FileType fileType) throws FileNotFoundException, IOException{
-		// 
-		return null;
-	}
-    
+        //create a new file 
+        DataOutputStream out = new DataOutputStream(new FileOutputStream(new File(outputDirectory)));
+        DataInputStream in = new DataInputStream(stream);
+        //read the input stream
+        byte[] buff = new byte[1024];
+        int i = 0;
+        while ((i = in.read(buff)) != -1) {
+            out.write(buff);
+        }
+
+        //close stream
+        out.close();
+        return outputDirectory;
+    }
+
+    @Override
+    public InputStream getFile(String fileName, FileType fileType) throws FileNotFoundException, IOException {
+        switch(fileType){
+            case DARE_VIDEO: 
+                log.info("Looking for file " + dareVideosDirectory + fileName); 
+                return new FileInputStream(new File(dareVideosDirectory + fileName));
+            case PROFILE_IMAGE: 
+                log.info("Looking for file " + profileImagesDirectory + fileName); 
+                return new FileInputStream(new File(profileImagesDirectory + fileName)); 
+            default: 
+                return null; 
+        }
+    }
+
 }

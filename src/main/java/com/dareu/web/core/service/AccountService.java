@@ -55,7 +55,7 @@ public interface AccountService {
      * @throws AuthenticationException
      * @throws InternalApplicationException
      */
-    public Response findFriends(String authorizationHeader, final String name)throws AuthenticationException, InternalApplicationException;
+    public Response findFriends(final String name)throws AuthenticationException, InternalApplicationException;
     
     /**
      * Request a friendship with another user
@@ -87,4 +87,6 @@ public interface AccountService {
      * @throws InternalApplicationException
      */
     public Response updateRegId(String regId, String auth)throws InvalidRequestException, InternalApplicationException;
+
+    public Response getAccountImage(String userId) throws InvalidRequestException, InternalApplicationException;
 }

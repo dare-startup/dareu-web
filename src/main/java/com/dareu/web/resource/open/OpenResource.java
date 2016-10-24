@@ -75,4 +75,5 @@ public class OpenResource {
     	SignupRequest request = multipartService.getSignupRequest(input); 
         return  accountService.registerDareUser(request); 
     }
+    
 }

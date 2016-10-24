@@ -4,7 +4,8 @@ public class FriendshipResponse {
 
 	private String id;
 	private String name;
-	
+	private String imageUrl; 
+                
 	private Long dareCount;
 	private Long videoResponsesCount;
 	
@@ -44,6 +45,14 @@ public class FriendshipResponse {
 	public void setVideoResponsesCount(Long videoResponsesCount) {
 		this.videoResponsesCount = videoResponsesCount;
 	}
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
 	
 	
 }

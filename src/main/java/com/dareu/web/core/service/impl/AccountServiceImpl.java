@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import com.dareu.web.core.DareUtils;
+import com.dareu.web.core.security.DareuPrincipal;
 import com.dareu.web.core.security.SecurityRole;
 import com.dareu.web.core.service.AccountService;
 import com.dareu.web.core.service.FileService;
@@ -28,14 +29,21 @@ import com.dareu.web.data.response.AuthenticationResponse;
 import com.dareu.web.data.response.EntityRegistrationResponse;
 import com.dareu.web.data.response.EntityRegistrationResponse.RegistrationType;
 import com.dareu.web.data.response.FriendshipResponse;
+import com.dareu.web.data.response.ListResponse;
 import com.dareu.web.data.response.ResourceAvailableResponse;
 import com.dareu.web.exception.AuthenticationException;
 import com.dareu.web.exception.DataAccessException;
 import com.dareu.web.exception.EntityRegistrationException;
 import com.dareu.web.exception.InternalApplicationException;
 import com.dareu.web.exception.InvalidRequestException;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 
 import javax.ejb.Stateless;
+import javax.imageio.ImageIO;
 import javax.inject.Inject;
 import javax.ws.rs.core.Response;
 
@@ -59,6 +67,9 @@ public class AccountServiceImpl implements AccountService{
     
     @Inject
     private DareUtils utils; 
+    
+    @Inject
+    private DareuPrincipal principal; 
     
     @Inject
     private Logger log; 
@@ -96,6 +107,7 @@ public class AccountServiceImpl implements AccountService{
 		//save image 
 		String path = ""; 
 		try{
+                    log.info("Saving profile image");
 			fileService.saveFile(request.getImage(), FileType.PROFILE_IMAGE, user.getId() + ".jpg");
 			user.setImagePath(user.getId() + ".jpg");
 		}catch(IOException ex){
@@ -110,12 +122,14 @@ public class AccountServiceImpl implements AccountService{
 			throw new EntityRegistrationException("Could not register dare user, try again");
 		}
 		
+                log.info("Generating new security token"); 
 		//generate a new token for this user 
 		String token = utils.getNextSessionToken();
 		
 		//save the token here
 		user.setSecurityToken(token);
 		
+                log.info("Updating security token"); 
 		//update token
 		dareUserRepository.updateSecurityToken(token, user.getId());
 		
@@ -167,13 +181,13 @@ public class AccountServiceImpl implements AccountService{
 	}
 
 	@Override
-	public Response findFriends(String authorizationHeader, final String name)
+	public Response findFriends(final String name)
 			throws AuthenticationException, InternalApplicationException {
-		
+		ListResponse<FriendshipResponse> response = new ListResponse<>(); 
 		List<FriendshipResponse> friends = null;
 		//First get the user if exist
 		try{
-			final DareUser currentUser = dareUserRepository.findUserByToken(authorizationHeader);
+			final DareUser currentUser = dareUserRepository.findUserByToken(principal.getId());
 			
 			if(currentUser == null){
 				throw new InternalApplicationException("User not found");
@@ -184,10 +198,18 @@ public class AccountServiceImpl implements AccountService{
 			}else{
 				friends = friendshipRepository.findFriends(currentUser.getId());
 			}
+                        //set image here
+                        for(FriendshipResponse r : friends){
+                            r.setImageUrl(name);
+                        }
+                        response.setDate(DareUtils.DATE_FORMAT.format(new Date()));
+                        response.setObjectType("friendship");
+                        response.setList(friends);
+                        return Response.ok(response).build(); 
 		}catch(Exception e){
 			throw new InternalApplicationException(e.getMessage(), e);
 		}
-		return Response.ok(friends).build(); 
+		
 	}
 
 	@Override
@@ -286,4 +308,26 @@ public class AccountServiceImpl implements AccountService{
 			throw new InternalApplicationException("Could not update FCM: " + ex.getMessage()); 
 		}
 	}
+
+    @Override
+    public Response getAccountImage(String userId) throws InvalidRequestException, InternalApplicationException {
+        if(userId == null || userId.isEmpty())
+            throw new InvalidRequestException("No user id provided");
+        //get file 
+        InputStream stream = null; 
+        try{
+            stream= fileService.getFile(userId + ".jpg", FileType.PROFILE_IMAGE);
+            BufferedImage image = ImageIO.read(stream); 
+            ByteArrayOutputStream out = new ByteArrayOutputStream(); 
+            
+            ImageIO.write(image, "jpg", out); 
+            
+            return Response.ok(out.toByteArray())
+                    .build(); 
+        }catch(FileNotFoundException ex){
+            throw new InvalidRequestException("The provided id is not valid"); 
+        }catch(IOException ex){
+            throw new InternalApplicationException("Could not get account profile image: " + ex.getMessage()); 
+        }
+    }
 }

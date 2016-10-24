@@ -7,14 +7,14 @@ create table dareu_user(
     email varchar(100)not null, 
     username varchar(100)not null, 
     password varbinary(255)not null, 
-    user_since_date datetime not null,
+    user_since_date varchar(10) not null,
 	security_token varchar(40),
     gcm_reg_id varchar(200), 
     coins int not null default 1, 
 	role int not null,
 	image_path varchar(500),
     uscore int not null default 1,
-	birthday varchar(8),
+	birthday varchar(10),
     verified tinyint default 0);
     
 create table category(
