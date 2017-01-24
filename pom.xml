@@ -20,6 +20,7 @@
             <version>1.2</version>
             <scope>provided</scope>
         </dependency>
+        
 
 
         <!-- Syring to inject properties from file, jndi,... -->
