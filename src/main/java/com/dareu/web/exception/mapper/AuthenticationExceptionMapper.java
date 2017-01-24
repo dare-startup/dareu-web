@@ -6,9 +6,9 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
-import com.dareu.web.core.DareUtils;
-import com.dareu.web.data.response.AuthenticationResponse;
-import com.dareu.web.exception.AuthenticationException;
+import com.dareu.web.data.DareUtils;
+import com.dareu.web.dto.response.AuthenticationResponse;
+import com.dareu.web.data.exception.AuthenticationException;
 
 @Provider
 public class AuthenticationExceptionMapper implements ExceptionMapper<AuthenticationException>{

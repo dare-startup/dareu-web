@@ -6,7 +6,7 @@
 package com.dareu.web.data.repository;
 
 import com.dareu.web.data.entity.BaseEntity;
-import com.dareu.web.exception.DataAccessException;
+import com.dareu.web.data.exception.DataAccessException;
 
 import java.util.List;
 

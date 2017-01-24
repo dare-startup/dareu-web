@@ -9,21 +9,23 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.ws.rs.core.Response;
 
-import com.dareu.web.core.DareUtils;
+import com.dareu.web.data.DareUtils;
 import com.dareu.web.core.service.DareService;
 import com.dareu.web.data.entity.Category;
 import com.dareu.web.data.entity.Dare;
 import com.dareu.web.data.entity.DareUser;
-import com.dareu.web.data.entity.Friendship;
 import com.dareu.web.data.repository.CategoryRepository;
 import com.dareu.web.data.repository.DareRepository;
 import com.dareu.web.data.repository.DareUserRepository;
-import com.dareu.web.data.request.CreateCategoryRequest;
-import com.dareu.web.data.request.CreateDareRequest;
-import com.dareu.web.data.response.EntityRegistrationResponse;
-import com.dareu.web.data.response.EntityRegistrationResponse.RegistrationType;
-import com.dareu.web.data.response.ListResponse;
-import com.dareu.web.exception.DataAccessException;
+import com.dareu.web.dto.request.CreateCategoryRequest;
+import com.dareu.web.dto.request.CreateDareRequest;
+import com.dareu.web.dto.response.EntityRegistrationResponse;
+import com.dareu.web.dto.response.EntityRegistrationResponse.RegistrationType;
+import com.dareu.web.data.exception.DataAccessException;
+import com.dareu.web.core.service.DareuAssembler;
+import com.dareu.web.dto.response.entity.CategoryDescription;
+import com.dareu.web.dto.response.entity.DareDescription;
+import com.dareu.web.dto.response.entity.Page;
 import com.dareu.web.exception.InternalApplicationException;
 import com.dareu.web.exception.InvalidRequestException;
 
@@ -38,6 +40,9 @@ public class DareServiceImpl implements DareService {
 
     @Inject
     private DareUserRepository dareUserRepository;
+    
+    @Inject
+    private DareuAssembler assembler; 
 
     @Inject
     private Logger log;
@@ -136,16 +141,34 @@ public class DareServiceImpl implements DareService {
         }
     }
 
-    public Response getCategories() throws InternalApplicationException {
+    @Override
+    public Response getCategories(int pageNumber) throws InternalApplicationException {
         //get all categories 
         try {
-            List<Category> categories = categoryRepository.list();
-            return Response
-                    .ok(new ListResponse<Category>(categories,
-                                    DareUtils.DATE_FORMAT.format(new Date()), "Category"))
+            if(pageNumber < 1)
+                pageNumber = 1;
+            List<Category> categories = categoryRepository.findCategoriesByPage(pageNumber);
+            
+            Page<CategoryDescription> page = assembler.assembleCategories(categories, pageNumber);
+            return Response.ok(page)
                     .build();
         } catch (DataAccessException ex) {
             throw new InternalApplicationException("Could not get categories: " + ex.getMessage());
+        }
+    }
+
+    @Override
+    public Response findUnapprovedDares(int pageNumber) throws InternalApplicationException {
+        if(pageNumber < 1)
+            pageNumber = 1; 
+        try{
+            List<Dare> dares = dareRepository.findUnapprovedDares(pageNumber); 
+            Page<DareDescription> dto = assembler.assembleDareDescriptions(dares, pageNumber); 
+            
+            return Response.ok(dto)
+                    .build(); 
+        }catch(DataAccessException ex){
+            throw new InternalApplicationException("Could not get dares: " + ex.getMessage(), ex); 
         }
     }
 

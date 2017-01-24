@@ -8,8 +8,8 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
-import com.dareu.web.core.DareUtils;
-import com.dareu.web.data.response.ApplicationErrorResponse;
+import com.dareu.web.data.DareUtils;
+import com.dareu.web.dto.response.ApplicationErrorResponse;
 import com.dareu.web.exception.ErrorCode;
 import com.dareu.web.exception.InternalApplicationException;
 

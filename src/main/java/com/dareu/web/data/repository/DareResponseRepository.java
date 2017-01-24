@@ -6,11 +6,12 @@
 package com.dareu.web.data.repository;
 
 import com.dareu.web.data.entity.DareResponse;
+import com.dareu.web.data.exception.DataAccessException;
 
 /**
  *
  * @author MACARENA
  */
 public interface DareResponseRepository extends BaseRepository<DareResponse>{
-    
+    public int responsesCount(String userId)throws DataAccessException; 
 }

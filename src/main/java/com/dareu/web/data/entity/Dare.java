@@ -45,6 +45,14 @@ public class Dare extends BaseEntity{
     @Column(name = "creation_date")
     @Temporal(TemporalType.TIMESTAMP)
     private Date creationDate;
+    
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "challenged_user_id")
+    private DareUser challengedUser; 
+    
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "challenger_user_id")
+    private DareUser challengerUser; 
 
     public Dare(String name, String description, String category,
                 int estimatedDareTime, boolean approved,
@@ -116,4 +124,22 @@ public class Dare extends BaseEntity{
 	public void setCategory(Category category) {
 		this.category = category;
 	}
+
+    public DareUser getChallengedUser() {
+        return challengedUser;
+    }
+
+    public void setChallengedUser(DareUser challengedUser) {
+        this.challengedUser = challengedUser;
+    }
+
+    public DareUser getChallengerUser() {
+        return challengerUser;
+    }
+
+    public void setChallengerUser(DareUser challengerUser) {
+        this.challengerUser = challengerUser;
+    }
+        
+        
 }

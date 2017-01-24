@@ -6,7 +6,7 @@
 package com.dareu.web.core.service.impl;
 
 import com.dareu.web.core.service.MultipartService;
-import com.dareu.web.data.request.SignupRequest;
+import com.dareu.web.dto.request.SignupRequest;
 import com.dareu.web.exception.InvalidRequestException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,7 +29,6 @@ public class MultipartServiceImpl implements MultipartService{
         Map<String, List<InputPart>> map = input.getFormDataMap(); 
         String name = map.get("name") .get(0).getBodyAsString(); 
         String email = map.get("email") .get(0).getBodyAsString();
-        String username = map.get("username") .get(0).getBodyAsString();
         String password = map.get("password") .get(0).getBodyAsString();
         String birthday = map.get("birthday") .get(0).getBodyAsString();
         
@@ -45,14 +44,12 @@ public class MultipartServiceImpl implements MultipartService{
             throw new InvalidRequestException("No name field provided"); 
         if(email == null)
             throw new InvalidRequestException("No email field provided"); 
-        if(username == null)
-            throw new InvalidRequestException("No username field provided"); 
         if(password == null)
             throw new InvalidRequestException("No password field provided"); 
         if(birthday == null)
             throw new InvalidRequestException("No birthday field provided"); 
         if(file == null)
             throw new InvalidRequestException("No file field provided"); 
-        return new SignupRequest(name, email, username, password, file, birthday); 
+        return new SignupRequest(name, email, password, birthday); 
     }
 }

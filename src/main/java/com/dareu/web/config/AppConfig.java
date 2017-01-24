@@ -1,6 +1,9 @@
 package com.dareu.web.config;
 
+import com.dareu.web.dto.security.PasswordEncryptor;
+import com.dareu.web.dto.security.impl.PasswordEncryptorImpl;
 import io.swagger.jaxrs.config.BeanConfig;
+import javax.enterprise.inject.Produces;
 
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
@@ -18,4 +21,9 @@ public class AppConfig extends Application{
 		config.setResourcePackage("com.dareu.web.resource");
 		config.setScan(true); 
 	}
+        
+        @Produces
+        public PasswordEncryptor encryptor(){
+            return new PasswordEncryptorImpl(); 
+        }
 }

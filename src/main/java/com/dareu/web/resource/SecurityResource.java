@@ -9,8 +9,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.dareu.web.core.service.AccountService;
-import com.dareu.web.data.request.SigninRequest;
-import com.dareu.web.exception.AuthenticationException;
+import com.dareu.web.dto.request.SigninRequest;
+import com.dareu.web.data.exception.AuthenticationException;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

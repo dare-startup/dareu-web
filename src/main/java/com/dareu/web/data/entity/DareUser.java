@@ -12,7 +12,12 @@ import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.persistence.JoinColumn;
 
-import com.dareu.web.core.security.SecurityRole;
+import com.dareu.web.dto.security.SecurityRole;
+import java.util.Set;
+import javax.persistence.CascadeType;
+import javax.persistence.FetchType;
+import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 
 /**
  * Created by Alberto Rubalcaba on 4/7/2015.
@@ -29,9 +34,6 @@ public class DareUser extends BaseEntity {
 
     @Column(name = "password")
     private String password;
-
-    @Column(name = "username")
-    private String nickname;
 
     @Column(name = "user_since_date")
     private String userSince;
@@ -60,20 +62,26 @@ public class DareUser extends BaseEntity {
     
     @Column(name = "security_token")
     private String securityToken;
+    
+    @Transient
+    @OneToMany(mappedBy = "requestedUser", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private Set<FriendshipRequest> receivedFriendshipRequests; 
+    
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @Transient
+    private Set<FriendshipRequest> sentFriendshipRequests; 
 
     public DareUser() {
     	super(); 
     }
 
-	public DareUser(String name, String email, String password,
-			String nickname, String userSince, String gCM, int coins,
+	public DareUser(String name, String email, String password, String userSince, String gCM, int coins,
 			int uScore, boolean verified, SecurityRole role, String imagePath,
 			String birthday, String securityToken) {
 		super();
 		this.name = name;
 		this.email = email;
 		this.password = password;
-		this.nickname = nickname;
 		this.userSince = userSince;
 		GCM = gCM;
 		this.coins = coins;
@@ -108,15 +116,6 @@ public class DareUser extends BaseEntity {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-
-	public String getNickname() {
-		return nickname;
-	}
-
-	public void setNickname(String nickname) {
-		this.nickname = nickname;
-	}
-
 	public String getUserSince() {
 		return userSince;
 	}
@@ -188,4 +187,22 @@ public class DareUser extends BaseEntity {
 	public void setSecurityToken(String securityToken) {
 		this.securityToken = securityToken;
 	}
+
+    public Set<FriendshipRequest> getReceivedFriendshipRequests() {
+        return receivedFriendshipRequests;
+    }
+
+    public void setReceivedFriendshipRequests(Set<FriendshipRequest> receivedFriendshipRequests) {
+        this.receivedFriendshipRequests = receivedFriendshipRequests;
+    }
+
+    public Set<FriendshipRequest> getSentFriendshipRequests() {
+        return sentFriendshipRequests;
+    }
+
+    public void setSentFriendshipRequests(Set<FriendshipRequest> sentFriendshipRequests) {
+        this.sentFriendshipRequests = sentFriendshipRequests;
+    }
+        
+        
 }

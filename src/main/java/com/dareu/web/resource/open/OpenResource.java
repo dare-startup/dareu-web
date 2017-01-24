@@ -2,7 +2,7 @@ package com.dareu.web.resource.open;
 
 import com.dareu.web.core.service.AccountService;
 import com.dareu.web.core.service.MultipartService;
-import com.dareu.web.data.request.SignupRequest;
+import com.dareu.web.dto.request.SignupRequest;
 import com.dareu.web.exception.InternalApplicationException;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -19,7 +19,7 @@ import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
  *
  * @author jose.rubalcaba
  */
-@Path("open/")
+@Path("open")
 public class OpenResource {
     
     @Inject
@@ -28,18 +28,6 @@ public class OpenResource {
     @Inject
     private AccountService accountService; 
     
-    
-    /**
-     * Register using a Facebook account
-     * @return 
-     */
-    @Path("registerFacebook")
-    @Produces(MediaType.APPLICATION_JSON)
-    @POST
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Response registerFacebook(){
-        return null; 
-    }
     
     /**
      * check if a nickname is available
@@ -68,12 +56,12 @@ public class OpenResource {
      * @return 
      */
     @Path("registerUser")
-    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @POST
-    public Response registerUser(MultipartFormDataInput input)throws Exception{
-    	SignupRequest request = multipartService.getSignupRequest(input); 
-        return  accountService.registerDareUser(request); 
+    public Response registerUser(SignupRequest input)throws Exception{
+    	//SignupRequest request = multipartService.getSignupRequest(input); 
+        return  accountService.registerDareUser(input); 
     }
     
 }

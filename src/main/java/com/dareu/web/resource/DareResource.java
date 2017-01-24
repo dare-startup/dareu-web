@@ -13,16 +13,17 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.dareu.web.core.annotation.Secured;
-import com.dareu.web.core.security.SecurityRole;
+import com.dareu.web.dto.security.SecurityRole;
 import com.dareu.web.core.service.AccountService;
 import com.dareu.web.core.service.DareService;
-import com.dareu.web.data.request.CreateCategoryRequest;
-import com.dareu.web.data.request.CreateDareRequest;
+import com.dareu.web.dto.request.CreateCategoryRequest;
+import com.dareu.web.dto.request.CreateDareRequest;
 import com.dareu.web.exception.InternalApplicationException;
 import com.dareu.web.exception.InvalidRequestException;
 
 import io.swagger.annotations.Api;
 import javax.ws.rs.HeaderParam;
+import javax.ws.rs.QueryParam;
 
 @Api(value = "dare")
 @Path("dare/")
@@ -54,7 +55,7 @@ public class DareResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Secured
-    public Response getCategories() throws InternalApplicationException {
-        return dareService.getCategories();
+    public Response getCategories(@QueryParam("pageNumber")int pageNumber) throws InternalApplicationException {
+        return dareService.getCategories(pageNumber);
     }
 }

@@ -8,11 +8,12 @@ package com.dareu.web.core.filter;
 import com.dareu.web.core.annotation.AllowedUsers;
 import com.dareu.web.core.annotation.Secured;
 import com.dareu.web.core.security.DareuPrincipal;
-import com.dareu.web.core.security.SecurityRole;
+import com.dareu.web.dto.security.SecurityRole;
 import com.dareu.web.data.entity.DareUser;
 import com.dareu.web.data.repository.DareUserRepository;
-import com.dareu.web.data.response.AuthorizationResponse;
-import com.dareu.web.exception.DataAccessException;
+import com.dareu.web.dto.response.AuthorizationResponse;
+import com.dareu.web.data.exception.DataAccessException;
+import com.github.roar109.syring.annotation.ApplicationProperty;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
@@ -43,15 +44,24 @@ public class SecurityFilter implements ContainerRequestFilter {
     @Inject
     private DareUserRepository dareUserRepository;
 
+    @Inject
+    @ApplicationProperty(name = "com.dareu.web.admin.token", type = ApplicationProperty.Types.SYSTEM)
+    private String adminToken;
+
+    @Override
     public void filter(ContainerRequestContext crc) throws IOException {
-        //authenticate user here...
-        log.info("SecurityFilter reached");
+       //authenticate user here...
         ResourceMethodInvoker methodInvoker = (ResourceMethodInvoker) crc
                 .getProperty("org.jboss.resteasy.core.ResourceMethodInvoker");
         //get invoked method 
         Method method = methodInvoker.getMethod();
         //get token 
         String auth = crc.getHeaderString("Authorization");
+        //check if the incoming request is from the admin token 
+        if(auth != null && auth.equals(adminToken)){
+            //let it pass.. TODO:(can this be secure)
+            return;
+        }
         //first check if the class checks if is annotated with @AllowedUsers
         if (method.getDeclaringClass().isAnnotationPresent(AllowedUsers.class)) {
             //validate 
@@ -59,18 +69,20 @@ public class SecurityFilter implements ContainerRequestFilter {
         } else if (method.isAnnotationPresent(AllowedUsers.class)) {
             validate(method.getAnnotation(AllowedUsers.class), auth, crc);
         }
+
     }
 
     private void validate(AllowedUsers annotation, String token, ContainerRequestContext crc) {
-        SecurityRole[]allowedRoles = annotation.securityRoles();
+        SecurityRole[] allowedRoles = annotation.securityRoles();
         //validate token
-        if (token == null || token.isEmpty()) 
-            //no token content
+        if (token == null || token.isEmpty()) //no token content
+        {
             abort(crc);
-        else if (!validateToken(allowedRoles, token)) 
-            //token have not been successfully validated
+        } else if (!validateToken(allowedRoles, token)) //token have not been successfully validated
+        {
             abort(crc);
-        
+        }
+
     }
 
     private boolean validateToken(SecurityRole[] roles, String token) {

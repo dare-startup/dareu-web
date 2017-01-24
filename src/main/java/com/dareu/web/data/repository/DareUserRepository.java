@@ -8,9 +8,9 @@ package com.dareu.web.data.repository;
 import java.util.List;
 
 import com.dareu.web.data.entity.DareUser;
-import com.dareu.web.data.entity.Friendship;
-import com.dareu.web.exception.AuthenticationException;
-import com.dareu.web.exception.DataAccessException;
+import com.dareu.web.data.entity.FriendshipRequest;
+import com.dareu.web.data.exception.AuthenticationException;
+import com.dareu.web.data.exception.DataAccessException;
 
 /**
  *
@@ -106,5 +106,23 @@ public interface DareUserRepository extends BaseRepository<DareUser> {
      * @throws DataAccessException 
      */
     public boolean isUserFriend(String userId, String anotherUserId)throws DataAccessException; 
+    
+    /**
+     * 
+     * @param email
+     * @return
+     * @throws DataAccessException 
+     */
+    public DareUser findUserByEmail(String email)throws DataAccessException;
 
+    /**
+     * find a list of users by page
+     * 
+     * @param pageNumber
+     * @param excludePrincipal specifies if the query contains the current user or not
+     * @param userId
+     * @return
+     * @throws DataAccessException 
+     */
+    public List<DareUser> findUsersByPage(int pageNumber, boolean excludePrincipal, String userId) throws DataAccessException;  
 }

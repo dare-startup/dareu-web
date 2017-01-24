@@ -1,13 +1,14 @@
 package com.dareu.web.data.repository.impl;
 
+import com.dareu.web.core.security.DareuPrincipal;
 import java.util.List;
 import java.util.logging.Logger;
 
-import com.dareu.web.core.DareUtils;
+import com.dareu.web.data.DareUtils;
 import com.dareu.web.data.entity.DareUser;
 import com.dareu.web.data.repository.DareUserRepository;
-import com.dareu.web.exception.AuthenticationException;
-import com.dareu.web.exception.DataAccessException;
+import com.dareu.web.data.exception.AuthenticationException;
+import com.dareu.web.data.exception.DataAccessException;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -20,137 +21,181 @@ import javax.transaction.Transactional;
  * @author MACARENA
  */
 @Stateless
-public class DareUserRepositoryImpl extends AbstractRepository<DareUser> implements DareUserRepository{
-	
-	@Inject
-	private Logger log; 
-	
-	@Inject
-	private DareUtils utils; 
-	
-    public DareUserRepositoryImpl(){
-        super(DareUser.class); 
+public class DareUserRepositoryImpl extends AbstractRepository<DareUser> implements DareUserRepository {
+    
+    private Logger log = Logger.getLogger("DareUserRepository"); 
+    
+    public DareUserRepositoryImpl() {
+        super(DareUser.class);
     }
 
-	public boolean isNicknameAvailable(String nickname) {
-		//get a list of users where the nickname is the same 
-		Query q = em.createQuery("SELECT u.nickname FROM User u WHERE u.nickname = :nickname")
-				.setParameter("nickname", nickname);
-		
-		List<String> nicknames = q.getResultList();
-		if(nicknames.isEmpty())
-			//the nickname is available 
-			return true; 
-		else return false;
-	}
+    @Override
+    public boolean isNicknameAvailable(String nickname) {
+        //get a list of users where the nickname is the same 
+        Query q = em.createQuery("SELECT u.nickname FROM User u WHERE u.nickname = :nickname")
+                .setParameter("nickname", nickname);
 
-	public boolean isEmailAvailable(String email) {
-		Query q = em.createQuery("SELECT u.email FROM User u WHERE u.email = :email")
-				.setParameter("email", email); 
-		
-		List<String> emails = q.getResultList(); 
-		if(emails.isEmpty())
-			return true; 
-		else return false;
-	}
-
-	@Transactional
-	public String registerDareUser(DareUser register)
-			throws DataAccessException {
-		persist(register); 
-		return register.getId();
-	}
-
-	public String loginFacebook(String email, String name) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public DareUser login(String nickname, String pass)throws AuthenticationException {
-		DareUser user = null;
-		try{
-			Query q = em.createQuery("SELECT u FROM User u WHERE u.nickname = :nickname AND u.password = :password")
-					.setParameter("nickname", nickname)
-					.setParameter("password", pass); 
-			
-			user = (DareUser)q.getSingleResult();
-			if(user == null)
-				return null; 
-			else
-				return user; 
-		}catch(NoResultException ex){
-			throw new AuthenticationException("Username and/or password are incorrect"); 
-		}catch(Exception ex){
-			log.severe("An error occured signin in a user: " + ex.getMessage());
-			throw new AuthenticationException("Could not authenticate user"); 
-		}
-	}
-
-	@Transactional
-	public void updateSecurityToken(String token, String userId) {
-		DareUser user = null; 
-		try{
-			user = find(userId);
-			if(user != null)
-				//update 
-				user.setSecurityToken(token);
-		}catch(DataAccessException ex){
-			log.info("User with id " + userId + " not found"); 
-		}catch(Exception ex){
-			log.info("Exception updating user security token: " + ex.getMessage()); 
-		}
-	}
-
-	public List<DareUser> findFriends(String userId) throws DataAccessException {
-		List<DareUser> users = null; 
-		/**try{
-			Query q = em.createQuery("SELECT u FROM User u WHERE "); 
-		}**/
-		return users;
-	}
-
-	public DareUser findUserByToken(String token) throws DataAccessException {
-		try{
-			Query q = em.createQuery("SELECT u FROM User u WHERE u.securityToken = :token")
-					.setParameter("token", token); 
-			return (DareUser)q.getSingleResult(); 
-		}catch(NoResultException ex){
-			return null; 
-		}catch(Exception ex){
-			throw new DataAccessException("Could not get user: " + ex.getMessage()); 
-		}
-	}
-
-	@Override
-	@Transactional
-	public void updateFcmRegId(String regId, String token)
-			throws DataAccessException {
-		try{
-			Query q = em.createQuery("SELECT u FROM User u WHERE u.securityToken = :token")
-					.setParameter("token", token); 
-			DareUser user = (DareUser)q.getSingleResult(); 
-			if(user != null){
-				//update 
-				user.setGCM(regId);
-			}
-		}catch(NoResultException ex){
-			log.info("User with token " + token + " not found"); 
-		}catch(Exception ex){
-			throw new DataAccessException("Could not update user FCM: " + ex.getMessage()); 
-		}
-	}
-
-    public boolean isUserFriend(String userId, String anotherUserId) throws DataAccessException {
-        try{
-            Query q = em.createQuery("SELECT count(c) FROM Friendship c WHERE c.user_id = :userId AND u.requested_user_id = :anotherUserId AND u.accepted = 1")
-                    .setParameter("userId", userId)
-                    .setParameter("anotherUserId", anotherUserId); 
-            Integer count = (Integer)q.getSingleResult(); 
-            return count > 0; 
-        }catch(Exception ex){
-            throw new DataAccessException("Could not get count: " + ex.getMessage()); 
+        List<String> nicknames = q.getResultList();
+        if (nicknames.isEmpty()) //the nickname is available 
+        {
+            return true;
+        } else {
+            return false;
         }
     }
 
-	
+    @Override
+    public boolean isEmailAvailable(String email) {
+        Query q = em.createQuery("SELECT u.email FROM User u WHERE u.email = :email")
+                .setParameter("email", email);
+
+        List<String> emails = q.getResultList();
+        if (emails.isEmpty()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    @Transactional
+    public String registerDareUser(DareUser register)
+            throws DataAccessException {
+        persist(register);
+        return register.getId();
+    }
+
+    @Override
+    public String loginFacebook(String email, String name) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public DareUser login(String nickname, String pass) throws AuthenticationException {
+        DareUser user = null;
+        try {
+            Query q = em.createQuery("SELECT u FROM User u WHERE u.nickname = :nickname AND u.password = :password")
+                    .setParameter("nickname", nickname)
+                    .setParameter("password", pass);
+
+            user = (DareUser) q.getSingleResult();
+            if (user == null) {
+                return null;
+            } else {
+                return user;
+            }
+        } catch (NoResultException ex) {
+            throw new AuthenticationException("Username and/or password are incorrect");
+        } catch (Exception ex) {
+            log.severe("An error occured signin in a user: " + ex.getMessage());
+            throw new AuthenticationException("Could not authenticate user");
+        }
+    }
+
+    @Transactional
+    @Override
+    public void updateSecurityToken(String token, String userId) {
+        DareUser user = null;
+        try {
+            user = find(userId);
+            if (user != null) //update 
+            {
+                user.setSecurityToken(token);
+            }
+        } catch (DataAccessException ex) {
+            log.info("User with id " + userId + " not found");
+        } catch (Exception ex) {
+            log.info("Exception updating user security token: " + ex.getMessage());
+        }
+    }
+
+    @Override
+    public List<DareUser> findFriends(String userId) throws DataAccessException {
+        List<DareUser> users = null;
+        /**
+         * try{ Query q = em.createQuery("SELECT u FROM User u WHERE "); 
+		}*
+         */
+        return users;
+    }
+
+    @Override
+    public DareUser findUserByToken(String token) throws DataAccessException {
+        try {
+            Query q = em.createQuery("SELECT u FROM User u WHERE u.securityToken = :token")
+                    .setParameter("token", token);
+            return (DareUser) q.getSingleResult();
+        } catch (NoResultException ex) {
+            return null;
+        } catch (Exception ex) {
+            throw new DataAccessException("Could not get user: " + ex.getMessage());
+        }
+    }
+
+    @Override
+    @Transactional
+    public void updateFcmRegId(String regId, String token)
+            throws DataAccessException {
+        try {
+            Query q = em.createQuery("SELECT u FROM User u WHERE u.securityToken = :token")
+                    .setParameter("token", token);
+            DareUser user = (DareUser) q.getSingleResult();
+            if (user != null) {
+                //update 
+                user.setGCM(regId);
+            }
+        } catch (NoResultException ex) {
+            log.info("User with token " + token + " not found");
+        } catch (Exception ex) {
+            throw new DataAccessException("Could not update user FCM: " + ex.getMessage());
+        }
+    }
+
+    @Override
+    public boolean isUserFriend(String userId, String anotherUserId) throws DataAccessException {
+        try {
+            Query q = em.createQuery("SELECT count(c) FROM Friendship c WHERE c.user_id = :userId AND u.requested_user_id = :anotherUserId AND u.accepted = 1")
+                    .setParameter("userId", userId)
+                    .setParameter("anotherUserId", anotherUserId);
+            Integer count = (Integer) q.getSingleResult();
+            return count > 0;
+        } catch (Exception ex) {
+            throw new DataAccessException("Could not get count: " + ex.getMessage());
+        }
+    }
+
+    @Override
+    public DareUser findUserByEmail(String email) throws DataAccessException {
+        try{
+            Query q = em.createQuery("SELECT u FROM User u WHERE u.email = :email")
+                    .setParameter("email", email); 
+            DareUser user = (DareUser)q.getSingleResult(); 
+            return user; 
+        }catch(NoResultException ex){
+            
+            return null; 
+        }catch(Exception ex){
+            throw new DataAccessException("Could not get user by email: " + ex.getMessage()); 
+        }
+    }
+
+    @Override
+    public List<DareUser> findUsersByPage(int pageNumber, boolean excludePrincipal, String userId) throws DataAccessException {
+        List<DareUser> users = null; 
+        try{
+            Query query = null; 
+            if(excludePrincipal)
+                query = em.createQuery("SELECT u FROM User u WHERE u.id != :id")
+                        .setParameter("id", userId);
+            else query = em.createQuery("SELECT u FROM User u");
+            query.setMaxResults(DEFAULT_PAGE_NUMBER)
+                 .setFirstResult((pageNumber * DEFAULT_PAGE_NUMBER) - DEFAULT_PAGE_NUMBER); 
+            users = query.getResultList(); 
+            return users; 
+        }catch(Exception ex){
+            throw new DataAccessException("Could not get users by page: " + ex.getMessage()); 
+        }
+    }
+
 }

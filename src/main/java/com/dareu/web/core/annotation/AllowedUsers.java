@@ -1,6 +1,6 @@
 package com.dareu.web.core.annotation;
 
-import com.dareu.web.core.security.SecurityRole;
+import com.dareu.web.dto.security.SecurityRole;
 import java.lang.annotation.*;
 
 /**

@@ -5,7 +5,6 @@ create table dareu_user(
 	id varchar(36)not null primary key, 
     name varchar(150) not null, 
     email varchar(100)not null, 
-    username varchar(100)not null, 
     password varbinary(255)not null, 
     user_since_date varchar(10) not null,
 	security_token varchar(40),
@@ -32,29 +31,22 @@ create table dare(
     accepted tinyint default 0,
     accepted_date varchar(30),
     creation_date datetime not null, 
-    foreign key(category_id)references category(id));
-    
-create table package(
-	id varchar(36) not null primary key, 
-    description varchar(500)not null, 
-    price double not null, 
-    creation_date datetime not null,
-    coins_count int not null); 
+    challenged_user_id varchar(36)not null, 
+    challenger_user_id varchar(36) not null, 
+    foreign key(category_id)references category(id),
+    foreign key(challenger_user_id) references dareu_user(id), 
+    foreign key(challenged_user_id)references dareu_user(id)); 
     
 create table dare_response(
-	id varchar(36) not null primary key, 
+    id varchar(36) not null primary key, 
     response_date datetime not null, 
     video_url varchar(500)not null, 
     views_count int not null default 0, 
-	likes int not null default 0); 
-   
-    
-create table response_comment(
-	id varchar(36) not null primary key, 
-    creation_date datetime not null, 
-    comment varchar(200)not null,
+    likes int not null default 0, 
+    dare_id varchar(36)not null, 
     user_id varchar(36) not null, 
-    foreign key(user_id)references dareu_user(id)); 
+    foreign key(user_id) references dareu_user(id),
+    foreign key(dare_id)references dare(id)); 
    
 create table friendship(
 	id varchar(36)not null primary key, 
@@ -66,38 +58,15 @@ create table friendship(
 	foreign key(requested_user_id)references dareu_user(id)
 );
     
-create table dareu_user_dare(
-	id varchar(36) not null primary key, 
+create table dare_request(
+    id varchar(36) not null primary key, 
     challenger_id varchar(36) not null, 
     challenged_id varchar(36) not null, 
     dare_id varchar(36) not null,
     foreign key(challenger_id)references dareu_user(id), 
     foreign key(challenged_id)references dareu_user(id), 
-    foreign key(dare_id)references dare(id)); 
-    
-create table dareu_user_package(
-	id varchar(36) not null primary key, 
-    package_id varchar(36) not null, 
-    user_id varchar(36) not null, 
-    foreign key(package_id)references dare_package(id), 
-    foreign key(user_id)references dareu_user(id)); 
-    
-create table dare_dare_response(
-	id varchar(36) not null primary key , 
-    dare_id varchar(36) not null, 
-	user_id varchar(36)not null,
-    dare_response_id varchar(36) not null, 
-    foreign key(dare_id)references dare(id), 
-    foreign key(dare_response_id)references dare_response(id), 
-	foreign key(user_id)references dareu_user(id)); 
-    
-create table dare_response_response_comment(
-	id varchar(36) not null primary key , 
-    dare_response_id varchar(36) not null, 
-    response_comment_id varchar(36) not null, 
-    foreign key(dare_response_id)references dare_response(id), 
-    foreign key(response_comment_id)references response_comment(id)); 
-    
+    foreign key(dare_id)references dare(id));     
+
 CREATE or REPLACE VIEW v_friendship AS
 	select f.user_id, f.friend_name, f.friend_id, IFNULL(dcount.count,0) 'dare_count' , IFNULL(vcount.count, 0) 'video_count'
 	from (

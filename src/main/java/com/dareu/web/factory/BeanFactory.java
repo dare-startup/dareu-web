@@ -10,6 +10,7 @@ import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.InjectionPoint;
+import javax.inject.Inject;
 import javax.ws.rs.core.Context;
 import org.jboss.resteasy.spi.ResteasyProviderFactory;
 
@@ -17,26 +18,13 @@ import org.jboss.resteasy.spi.ResteasyProviderFactory;
  *
  * @author MACARENA
  */
-@Stateless
+
 public class BeanFactory {
     
-    
-    @Context
-    private DareuPrincipal principal; 
+    private static final Logger log = Logger.getAnonymousLogger();
     
     @Produces
     public Logger loggerBean(InjectionPoint ip){
         return Logger.getLogger(ip.getMember().getDeclaringClass().getName());
     }
-    
-    @Produces
-    public DareuPrincipal dareuPrincipalBean(InjectionPoint ip){
-        if(principal == null){
-            loggerBean(ip).info("Getting dareu principal");
-            principal = ResteasyProviderFactory.getContextData(DareuPrincipal.class); 
-        }
-        
-        return principal; 
-    }
-    
 }

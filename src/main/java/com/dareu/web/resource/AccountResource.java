@@ -8,13 +8,10 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
 import com.dareu.web.core.annotation.Secured;
-import com.dareu.web.core.security.SecurityRole;
+import com.dareu.web.dto.security.SecurityRole;
 import com.dareu.web.core.service.AccountService;
 import com.dareu.web.core.service.MultipartService;
-import com.dareu.web.data.request.FriendshipRequest;
-import com.dareu.web.data.request.FriendshipRequestResponse;
-import com.dareu.web.data.response.DareUserProfile;
-import com.dareu.web.exception.AuthenticationException;
+import com.dareu.web.data.exception.AuthenticationException;
 import com.dareu.web.exception.InternalApplicationException;
 import com.dareu.web.exception.InvalidRequestException;
 
@@ -51,7 +48,6 @@ public class AccountResource {
     @Produces(MediaType.APPLICATION_JSON)
     @GET
     @ApiOperation(value = "Retrieve a user profile",
-            response = DareUserProfile.class,
             httpMethod = "GET",
             nickname = "me")
     @ApiResponses(value = {
@@ -65,38 +61,41 @@ public class AccountResource {
     /**
      * Request a friendship to another dareu user
      *
+     * @param requestedUserId
+     * @param request
      * @return
      * @throws InternalApplicationException
      * @throws InvalidRequestException
      */
-    @Path("requestFriendship")
+    @Path("friendship/{requestedUserId}/create")
     @Produces(MediaType.APPLICATION_JSON)
     @POST
-    @Consumes(MediaType.APPLICATION_JSON)
     @Secured
-    public Response requestFriendship(FriendshipRequest request) throws InvalidRequestException, InternalApplicationException {
-        return accountService.requestFriendship(request);
+    public Response requestFriendship(@PathParam(value = "requestedUserId") String requestedUserId) throws InvalidRequestException, InternalApplicationException {
+        return accountService.requestFriendship(requestedUserId);
     }
 
+    
     /**
-     * Find friends using a keyword
-     *
-     * @param name
-     * @return
-     * @throws AuthenticationException
-     * @throws InternalApplicationException
+     * 
+     * @param pageNumber
+     * @param query
+     * @return 
+     * @throws com.dareu.web.exception.InternalApplicationException 
      */
     @GET
-    @Path("findFriends")
+    @Path("friends/find")
     @Produces(MediaType.APPLICATION_JSON)
     @Secured
-    public Response findFriends(@QueryParam("name") String name) throws InternalApplicationException, AuthenticationException {
-        return accountService.findFriends(name);
+    public Response friends(@QueryParam("pageNumber") int pageNumber, @QueryParam("q")String query)throws InternalApplicationException{
+        return accountService.findFriends(pageNumber, query);
     }
 
     /**
      * Update a registration id from Google Cloud Messaging
      *
+     * @param regId
+     * @param auth
      * @return
      */
     @Path("updateGcmRegId")
@@ -107,12 +106,12 @@ public class AccountResource {
         return accountService.updateRegId(regId, auth);
     }
 
-    @Path("responseFriendship")
+    @Path("friendship/{userId}/update")
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Secured
-    public Response responseFriendship(FriendshipRequestResponse response) throws InvalidRequestException, InternalApplicationException {
-        return accountService.friendshipResponse(response);
+    public Response responseFriendship(@PathParam(value = "userId")String userId, @QueryParam(value = "accepted")Boolean accepted) throws InvalidRequestException, InternalApplicationException {
+        return accountService.friendshipResponse(userId, accepted);
     }
 
     @Path("getAccountImage/{userId}")
@@ -121,5 +120,13 @@ public class AccountResource {
     @Secured
     public Response getImage(@PathParam("userId")String userId) throws InvalidRequestException, InternalApplicationException{
         return accountService.getAccountImage(userId); 
+    }
+    
+    @Path("discoverUsers")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Secured
+    public Response discoverUsers(@QueryParam("pageNumber")int pageNumber)throws InternalApplicationException{
+        return accountService.discoverUsers(pageNumber); 
     }
 }
