@@ -29,7 +29,7 @@ public class Dare extends BaseEntity{
     @Column(name = "description")
     private String description;
     
-    @OneToOne(fetch = FetchType.EAGER, cascade = { CascadeType.ALL }, 
+    @OneToOne(fetch = FetchType.EAGER, cascade = { CascadeType.REFRESH }, 
     		optional = true, targetEntity = Category.class)
     private Category category; 
     
