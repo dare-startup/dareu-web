@@ -1,6 +1,5 @@
 package com.dareu.web.core.service.impl;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
@@ -9,7 +8,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.ws.rs.core.Response;
 
-import com.dareu.web.data.DareUtils;
+import com.dareu.web.core.DareUtils;
 import com.dareu.web.core.service.DareService;
 import com.dareu.web.data.entity.Category;
 import com.dareu.web.data.entity.Dare;
@@ -23,13 +22,16 @@ import com.dareu.web.dto.response.EntityRegistrationResponse;
 import com.dareu.web.dto.response.EntityRegistrationResponse.RegistrationType;
 import com.dareu.web.data.exception.DataAccessException;
 import com.dareu.web.core.service.DareuAssembler;
+import com.dareu.web.dto.request.DareConfirmationRequest;
+import com.dareu.web.dto.response.UpdatedEntityResponse;
 import com.dareu.web.dto.response.entity.CategoryDescription;
 import com.dareu.web.dto.response.entity.DareDescription;
 import com.dareu.web.dto.response.entity.Page;
+import com.dareu.web.dto.response.entity.UnacceptedDare;
+import com.dareu.web.dto.response.entity.UserDescription;
 import com.dareu.web.exception.InternalApplicationException;
 import com.dareu.web.exception.InvalidRequestException;
 
-@Stateless
 public class DareServiceImpl implements DareService {
 
     @Inject
@@ -65,7 +67,7 @@ public class DareServiceImpl implements DareService {
         if (request.getDescription() == null) {
             throw new InvalidRequestException("Description field not provided");
         }
-        if (request.getFriendsIds() == null) {
+        if (request.getFriendId() == null) {
             throw new InvalidRequestException("Friends ID's field not provided");
         }
         if (request.getName() == null) {
@@ -82,12 +84,16 @@ public class DareServiceImpl implements DareService {
         dare.setDescription(request.getDescription());
         dare.setEstimatedDareTime(request.getTimer()); //time is in hours
         dare.setName(request.getName());
-
-        DareUser user = null;
-        for (String userId : request.getFriendsIds()) {
-            //if(dareUserRepository.isUserFriend(userId, ))
-        }
+        
+        //get the challenged user 
+        DareUser challengedUser = null;
+        
+        //get challenger user 
+        DareUser challengerUser = null;
+        
         try {
+            challengedUser = dareUserRepository.find(request.getFriendId());
+            challengerUser = dareUserRepository.findUserByToken(authenticationToken);
             //get category
             Category category = categoryRepository.find(request.getCategoryId());
             if (category == null) {
@@ -95,6 +101,10 @@ public class DareServiceImpl implements DareService {
             }
 
             dare.setCategory(category);
+            //set users 
+            dare.setChallengerUser(challengerUser);
+            dare.setChallengedUser(challengedUser);
+            
             String id = dareRepository.createDare(dare);
             log.info("Successfully created new dare with id: " + id);
 
@@ -170,6 +180,65 @@ public class DareServiceImpl implements DareService {
         }catch(DataAccessException ex){
             throw new InternalApplicationException("Could not get dares: " + ex.getMessage(), ex); 
         }
+    }
+
+    public Response findUnacceptedDare(String auth) throws InternalApplicationException {
+        DareUser user;
+        UnacceptedDare unacceptedDare;
+        DareUser challenger;
+        Dare dare;
+        UserDescription challengerDescription;
+        try{
+            //find user by token
+            user = dareUserRepository.findUserByToken(auth);
+            //get id 
+            String id = user.getId();
+            //find dare
+            dare = dareRepository.findUnacceptedDare(id);
+            
+            if(dare != null){
+                //created unaccepted dare 
+                unacceptedDare = new UnacceptedDare();
+                unacceptedDare.setId(dare.getId());
+                unacceptedDare.setName(dare.getName());
+                unacceptedDare.setDescription(dare.getDescription());
+                unacceptedDare.setCreationDate(DareUtils.DETAILS_DATE_FORMAT.format(dare.getCreationDate()));
+                challenger = dare.getChallengerUser(); 
+                challengerDescription = new UserDescription(); 
+                challengerDescription.setId(challenger.getId());
+                challengerDescription.setImageUrl(challenger.getImagePath());
+                challengerDescription.setName(challenger.getName());
+                challengerDescription.setUserSinceDate(challenger.getUserSince());
+                
+                unacceptedDare.setChallenger(challengerDescription);
+                return Response.ok(unacceptedDare)
+                        .build(); 
+            }else 
+                //return an empty response
+                return Response.ok()
+                        .build();
+            
+        }catch(DataAccessException ex){
+            throw new InternalApplicationException("");
+        }
+    }
+
+    public Response confirmDareRequest(DareConfirmationRequest request) throws InternalApplicationException, InvalidRequestException {
+        //validate
+        if(request == null)
+            throw new InvalidRequestException("No request provided");
+        if(request.getDareId() == null || request.getDareId().isEmpty())
+            throw new InvalidRequestException("No dare id provided"); 
+        
+        try{
+            //update dare 
+            dareRepository.confirmDareRequest(request.getDareId(), request.isAccepted());
+            return Response.ok(new UpdatedEntityResponse("Updated dare", true, "dare"))
+                    .build();
+        }catch(DataAccessException ex){
+            throw new InternalApplicationException(ex.getMessage());
+        }
+        
     }
 
 }

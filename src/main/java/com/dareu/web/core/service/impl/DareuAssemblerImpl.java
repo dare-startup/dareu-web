@@ -1,6 +1,6 @@
 package com.dareu.web.core.service.impl;
 
-import com.dareu.web.data.DareUtils;
+import com.dareu.web.core.DareUtils;
 import com.dareu.web.data.entity.Category;
 import com.dareu.web.data.entity.Dare;
 import com.dareu.web.data.entity.DareUser;

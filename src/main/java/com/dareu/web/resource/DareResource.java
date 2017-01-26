@@ -18,6 +18,7 @@ import com.dareu.web.core.service.AccountService;
 import com.dareu.web.core.service.DareService;
 import com.dareu.web.dto.request.CreateCategoryRequest;
 import com.dareu.web.dto.request.CreateDareRequest;
+import com.dareu.web.dto.request.DareConfirmationRequest;
 import com.dareu.web.exception.InternalApplicationException;
 import com.dareu.web.exception.InvalidRequestException;
 
@@ -47,6 +48,23 @@ public class DareResource {
     public Response createNewDare(CreateDareRequest request, @HeaderParam("Authorization") String auth) throws InternalApplicationException,
             InvalidRequestException {
         return dareService.createNewDare(request, auth);
+    }
+    
+    @Path("confirm")
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Secured
+    public Response confirmDareRequest(DareConfirmationRequest request)throws InternalApplicationException, InvalidRequestException{
+        return dareService.confirmDareRequest(request);
+    }
+    
+    @Path("unaccepted")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Secured
+    public Response findUnacceptedDare(@HeaderParam("Authorization")String auth) throws InternalApplicationException{
+        return dareService.findUnacceptedDare(auth);
     }
 
     

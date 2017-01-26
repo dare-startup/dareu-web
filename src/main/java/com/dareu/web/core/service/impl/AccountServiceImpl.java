@@ -10,7 +10,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 
-import com.dareu.web.data.DareUtils;
+import com.dareu.web.core.DareUtils;
 import com.dareu.web.core.security.DareuPrincipal;
 import com.dareu.web.dto.security.SecurityRole;
 import com.dareu.web.core.service.AccountService;

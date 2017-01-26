@@ -163,10 +163,10 @@ public class FriendshipRepositoryImpl extends AbstractRepository<FriendshipReque
         Page<FriendSearchDescription> page = new Page<FriendSearchDescription>();
         List<DareUser> users = null;
         try {
-            Query q = em.createNativeQuery("SELECT u.* FROM friendship f INNER JOIN dareu_user u "
-                    + "ON f.user_id = u.id OR f.requested_user_id = u.id "
-                    + "WHERE (f.requested_user_id = ?1 OR f.user_id = ?2 ) "
-                    + "AND f.accepted = true AND u.id <> ?3 AND u.name LIKE ?4", DareUser.class)
+            Query q = em.createNativeQuery("select * from dareu_user "
+                    + "where id in (select (case ?1 when user_id then requested_user_id else user_id end) id from friendship "
+                    + "where user_id = ?2 or requested_user_id = ?3 "
+                    + "and accepted = 1) and name like ?4", DareUser.class)
                     .setParameter(1, userId)
                     .setParameter(2, userId)
                     .setParameter(3, userId)
@@ -176,10 +176,10 @@ public class FriendshipRepositoryImpl extends AbstractRepository<FriendshipReque
 
             users = q.getResultList();
             BigInteger count = null; 
-            q = em.createNativeQuery("SELECT count(u.id) FROM friendship f INNER JOIN dareu_user u "
-                    + "ON f.user_id = u.id OR f.requested_user_id = u.id "
-                    + "WHERE (f.requested_user_id = ?1 OR f.user_id = ?2 ) "
-                    + "AND f.accepted = true AND u.id <> ?3 AND u.name LIKE ?4")
+            q = em.createNativeQuery("select count(*) from dareu_user "
+                    + "where id in (select (case ?1 when user_id then requested_user_id else user_id end) id from friendship "
+                    + "where user_id = ?2 or requested_user_id = ?3 "
+                    + "and accepted = 1) and name like ?4")
                     .setParameter(1, userId)
                     .setParameter(2, userId)
                     .setParameter(3, userId)

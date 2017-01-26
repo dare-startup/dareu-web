@@ -1,12 +1,12 @@
 package com.dareu.web.exception.mapper;
 
+import com.dareu.web.core.DareUtils;
 import java.util.Date;
 
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
-import com.dareu.web.data.DareUtils;
 import com.dareu.web.dto.response.AuthenticationResponse;
 import com.dareu.web.data.exception.AuthenticationException;
 

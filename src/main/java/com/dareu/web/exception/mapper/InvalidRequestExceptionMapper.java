@@ -5,12 +5,10 @@
  */
 package com.dareu.web.exception.mapper;
 
-import java.text.SimpleDateFormat;
+import com.dareu.web.core.DareUtils;
 import java.util.Date;
 
-import com.dareu.web.data.DareUtils;
 import com.dareu.web.dto.response.ApplicationErrorResponse;
-import com.dareu.web.dto.response.BadRequestResponse;
 import com.dareu.web.exception.InvalidRequestException;
 
 import javax.ws.rs.core.MediaType;
