@@ -74,12 +74,12 @@ public class AccountServiceImpl extends AbstractService implements AccountServic
 
     @Inject
     private PasswordEncryptor encryptor;
-    
+
     @Inject
-    private DareRepository dareRepository; 
-    
+    private DareRepository dareRepository;
+
     @Inject
-    private DareResponseRepository dareResponseRepository; 
+    private DareResponseRepository dareResponseRepository;
 
     @Inject
     private Logger log;
@@ -194,7 +194,7 @@ public class AccountServiceImpl extends AbstractService implements AccountServic
             throw new InvalidRequestException("Invalid requestedUserId field");
         }
 
-        EntityRegistrationResponse response = null; 
+        EntityRegistrationResponse response = null;
         //create a friendship if not exists 
         FriendshipRequest friendship = new FriendshipRequest();
         friendship.setAccepted(false);
@@ -205,20 +205,20 @@ public class AccountServiceImpl extends AbstractService implements AccountServic
         try {
             //check if a friendship with this ids exists 
             FriendshipRequest request = friendshipRepository.findFriendship(getPrincipal().getId(), requestedUserId);
-            if(request != null){
+            if (request != null) {
                 //the friendship already exists 
-                if(request.isAccepted()){
-                    response = new EntityRegistrationResponse("You already are friend with " + requestedUser.getName(), 
-                            RegistrationType.FRIENDSHIP_REQUEST, DareUtils.DATE_FORMAT.format(new Date()), 
+                if (request.isAccepted()) {
+                    response = new EntityRegistrationResponse("You already are friend with " + requestedUser.getName(),
+                            RegistrationType.FRIENDSHIP_REQUEST, DareUtils.DATE_FORMAT.format(new Date()),
                             "N/A");
                     return Response.ok(response)
-                            .build(); 
-                }else{
-                    response = new EntityRegistrationResponse("You already sent a request to " + requestedUser.getName(), 
-                            RegistrationType.FRIENDSHIP_REQUEST, DareUtils.DATE_FORMAT.format(new Date()), 
+                            .build();
+                } else {
+                    response = new EntityRegistrationResponse("You already sent a request to " + requestedUser.getName(),
+                            RegistrationType.FRIENDSHIP_REQUEST, DareUtils.DATE_FORMAT.format(new Date()),
                             "N/A");
                     return Response.ok(response)
-                            .build(); 
+                            .build();
                 }
             }
             requestedUser = dareUserRepository.find(requestedUserId);
@@ -250,13 +250,13 @@ public class AccountServiceImpl extends AbstractService implements AccountServic
     @Override
     public Response friendshipResponse(String userId, Boolean accepted)
             throws InvalidRequestException, InternalApplicationException {
-        if (userId == null) 
+        if (userId == null) {
             throw new InvalidRequestException("Invalid friendship response body");
-        
+        }
 
-        if (accepted == null)
+        if (accepted == null) {
             throw new InvalidRequestException("Invalid friendship id provided");
-        
+        }
 
         //get the friendhip 
         FriendshipRequest f = null;
@@ -371,30 +371,28 @@ public class AccountServiceImpl extends AbstractService implements AccountServic
         Page<DiscoverUserAccount> accounts = null;
         try {
             DareUser user = dareUserRepository.find(getPrincipal().getId());
-            //return all users to start populating database with requests 
-            
-            List<DareUser> list = dareUserRepository.findUsersByPage(pageNumber, true, getPrincipal().getId());
+
+            //testing purposes
+            List<DareUser> discoverableUsers = dareUserRepository.discoverUsers(pageNumber, user.getId());
             List<DiscoverUserAccount> discovers = new ArrayList();
-            DiscoverUserAccount acc = null; 
-            int dares = 0; 
-            int responses = 0; 
-            for(DareUser another : list){
+            DiscoverUserAccount acc = null;
+            int dares = 0;
+            int responses = 0;
+            for (DareUser another : discoverableUsers) {
                 //if the two users are not friends, add it to discover list
-                if(! friendshipRepository.areUsersFriends(user.getId(), another.getId())){
-                    acc = assembler.assembleDiscoverUserAccount(another);
-                    if(friendshipRepository.isRequestSent(getPrincipal().getId(), another.getId())){
-                        //user sent request to another user
-                        acc.setRequestSent(true);
-                    }else if(friendshipRepository.isRequestReceived(getPrincipal().getId(), another.getId())){
-                        //request has been received by another user and not accepted
-                        acc.setRequestReceived(true);
-                    }
-                    dares = dareRepository.daresCount(acc.getId()); 
-                    responses = dareResponseRepository.responsesCount(acc.getId()); 
-                    acc.setDares(dares);
-                    acc.setResponses(responses);
-                    discovers.add(acc);
+                acc = assembler.assembleDiscoverUserAccount(another);
+                if (friendshipRepository.isRequestSent(getPrincipal().getId(), another.getId())) {
+                    //user sent request to another user
+                    acc.setRequestSent(true);
+                } else if (friendshipRepository.isRequestReceived(getPrincipal().getId(), another.getId())) {
+                    //request has been received by another user and not accepted
+                    acc.setRequestReceived(true);
                 }
+                dares = dareRepository.daresCount(acc.getId());
+                responses = dareResponseRepository.responsesCount(acc.getId());
+                acc.setDares(dares);
+                acc.setResponses(responses);
+                discovers.add(acc);
             }
             accounts = assembler.assembleDiscoverUserAccounts(discovers, pageNumber);
             return Response.ok(accounts)
@@ -406,16 +404,17 @@ public class AccountServiceImpl extends AbstractService implements AccountServic
     }
 
     public Response findFriends(int pageNumber, String query) throws InternalApplicationException {
-        Page<FriendSearchDescription> page = null; 
-        try{
-            if(query == null || query.isEmpty())
-                page = friendshipRepository.findFriendDescriptions(getPrincipal().getId(), pageNumber); 
-            else 
-                page = friendshipRepository.findFriendDescriptions(getPrincipal().getId(), pageNumber, query); 
+        Page<FriendSearchDescription> page = null;
+        try {
+            if (query == null || query.isEmpty()) {
+                page = friendshipRepository.findFriendDescriptions(getPrincipal().getId(), pageNumber);
+            } else {
+                page = friendshipRepository.findFriendDescriptions(getPrincipal().getId(), pageNumber, query);
+            }
             return Response.ok(page)
-                    .build(); 
-        }catch(DataAccessException ex){
-            throw new InternalApplicationException("Could not find friends: " + ex.getMessage()); 
+                    .build();
+        } catch (DataAccessException ex) {
+            throw new InternalApplicationException("Could not find friends: " + ex.getMessage());
         }
     }
 }

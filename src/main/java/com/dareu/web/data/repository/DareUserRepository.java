@@ -125,4 +125,14 @@ public interface DareUserRepository extends BaseRepository<DareUser> {
      * @throws DataAccessException 
      */
     public List<DareUser> findUsersByPage(int pageNumber, boolean excludePrincipal, String userId) throws DataAccessException;  
+    
+    
+    /**
+     * returns a list of users that are not friend of the received id
+     * @param pageNumber
+     * @param userId
+     * @return
+     * @throws DataAccessException 
+     */
+    public List<DareUser> discoverUsers(int pageNumber, String userId) throws DataAccessException;
 }

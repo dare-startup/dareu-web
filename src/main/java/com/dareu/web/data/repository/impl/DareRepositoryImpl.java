@@ -56,11 +56,14 @@ public class DareRepositoryImpl extends AbstractRepository<Dare> implements Dare
 
     public Dare findUnacceptedDare(String userId) throws DataAccessException {
         Dare dare = null;
+        List<Dare> list;
         try{
-            Query query = em.createQuery("SELECT d FROM Dare d WHERE d.challengedUser.id = :userId AND d.accepted = 0")
+            Query query = em.createQuery("SELECT d FROM Dare d WHERE d.challengedUser.id = :userId AND d.accepted = 0 ORDER BY d.creationDate ASC")
                     .setParameter("userId", userId);
-            dare = (Dare)query.getSingleResult();
-            return dare;
+            
+            list = query.getResultList();
+            if(list.isEmpty())return null;
+            return list.get(0);//returns first position to simulate a queue
         }catch(NoResultException ex){
             return null; 
         }catch(Exception ex){

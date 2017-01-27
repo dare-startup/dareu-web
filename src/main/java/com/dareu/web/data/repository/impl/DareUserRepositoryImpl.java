@@ -197,4 +197,34 @@ public class DareUserRepositoryImpl extends AbstractRepository<DareUser> impleme
         }
     }
 
+    public List<DareUser> discoverUsers(int pageNumber, String userId) throws DataAccessException {
+        try{
+            //list
+            Query q = em.createNativeQuery("select * from dareu_user "
+                    + "where id not in (select (case ?1 when user_id then requested_user_id else user_id end) id from friendship "
+                    + "where user_id = ?2 or requested_user_id = ?3 "
+                    + "and accepted = 1) AND id <> ?4", DareUser.class)
+                    .setParameter(1, userId)
+                    .setParameter(2, userId)
+                    .setParameter(3, userId)
+                    .setParameter(4, userId)
+                    .setMaxResults(DEFAULT_PAGE_NUMBER)
+                    .setFirstResult(getFirstResult(pageNumber));
+            List<DareUser> users = q.getResultList();
+            //count
+            q = em.createNativeQuery("select count(*) from dareu_user "
+                    + "where id not in (select (case ?1 when user_id then requested_user_id else user_id end) id from friendship "
+                    + "where user_id = ?2 or requested_user_id = ?3 "
+                    + "and accepted = 1) AND id <> ?4")
+                    .setParameter(1, userId)
+                    .setParameter(2, userId)
+                    .setParameter(3, userId)
+                    .setParameter(4, userId);
+            
+            return users;
+        }catch(Exception ex){
+            throw new DataAccessException("");
+        }
+    }
+
 }
