@@ -42,12 +42,12 @@ public class AbstractRepository<T extends BaseEntity> {
     }
     
     protected int getFirstResult(int pageNumber){
-        return (pageNumber * DEFAULT_PAGE_NUMBER) - DEFAULT_PAGE_NUMBER; 
+        return (pageNumber - 1) * DEFAULT_PAGE_NUMBER; 
     }
     
     protected int getPagesAvailable(int pageNumber, int totalCount){
-        int start = getFirstResult(pageNumber); 
-        return totalCount - start; 
+        //int start = getFirstResult(pageNumber); 
+        return (int) ((totalCount / DEFAULT_PAGE_NUMBER) + 1);
     }
 
     public T find(String id) throws DataAccessException {

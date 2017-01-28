@@ -11,6 +11,7 @@ import com.dareu.web.data.entity.DareUser;
 import com.dareu.web.data.entity.FriendshipRequest;
 import com.dareu.web.data.exception.AuthenticationException;
 import com.dareu.web.data.exception.DataAccessException;
+import com.dareu.web.dto.response.entity.Page;
 
 /**
  *
@@ -134,5 +135,5 @@ public interface DareUserRepository extends BaseRepository<DareUser> {
      * @return
      * @throws DataAccessException 
      */
-    public List<DareUser> discoverUsers(int pageNumber, String userId) throws DataAccessException;
+    public Page<DareUser> discoverUsers(int pageNumber, String userId) throws DataAccessException;
 }

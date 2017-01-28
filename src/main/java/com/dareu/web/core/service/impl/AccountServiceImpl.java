@@ -373,12 +373,12 @@ public class AccountServiceImpl extends AbstractService implements AccountServic
             DareUser user = dareUserRepository.find(getPrincipal().getId());
 
             //testing purposes
-            List<DareUser> discoverableUsers = dareUserRepository.discoverUsers(pageNumber, user.getId());
+            Page<DareUser> discoverableUsers = dareUserRepository.discoverUsers(pageNumber, user.getId());
             List<DiscoverUserAccount> discovers = new ArrayList();
             DiscoverUserAccount acc = null;
             int dares = 0;
             int responses = 0;
-            for (DareUser another : discoverableUsers) {
+            for (DareUser another : discoverableUsers.getItems()) {
                 //if the two users are not friends, add it to discover list
                 acc = assembler.assembleDiscoverUserAccount(another);
                 if (friendshipRepository.isRequestSent(getPrincipal().getId(), another.getId())) {
@@ -394,7 +394,7 @@ public class AccountServiceImpl extends AbstractService implements AccountServic
                 acc.setResponses(responses);
                 discovers.add(acc);
             }
-            accounts = assembler.assembleDiscoverUserAccounts(discovers, pageNumber);
+            accounts = assembler.assembleDiscoverUserAccounts(discovers, discoverableUsers);
             return Response.ok(accounts)
                     .build();
         } catch (DataAccessException ex) {

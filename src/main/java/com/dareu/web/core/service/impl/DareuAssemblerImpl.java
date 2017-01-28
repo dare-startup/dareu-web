@@ -12,6 +12,7 @@ import com.dareu.web.dto.response.entity.DiscoverUserAccount;
 import com.dareu.web.dto.response.entity.FriendSearchDescription;
 import com.dareu.web.dto.response.entity.Page;
 import com.dareu.web.dto.response.entity.UserAccount;
+import com.dareu.web.dto.response.entity.UserDescription;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -61,10 +62,15 @@ public class DareuAssemblerImpl implements DareuAssembler{
         Page<DareDescription> page = new Page<DareDescription>(); 
         
         List<DareDescription> list = new ArrayList(); 
-        for(Dare dare : dares)
-            list.add(new DareDescription(dare.getId(), dare.getName(), dare.getDescription(), 
+        DareDescription desc; 
+        for(Dare dare : dares){
+            desc = new DareDescription(dare.getId(), dare.getName(), dare.getDescription(), 
                     dare.getCategory().getName(), String.format("%d hours", dare.getEstimatedDareTime()), 
-                    DareUtils.DATE_FORMAT.format(dare.getCreationDate()))); 
+                    DareUtils.DATE_FORMAT.format(dare.getCreationDate()));
+            desc.setChallenger(assembleUserDescription(dare.getChallengerUser()));
+            list.add(desc); 
+        }
+            
         
         page.setItems(list);
         page.setPageNumber(pageNumber);
@@ -73,12 +79,14 @@ public class DareuAssemblerImpl implements DareuAssembler{
     }
 
     @Override
-    public Page<DiscoverUserAccount> assembleDiscoverUserAccounts(List<DiscoverUserAccount> list, int pageNumber) {
+    public Page<DiscoverUserAccount> assembleDiscoverUserAccounts(List<DiscoverUserAccount> list, Page<DareUser> users) {
         Page<DiscoverUserAccount> page = new Page<DiscoverUserAccount>(); 
         
-        page.setPageNumber(pageNumber);
-        page.setPageSize(20);
+        page.setPageNumber(users.getPageNumber());
+        page.setPageSize(users.getPageSize());
+        page.setPagesAvailable(users.getPagesAvailable());
         page.setItems(list);
+        
         return page; 
     }
 
@@ -94,6 +102,27 @@ public class DareuAssemblerImpl implements DareuAssembler{
         for(DareUser user : users)
             list.add(new FriendSearchDescription(user.getId(), user.getImagePath(), user.getName())); 
         return list; 
+    }
+    
+    
+
+    public List<DareDescription> assembleDareDescriptions(List<Dare> dares) {
+        List<DareDescription> descs = new ArrayList();
+        DareDescription desc; 
+        for (Dare dare : dares) {
+            desc = new DareDescription(dare.getId(), dare.getName(), dare.getDescription(), 
+                        dare.getCategory().getName(), String.valueOf(dare.getEstimatedDareTime()), 
+                        DareUtils.DATE_FORMAT.format(dare.getCreationDate()));
+            desc.setChallenger(assembleUserDescription(dare.getChallengerUser()));
+            descs.add(desc);
+        }
+            
+        return descs;
+    }
+
+    @Override
+    public UserDescription assembleUserDescription(DareUser user) {
+        return new UserDescription(user.getId(), user.getName(), user.getImagePath(), user.getUserSince());
     }
     
 }

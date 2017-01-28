@@ -241,4 +241,18 @@ public class DareServiceImpl implements DareService {
         
     }
 
+    public Response discoverDares(int pageNumber, String authToken) throws InternalApplicationException {
+        DareUser user; 
+        try{
+            user = dareUserRepository.findUserByToken(authToken);
+            
+            Page<DareDescription> descs = dareRepository.discoverDares(pageNumber, user.getId());
+            
+            return Response.ok(descs)
+                    .build();
+        }catch(DataAccessException ex){
+            throw new InternalApplicationException(ex.getMessage(), ex); 
+        }
+    }
+
 }

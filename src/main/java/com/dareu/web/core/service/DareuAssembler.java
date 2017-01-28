@@ -10,6 +10,7 @@ import com.dareu.web.dto.response.entity.DiscoverUserAccount;
 import com.dareu.web.dto.response.entity.FriendSearchDescription;
 import com.dareu.web.dto.response.entity.Page;
 import com.dareu.web.dto.response.entity.UserAccount;
+import com.dareu.web.dto.response.entity.UserDescription;
 import java.util.List;
 import javax.persistence.Query;
 
@@ -28,6 +29,7 @@ public interface DareuAssembler {
     /**
      * transform a list of users into a page DTO
      * @param users
+     * @param pageNumber
      * @return 
      */
     public Page<UserAccount> assembleUserAccountPage(List<DareUser> users, int pageNumber); 
@@ -51,10 +53,10 @@ public interface DareuAssembler {
     /**
      * creates a list
      * @param list
-     * @param pageNumber
+     * @param users
      * @return 
      */
-    public Page<DiscoverUserAccount> assembleDiscoverUserAccounts(List<DiscoverUserAccount> list, int pageNumber);
+    public Page<DiscoverUserAccount> assembleDiscoverUserAccounts(List<DiscoverUserAccount> list, Page<DareUser> users);
 
     /**
      * assemble a discover user account from a dare user
@@ -65,12 +67,23 @@ public interface DareuAssembler {
 
     /**
      * transforms friendship requests into friend search descriptions 
-     * @param userId
      * @param friendships
      * @param count
      * @return 
      */
     public List<FriendSearchDescription> transformFriendRequests(List<DareUser> friendships, Long count);
 
+    /**
+     * Assembles a list of dare descriptions
+     * @param dares
+     * @return 
+     */
+    public List<DareDescription> assembleDareDescriptions(List<Dare> dares);
     
+    /**
+     * Assembles a new user description from a dare user entity
+     * @param user
+     * @return 
+     */
+    public UserDescription assembleUserDescription(DareUser user);
 }

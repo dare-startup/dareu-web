@@ -65,4 +65,13 @@ public interface DareService {
      * @throws InvalidRequestException 
      */
     public Response confirmDareRequest(DareConfirmationRequest request)throws InternalApplicationException, InvalidRequestException;
+    
+    /**
+     * Returns a list of dare descriptions using a page number
+     * @param pageNumber
+     * @param authToken
+     * @return
+     * @throws InternalApplicationException 
+     */
+    public Response discoverDares(int pageNumber, String authToken)throws InternalApplicationException;
 }

@@ -7,6 +7,8 @@ package com.dareu.web.data.repository;
 
 import com.dareu.web.data.entity.Dare;
 import com.dareu.web.data.exception.DataAccessException;
+import com.dareu.web.dto.response.entity.DareDescription;
+import com.dareu.web.dto.response.entity.Page;
 import java.util.List;
 
 /**
@@ -54,4 +56,13 @@ public interface DareRepository extends BaseRepository<Dare> {
      * @throws DataAccessException 
      */
     public void confirmDareRequest(String dareId, boolean accepted)throws DataAccessException;
+    
+    /**
+     * 
+     * @param pageNumber
+     * @param userId
+     * @return
+     * @throws DataAccessException 
+     */
+    public Page<DareDescription> discoverDares(int pageNumber, String userId)throws DataAccessException; 
 }

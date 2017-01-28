@@ -5,11 +5,16 @@
  */
 package com.dareu.web.data.repository.impl;
 
+import com.dareu.web.core.service.DareuAssembler;
 import com.dareu.web.data.entity.Dare;
 import com.dareu.web.data.repository.DareRepository;
 import com.dareu.web.data.exception.DataAccessException;
+import com.dareu.web.dto.response.entity.DareDescription;
+import com.dareu.web.dto.response.entity.Page;
+import java.math.BigInteger;
 import java.util.List;
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
@@ -20,6 +25,9 @@ import javax.persistence.Query;
 @Stateless
 public class DareRepositoryImpl extends AbstractRepository<Dare> implements DareRepository {
 
+    @Inject
+    private DareuAssembler assembler;
+    
     public DareRepositoryImpl() {
         super(Dare.class);
     }
@@ -80,6 +88,37 @@ public class DareRepositoryImpl extends AbstractRepository<Dare> implements Dare
             q.executeUpdate();
         }catch(Exception ex){
             throw new DataAccessException("Could not update dare confirmation: " + ex.getMessage(), ex);
+        }
+    }
+
+    @Override
+    public Page<DareDescription> discoverDares(int pageNumber, String userId) throws DataAccessException {
+        Page<DareDescription> daresPage; 
+        List<Dare> dares; 
+        List<DareDescription> descs;
+        Long count;
+        try{
+            Query q = em.createQuery("SELECT d FROM Dare d WHERE d.challengedUser.id <> :userId AND d.challengerUser.id <> :userId")
+                    .setParameter("userId", userId)
+                    .setMaxResults(DEFAULT_PAGE_NUMBER)
+                    .setFirstResult(getFirstResult(pageNumber));
+            
+            dares = q.getResultList();
+            
+            //get count 
+            q = em.createQuery("SELECT COUNT(d.id) FROM Dare d WHERE d.challengedUser.id <> :userId AND d.challengerUser.id <> :userId")
+                    .setParameter("userId", userId);
+            count = (Long)q.getSingleResult();
+            
+            daresPage = new Page<DareDescription>();
+            daresPage.setPageNumber(pageNumber);
+            daresPage.setPageSize(DEFAULT_PAGE_NUMBER);
+            daresPage.setPagesAvailable(getPagesAvailable(pageNumber, count.intValue()));
+            descs = assembler.assembleDareDescriptions(dares);
+            daresPage.setItems(descs);
+            return daresPage;
+        }catch(Exception ex){
+            throw new DataAccessException("Could not get dares: " + ex.getMessage());
         }
     }
     

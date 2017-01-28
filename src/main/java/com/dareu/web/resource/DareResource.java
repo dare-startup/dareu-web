@@ -66,6 +66,14 @@ public class DareResource {
     public Response findUnacceptedDare(@HeaderParam("Authorization")String auth) throws InternalApplicationException{
         return dareService.findUnacceptedDare(auth);
     }
+    
+    @Path("discover")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Secured
+    public Response discoverDares(@QueryParam("pageNumber")int pageNumber, @HeaderParam("Authorization")String authToken)throws InternalApplicationException{
+        return dareService.discoverDares(pageNumber, authToken);
+    }
 
     
 

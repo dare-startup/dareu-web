@@ -17,7 +17,7 @@ public class AppConfig extends Application{
 		config.setTitle("DareU API documentation");
 		config.setContact("Alberto Rubalcaba: albertoruvel@gmail.com, Hector Mendoza: roar109@gmail.com");
 		
-		config.setBasePath("dareu/rest");
+		config.setBasePath("dareu-services/rest");
 		config.setResourcePackage("com.dareu.web.resource");
 		config.setScan(true); 
 	}

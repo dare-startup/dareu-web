@@ -8,6 +8,8 @@ import com.dareu.web.data.entity.DareUser;
 import com.dareu.web.data.repository.DareUserRepository;
 import com.dareu.web.data.exception.AuthenticationException;
 import com.dareu.web.data.exception.DataAccessException;
+import com.dareu.web.dto.response.entity.Page;
+import java.math.BigInteger;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -189,7 +191,7 @@ public class DareUserRepositoryImpl extends AbstractRepository<DareUser> impleme
                         .setParameter("id", userId);
             else query = em.createQuery("SELECT u FROM User u");
             query.setMaxResults(DEFAULT_PAGE_NUMBER)
-                 .setFirstResult((pageNumber * DEFAULT_PAGE_NUMBER) - DEFAULT_PAGE_NUMBER); 
+                    .setFirstResult(getFirstResult(pageNumber)); 
             users = query.getResultList(); 
             return users; 
         }catch(Exception ex){
@@ -197,7 +199,7 @@ public class DareUserRepositoryImpl extends AbstractRepository<DareUser> impleme
         }
     }
 
-    public List<DareUser> discoverUsers(int pageNumber, String userId) throws DataAccessException {
+    public Page<DareUser> discoverUsers(int pageNumber, String userId) throws DataAccessException {
         try{
             //list
             Query q = em.createNativeQuery("select * from dareu_user "
@@ -220,8 +222,15 @@ public class DareUserRepositoryImpl extends AbstractRepository<DareUser> impleme
                     .setParameter(2, userId)
                     .setParameter(3, userId)
                     .setParameter(4, userId);
+            BigInteger count = (BigInteger)q.getSingleResult();
             
-            return users;
+            //creates a new page 
+            Page<DareUser> page = new Page<DareUser>();
+            page.setItems(users);
+            page.setPageNumber(pageNumber);
+            page.setPageSize(DEFAULT_PAGE_NUMBER);
+            page.setPagesAvailable(getPagesAvailable(pageNumber, count.intValue()));
+            return page;
         }catch(Exception ex){
             throw new DataAccessException("");
         }
