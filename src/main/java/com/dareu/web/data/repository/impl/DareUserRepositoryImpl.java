@@ -76,8 +76,8 @@ public class DareUserRepositoryImpl extends AbstractRepository<DareUser> impleme
     public DareUser login(String nickname, String pass) throws AuthenticationException {
         DareUser user = null;
         try {
-            Query q = em.createQuery("SELECT u FROM User u WHERE u.nickname = :nickname AND u.password = :password")
-                    .setParameter("nickname", nickname)
+            Query q = em.createQuery("SELECT u FROM User u WHERE u.email = :email AND u.password = :password")
+                    .setParameter("email", nickname)
                     .setParameter("password", pass);
 
             user = (DareUser) q.getSingleResult();

@@ -113,7 +113,7 @@ public class AccountServiceImpl extends AbstractService implements AccountServic
         user.setRole(SecurityRole.USER);
         user.setuScore(0);
         user.setBirthday(request.getBirthday());
-        user.setImagePath("");;
+        user.setImagePath("");
         //save the entity 
         try {
             dareUserRepository.registerDareUser(user);

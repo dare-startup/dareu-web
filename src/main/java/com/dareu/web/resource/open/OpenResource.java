@@ -42,7 +42,9 @@ public class OpenResource {
     
     /**
      * check if a nickname is available
+     * @param email
      * @return 
+     * @throws com.dareu.web.exception.InternalApplicationException 
      */
     @Path("emailAvailable/{email}")
     @GET
@@ -53,7 +55,9 @@ public class OpenResource {
     
     /**
      * Register a new user
+     * @param input
      * @return 
+     * @throws java.lang.Exception 
      */
     @Path("registerUser")
     @Consumes(MediaType.APPLICATION_JSON)
