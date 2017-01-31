@@ -28,39 +28,17 @@ public class DareuMessagingServiceImpl implements DareuMessagingService {
 
     private Logger log = Logger.getLogger(DareuMessagingServiceImpl.class.getName());
     
+    @Inject
     private FcmClient client; 
     
     private static final FcmMessageOptions options = FcmMessageOptions.builder()
-                .setTimeToLive(Duration.ofHours(6))
-                .setDelayWhileIdle(true)
-                .setPriorityEnum(PriorityEnum.High)
-                .build();
+            .setTimeToLive(Duration.ofHours(6))
+            .setDelayWhileIdle(true)
+            .setPriorityEnum(PriorityEnum.High)
+            .build();
 
-    @Inject
-    public DareuMessagingServiceImpl(
-            @ApplicationProperty(name = "com.dareu.web.message.config", type = ApplicationProperty.Types.SYSTEM) String configurationFile, 
-            @ApplicationProperty(name = "com.dareu.web.message.database.url", type = ApplicationProperty.Types.SYSTEM) String databaseUrl, 
-            @ApplicationProperty(name = "com.dareu.web.message.properties", type = ApplicationProperty.Types.SYSTEM) String propertiesFile) {
-        try{
-            //log properties 
-            log.info("Json Config File: " + configurationFile);
-            log.info("Firebase Database URL: " + databaseUrl); 
-            log.info("Firebase Messaging Properties: " + propertiesFile);
-            
-            FirebaseOptions options = new FirebaseOptions.Builder()
-                .setServiceAccount(new FileInputStream(configurationFile))
-                .setDatabaseUrl(databaseUrl)
-                .build(); 
-            FirebaseApp.initializeApp(options); 
-            
-            //read properties file 
-            PropertiesBasedSettings settings = PropertiesBasedSettings.createFromFile(Paths.get(propertiesFile), Charset.forName("UTF-8"));
-            client = new FcmClient(settings); 
-        }catch(FileNotFoundException ex){
-            log.severe("Could not find Firebase configuration file: " + ex.getMessage());
-        } catch(Exception ex){
-            log.severe("Could not create Firebase configuration: " + ex.getMessage()); 
-        }
+    public DareuMessagingServiceImpl() {
+        
     }
 
     @Override
