@@ -114,8 +114,11 @@ public class DareServiceImpl implements DareService {
 
             //send push notification to the dared user 
             String dareUserFcmToken = dareUserRepository.getUserFcmToken(challengedUser.getId()); 
-            if(dareUserFcmToken != null && ! dareUserFcmToken.isEmpty())
+            if(dareUserFcmToken != null && ! dareUserFcmToken.isEmpty()){
                 messagingService.sendNewDareNotification(dare, dareUserFcmToken);
+                log.info("Sending FCM message to " + challengedUser.getName());
+            }
+                
             
             //return response
             return Response
