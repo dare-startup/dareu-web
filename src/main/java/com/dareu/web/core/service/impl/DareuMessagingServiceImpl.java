@@ -11,6 +11,7 @@ import com.dareu.web.dto.response.message.NewDareMessage;
 import com.github.roar109.syring.annotation.ApplicationProperty;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
+import com.google.gson.Gson;
 import de.bytefish.fcmjava.client.FcmClient;
 import de.bytefish.fcmjava.client.settings.PropertiesBasedSettings;
 import de.bytefish.fcmjava.model.enums.PriorityEnum;
@@ -31,6 +32,8 @@ public class DareuMessagingServiceImpl implements DareuMessagingService {
     @Inject
     private FcmClient client; 
     
+    
+    
     private static final FcmMessageOptions options = FcmMessageOptions.builder()
             .setTimeToLive(Duration.ofHours(6))
             .setDelayWhileIdle(true)
@@ -50,7 +53,7 @@ public class DareuMessagingServiceImpl implements DareuMessagingService {
         message.setDareId(dare.getId());
         message.setDareName(dare.getName());
         message.setTimer(dare.getEstimatedDareTime());
-        client.send(new DataUnicastMessage(options, fcmToken, message)); 
+        client.send(new DataUnicastMessage(options, fcmToken, new Gson().toJson(message))); 
     }
 
 }
