@@ -26,8 +26,7 @@ import java.time.Duration;
 
 public class DareuMessagingServiceImpl implements DareuMessagingService {
 
-    @Inject
-    private Logger log;
+    private Logger log = Logger.getLogger(DareuMessagingServiceImpl.class.getName());
     
     private FcmClient client; 
     
@@ -43,6 +42,11 @@ public class DareuMessagingServiceImpl implements DareuMessagingService {
             @ApplicationProperty(name = "com.dareu.web.message.database.url", type = ApplicationProperty.Types.SYSTEM) String databaseUrl, 
             @ApplicationProperty(name = "com.dareu.web.message.properties", type = ApplicationProperty.Types.SYSTEM) String propertiesFile) {
         try{
+            //log properties 
+            log.info("Json Config File: " + configurationFile);
+            log.info("Firebase Database URL: " + databaseUrl); 
+            log.info("Firebase Messaging Properties: " + propertiesFile);
+            
             FirebaseOptions options = new FirebaseOptions.Builder()
                 .setServiceAccount(new FileInputStream(configurationFile))
                 .setDatabaseUrl(databaseUrl)
