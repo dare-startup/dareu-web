@@ -22,6 +22,7 @@ import com.dareu.web.dto.response.EntityRegistrationResponse;
 import com.dareu.web.dto.response.EntityRegistrationResponse.RegistrationType;
 import com.dareu.web.data.exception.DataAccessException;
 import com.dareu.web.core.service.DareuAssembler;
+import com.dareu.web.core.service.DareuMessagingService;
 import com.dareu.web.dto.request.DareConfirmationRequest;
 import com.dareu.web.dto.response.UpdatedEntityResponse;
 import com.dareu.web.dto.response.entity.CategoryDescription;
@@ -45,6 +46,9 @@ public class DareServiceImpl implements DareService {
     
     @Inject
     private DareuAssembler assembler; 
+    
+    @Inject
+    private DareuMessagingService messagingService; 
 
     @Inject
     private Logger log;
@@ -108,6 +112,12 @@ public class DareServiceImpl implements DareService {
             String id = dareRepository.createDare(dare);
             log.info("Successfully created new dare with id: " + id);
 
+            //send push notification to the dared user 
+            String dareUserFcmToken = dareUserRepository.getUserFcmToken(challengedUser.getId()); 
+            if(dareUserFcmToken != null && ! dareUserFcmToken.isEmpty())
+                messagingService.sendNewDareNotification(dare, dareUserFcmToken);
+            
+            //return response
             return Response
                     .ok(new EntityRegistrationResponse("Successfully created new dare",
                                     RegistrationType.DARE,

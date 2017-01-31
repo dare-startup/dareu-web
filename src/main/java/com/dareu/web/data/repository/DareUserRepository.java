@@ -136,4 +136,12 @@ public interface DareUserRepository extends BaseRepository<DareUser> {
      * @throws DataAccessException 
      */
     public Page<DareUser> discoverUsers(int pageNumber, String userId) throws DataAccessException;
+    
+    /**
+     * Finds a FCM token using a user id 
+     * @param userId
+     * @return
+     * @throws DataAccessException 
+     */
+    public String getUserFcmToken(String userId)throws DataAccessException; 
 }

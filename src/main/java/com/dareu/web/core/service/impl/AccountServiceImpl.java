@@ -33,6 +33,7 @@ import com.dareu.web.data.repository.DareRepository;
 import com.dareu.web.data.repository.DareResponseRepository;
 import com.dareu.web.dto.security.PasswordEncryptor;
 import com.dareu.web.dto.response.BadRequestResponse;
+import com.dareu.web.dto.response.UpdatedEntityResponse;
 import com.dareu.web.dto.response.entity.DiscoverUserAccount;
 import com.dareu.web.dto.response.entity.FriendSearchDescription;
 import com.dareu.web.dto.response.entity.Page;
@@ -296,7 +297,7 @@ public class AccountServiceImpl extends AbstractService implements AccountServic
             dareUserRepository.updateFcmRegId(regId, auth);
 
             //return response 
-            return Response.ok()
+            return Response.ok(new UpdatedEntityResponse("Registration ID successfully updated", true, "user"))
                     .build();
         } catch (DataAccessException ex) {
             throw new InternalApplicationException("Could not update FCM: " + ex.getMessage());

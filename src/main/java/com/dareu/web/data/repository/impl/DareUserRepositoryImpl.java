@@ -232,7 +232,19 @@ public class DareUserRepositoryImpl extends AbstractRepository<DareUser> impleme
             page.setPagesAvailable(getPagesAvailable(pageNumber, count.intValue()));
             return page;
         }catch(Exception ex){
-            throw new DataAccessException("");
+            throw new DataAccessException(ex.getMessage());
+        }
+    }
+
+    public String getUserFcmToken(String userId) throws DataAccessException {
+        try{
+            Query q = em.createQuery("SELECT u.GCM FROM User u WHERE u.id = :id")
+                    .setParameter("id", userId); 
+            
+            String fcm = (String)q.getSingleResult(); 
+            return fcm; 
+        }catch(Exception ex){
+            throw new DataAccessException(ex.getMessage());
         }
     }
 
