@@ -53,7 +53,7 @@ public class DareuMessagingServiceImpl implements DareuMessagingService {
         message.setDareId(dare.getId());
         message.setDareName(dare.getName());
         message.setTimer(dare.getEstimatedDareTime());
-        client.send(new DataUnicastMessage(options, fcmToken, new Gson().toJson(message))); 
+        client.send(new DataUnicastMessage(options, fcmToken, message)); 
     }
 
 }
