@@ -7,6 +7,9 @@ import javax.inject.Inject;
 import com.dareu.web.core.service.DareuMessagingService;
 import com.dareu.web.data.entity.Dare;
 import com.dareu.web.data.entity.DareUser;
+import com.dareu.web.data.entity.Friendship;
+import com.dareu.web.data.entity.FriendshipRequest;
+import com.dareu.web.dto.response.message.ConnectionRequestMessage;
 import com.dareu.web.dto.response.message.NewDareMessage;
 import com.github.roar109.syring.annotation.ApplicationProperty;
 import com.google.firebase.FirebaseApp;
@@ -42,6 +45,16 @@ public class DareuMessagingServiceImpl implements DareuMessagingService {
 
     public DareuMessagingServiceImpl() {
         
+    }
+    
+    @Override
+    public void sendConnectionRequestedNotification(FriendshipRequest friendship, String fcmToken){
+        ConnectionRequestMessage message = new ConnectionRequestMessage(); 
+        message.setFriendshipId(friendship.getId());
+        message.setRequestUserId(friendship.getUser().getId());
+        message.setUserName(friendship.getUser().getName());
+        
+        client.send(new DataUnicastMessage(options, fcmToken, message));
     }
 
     @Override

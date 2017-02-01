@@ -86,4 +86,11 @@ public interface DareuAssembler {
      * @return 
      */
     public UserDescription assembleUserDescription(DareUser user);
+    
+    /**
+     * Assembles a new dare description
+     * @param dare
+     * @return 
+     */
+    public DareDescription assembleDareDescription(Dare dare); 
 }

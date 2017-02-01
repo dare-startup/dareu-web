@@ -77,6 +77,15 @@ public class DareuAssemblerImpl implements DareuAssembler{
         page.setPageSize(20);
         return page; 
     }
+    
+    @Override 
+    public DareDescription assembleDareDescription(Dare dare){
+        DareDescription desc = new DareDescription(dare.getId(), dare.getName(), dare.getDescription(), 
+                    dare.getCategory().getName(), String.format("%d hours", dare.getEstimatedDareTime()), 
+                    DareUtils.DATE_FORMAT.format(dare.getCreationDate()));
+            desc.setChallenger(assembleUserDescription(dare.getChallengerUser()));
+            return desc; 
+    }
 
     @Override
     public Page<DiscoverUserAccount> assembleDiscoverUserAccounts(List<DiscoverUserAccount> list, Page<DareUser> users) {

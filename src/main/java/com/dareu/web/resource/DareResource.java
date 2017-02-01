@@ -84,4 +84,12 @@ public class DareResource {
     public Response getCategories(@QueryParam("pageNumber")int pageNumber) throws InternalApplicationException {
         return dareService.getCategories(pageNumber);
     }
+    
+    @Path("find")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Secured
+    public Response findDareDescription(@QueryParam("dareId")String dareId)throws InternalApplicationException, InvalidRequestException{
+        return dareService.findDareDescription(dareId); 
+    }
 }

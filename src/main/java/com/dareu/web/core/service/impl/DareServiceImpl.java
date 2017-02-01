@@ -4,7 +4,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 
-import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.ws.rs.core.Response;
 
@@ -265,6 +264,22 @@ public class DareServiceImpl implements DareService {
                     .build();
         }catch(DataAccessException ex){
             throw new InternalApplicationException(ex.getMessage(), ex); 
+        }
+    }
+
+    public Response findDareDescription(String dareId) throws InternalApplicationException, InvalidRequestException {
+        if(dareId == null || dareId.isEmpty())
+            throw new InvalidRequestException("dareId must be provided"); 
+        
+        try{
+            Dare dare = dareRepository.find(dareId); 
+            
+            DareDescription desc = assembler.assembleDareDescription(dare); 
+            
+            return Response.ok(desc)
+                    .build(); 
+        }catch(DataAccessException ex){
+            throw new InternalApplicationException(ex.getMessage()); 
         }
     }
 

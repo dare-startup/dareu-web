@@ -74,4 +74,13 @@ public interface DareService {
      * @throws InternalApplicationException 
      */
     public Response discoverDares(int pageNumber, String authToken)throws InternalApplicationException;
+    
+    /**
+     * 
+     * @param dareId
+     * @return
+     * @throws InternalApplicationException
+     * @throws InvalidRequestException 
+     */
+    public Response findDareDescription(String dareId)throws InternalApplicationException, InvalidRequestException; 
 }

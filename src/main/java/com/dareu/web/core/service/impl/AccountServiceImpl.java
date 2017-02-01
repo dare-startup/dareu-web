@@ -29,6 +29,7 @@ import com.dareu.web.dto.response.ResourceAvailableResponse;
 import com.dareu.web.data.exception.AuthenticationException;
 import com.dareu.web.data.exception.DataAccessException;
 import com.dareu.web.core.service.DareuAssembler;
+import com.dareu.web.core.service.DareuMessagingService;
 import com.dareu.web.data.repository.DareRepository;
 import com.dareu.web.data.repository.DareResponseRepository;
 import com.dareu.web.dto.security.PasswordEncryptor;
@@ -88,6 +89,9 @@ public class AccountServiceImpl extends AbstractService implements AccountServic
     @Inject
     private DareuAssembler assembler;
 
+    @Inject
+    private DareuMessagingService messagingService; 
+    
     @Override
     public Response registerDareUser(SignupRequest request)
             throws EntityRegistrationException, InternalApplicationException {
@@ -231,8 +235,11 @@ public class AccountServiceImpl extends AbstractService implements AccountServic
                 friendship.setUser(user);
                 //try to persist
                 String id = friendshipRepository.persist(friendship);
-
-                //TODO send PUSH notification to both users 
+                
+                String fcmToken = friendship.getRequestedUser().getGCM();
+                
+                if(fcmToken != null && !fcmToken.isEmpty())
+                    messagingService.sendConnectionRequestedNotification(friendship, fcmToken);
                 return Response
                         .ok(new EntityRegistrationResponse("Friendship request sent to " + requestedUser.getName(),
                                         RegistrationType.FRIENDSHIP_REQUEST,
