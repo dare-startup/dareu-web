@@ -88,12 +88,12 @@ public interface AccountService {
 
     /**
      * 
-     * @param userId
+     * @param auth
      * @return
      * @throws InvalidRequestException
      * @throws InternalApplicationException 
      */
-    public Response getAccountImage(String userId) throws InvalidRequestException, InternalApplicationException;
+    public Response getAccountImage(String auth) throws InvalidRequestException, InternalApplicationException;
     
     /**
      * return a user using an email

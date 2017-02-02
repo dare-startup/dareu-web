@@ -127,6 +127,7 @@ public class AccountResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @POST
+    @Secured
     public Response updateImage(MultipartFormDataInput input, @HeaderParam("Authorization")String auth)throws InternalApplicationException{
         return accountService.updateProfileImage(input, auth);  
     }
@@ -134,8 +135,9 @@ public class AccountResource {
     @Path("me/profile")
     @Produces(MediaType.APPLICATION_JSON)
     @GET
-    public Response getImage(MultipartFormDataInput input, @HeaderParam("Authorization")String auth)throws InternalApplicationException{
-        return accountService.updateProfileImage(input, auth);  
+    @Secured
+    public Response getImage(@HeaderParam("Authorization")String auth)throws InternalApplicationException, InvalidRequestException{
+        return accountService.getAccountImage(auth);
     }
     
 
