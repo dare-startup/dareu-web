@@ -26,6 +26,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 
 @Path("account/")
 @Api(basePath = "account", description = "Process requests regarding to Account operations", value = "/account",
@@ -113,6 +114,30 @@ public class AccountResource {
     public Response responseFriendship(@PathParam(value = "userId")String userId, @QueryParam(value = "accepted")Boolean accepted) throws InvalidRequestException, InternalApplicationException {
         return accountService.friendshipResponse(userId, accepted);
     }
+    
+    @Path("friendship/find")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Secured
+    public Response findFriendshipDetails(@QueryParam("friendshipId")String friendshipId, @HeaderParam("Authorization")String auth) throws InternalApplicationException, InvalidRequestException{
+        return accountService.findFriendshipDetails(friendshipId, auth); 
+    } 
+    
+    @Path("me/profile")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @POST
+    public Response updateImage(MultipartFormDataInput input, @HeaderParam("Authorization")String auth)throws InternalApplicationException{
+        return accountService.updateProfileImage(input, auth);  
+    }
+    
+    @Path("me/profile")
+    @Produces(MediaType.APPLICATION_JSON)
+    @GET
+    public Response getImage(MultipartFormDataInput input, @HeaderParam("Authorization")String auth)throws InternalApplicationException{
+        return accountService.updateProfileImage(input, auth);  
+    }
+    
 
     @Path("getAccountImage/{userId}")
     @Produces("image/jpeg")

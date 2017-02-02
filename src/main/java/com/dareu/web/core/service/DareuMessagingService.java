@@ -19,4 +19,11 @@ public interface DareuMessagingService {
      * @param fcmToken 
      */
     public void sendConnectionRequestedNotification(FriendshipRequest friendship, String fcmToken); 
+
+    /**
+     * Send a connection accepted to the friendship creator
+     * @param userFcmToken
+     * @param f 
+     */
+    public void sendConnectionAcceptedNotification(String userFcmToken, FriendshipRequest f);
 }

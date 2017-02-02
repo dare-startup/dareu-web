@@ -248,4 +248,15 @@ public class DareUserRepositoryImpl extends AbstractRepository<DareUser> impleme
         }
     }
 
+    public void updateImageUrl(String id) throws DataAccessException {
+        try{
+            Query q = em.createQuery("UPDATE User u SET u.imagePath = :id WHERE u.id = :id")
+                    .setParameter("id", id); 
+            
+            q.executeUpdate(); 
+        }catch(Exception ex){
+            throw new DataAccessException(ex.getMessage()); 
+        }
+    }
+
 }

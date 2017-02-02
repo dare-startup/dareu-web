@@ -7,6 +7,7 @@ import com.dareu.web.data.entity.DareUser;
 import com.dareu.web.core.service.DareuAssembler;
 import com.dareu.web.data.entity.FriendshipRequest;
 import com.dareu.web.dto.response.entity.CategoryDescription;
+import com.dareu.web.dto.response.entity.ConnectionDetails;
 import com.dareu.web.dto.response.entity.DareDescription;
 import com.dareu.web.dto.response.entity.DiscoverUserAccount;
 import com.dareu.web.dto.response.entity.FriendSearchDescription;
@@ -132,6 +133,20 @@ public class DareuAssemblerImpl implements DareuAssembler{
     @Override
     public UserDescription assembleUserDescription(DareUser user) {
         return new UserDescription(user.getId(), user.getName(), user.getImagePath(), user.getUserSince());
+    }
+
+    public ConnectionDetails assembleConnectionDetails(FriendshipRequest request) {
+        ConnectionDetails details = new ConnectionDetails(); 
+        
+        details.setAccepted(request.isAccepted());
+        details.setCreationDate(request.getRequestDate());
+        details.setRequestedUserId(request.getRequestedUser().getId());
+        details.setRequestedUserImageUrl(request.getRequestedUser().getImagePath());
+        details.setRequestedUserName(request.getRequestedUser().getName());
+        details.setUserId(request.getUser().getId());
+        details.setUserImageUrl(request.getUser().getImagePath());
+        details.setUserName(request.getUser().getName());
+        return details; 
     }
     
 }

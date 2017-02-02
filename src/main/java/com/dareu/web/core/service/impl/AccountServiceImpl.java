@@ -35,6 +35,7 @@ import com.dareu.web.data.repository.DareResponseRepository;
 import com.dareu.web.dto.security.PasswordEncryptor;
 import com.dareu.web.dto.response.BadRequestResponse;
 import com.dareu.web.dto.response.UpdatedEntityResponse;
+import com.dareu.web.dto.response.entity.ConnectionDetails;
 import com.dareu.web.dto.response.entity.DiscoverUserAccount;
 import com.dareu.web.dto.response.entity.FriendSearchDescription;
 import com.dareu.web.dto.response.entity.Page;
@@ -48,13 +49,18 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Map;
 
 import javax.ejb.Stateless;
 import javax.imageio.ImageIO;
 import javax.inject.Inject;
+import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
+import org.apache.commons.io.IOUtils;
 
 import org.apache.commons.lang3.StringUtils;
+import org.jboss.resteasy.plugins.providers.multipart.InputPart;
+import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 
 /**
  *
@@ -90,8 +96,8 @@ public class AccountServiceImpl extends AbstractService implements AccountServic
     private DareuAssembler assembler;
 
     @Inject
-    private DareuMessagingService messagingService; 
-    
+    private DareuMessagingService messagingService;
+
     @Override
     public Response registerDareUser(SignupRequest request)
             throws EntityRegistrationException, InternalApplicationException {
@@ -235,11 +241,13 @@ public class AccountServiceImpl extends AbstractService implements AccountServic
                 friendship.setUser(user);
                 //try to persist
                 String id = friendshipRepository.persist(friendship);
-                
+
                 String fcmToken = friendship.getRequestedUser().getGCM();
-                
-                if(fcmToken != null && !fcmToken.isEmpty())
+
+                if (fcmToken != null && !fcmToken.isEmpty()) {
                     messagingService.sendConnectionRequestedNotification(friendship, fcmToken);
+                }
+
                 return Response
                         .ok(new EntityRegistrationResponse("Friendship request sent to " + requestedUser.getName(),
                                         RegistrationType.FRIENDSHIP_REQUEST,
@@ -260,9 +268,7 @@ public class AccountServiceImpl extends AbstractService implements AccountServic
             throws InvalidRequestException, InternalApplicationException {
         if (userId == null) {
             throw new InvalidRequestException("Invalid friendship response body");
-        }
-
-        if (accepted == null) {
+        }else if (accepted == null) {
             throw new InvalidRequestException("Invalid friendship id provided");
         }
 
@@ -270,17 +276,20 @@ public class AccountServiceImpl extends AbstractService implements AccountServic
         FriendshipRequest f = null;
         try {
             f = friendshipRepository.findFriendship(userId, getPrincipal().getId());
-
             if (f == null) {
                 throw new InvalidRequestException("Friendship id not valid");
             }
-
-            //update
-            f.setAccepted(accepted);
-
-            friendshipRepository.updateFriendhip(f.isAccepted(), f.getId());
-
-            //TODO: send push notifications to both users here
+            friendshipRepository.updateFriendhip(accepted, f.getId());
+            
+            if(accepted){
+                //get fcm token from user id 
+                String userFcmToken = dareUserRepository.getUserFcmToken(f.getUser().getGCM()); 
+                if(userFcmToken != null && ! userFcmToken.isEmpty()) //check if user updated token
+                    messagingService.sendConnectionAcceptedNotification(userFcmToken, f);
+                }   
+                
+            //send notification to requested user 
+            //
             return Response
                     .ok(new EntityRegistrationResponse("You are now friends with " + f.getUser().getName(),
                                     RegistrationType.FRIENDSHIP_RESPONSE,
@@ -425,4 +434,70 @@ public class AccountServiceImpl extends AbstractService implements AccountServic
             throw new InternalApplicationException("Could not find friends: " + ex.getMessage());
         }
     }
+
+    public Response findFriendshipDetails(String friendshipId, String auth) throws InternalApplicationException, InvalidRequestException{
+        ConnectionDetails details; 
+        
+        if(friendshipId == null || friendshipId.isEmpty())
+            throw new InvalidRequestException("Friendship ID must be provided"); 
+        
+        try{
+            FriendshipRequest request = friendshipRepository.find(friendshipId); 
+            if(request == null)
+                throw new InvalidRequestException("This connection does not exists"); 
+            
+            details = assembler.assembleConnectionDetails(request); 
+            return Response.ok(details)
+                    .build(); 
+        }catch(DataAccessException ex){
+            throw new InternalApplicationException(ex.getMessage()); 
+        }
+    }
+
+    public Response updateProfileImage(MultipartFormDataInput input, String auth) throws InternalApplicationException {
+        Map<String, List<InputPart>> map = input.getFormDataMap(); 
+        List<InputPart> inputParts = map.get("image"); 
+        String fileName; 
+        for(InputPart part : inputParts){
+            try{
+                MultivaluedMap<String, String> header = part.getHeaders(); 
+                fileName = getFileName(header); 
+                
+                log.info("Received new file " + fileName);
+                InputStream stream = part.getBody(InputStream.class, null);
+                
+                //get user id 
+                DareUser dareUser = dareUserRepository.findUserByToken(auth); 
+                fileService.saveFile(stream, FileType.PROFILE_IMAGE, dareUser.getId() + ".jpg"); 
+                
+                //update file path 
+                dareUserRepository.updateImageUrl(dareUser.getId());
+                
+                
+                return Response.ok(new UpdatedEntityResponse("Image has been updated", true, "user"))
+                        .build();
+            }catch(IOException ex){
+                throw new InternalApplicationException(ex.getMessage());
+            }catch(DataAccessException ex){
+                throw new InternalApplicationException(ex.getMessage());
+            }
+        }
+        return null;
+    }
+    
+    private String getFileName(MultivaluedMap<String, String> header) {
+
+		String[] contentDisposition = header.getFirst("Content-Disposition").split(";");
+
+		for (String filename : contentDisposition) {
+			if ((filename.trim().startsWith("filename"))) {
+
+				String[] name = filename.split("=");
+
+				String finalFileName = name[1].trim().replaceAll("\"", "");
+				return finalFileName;
+			}
+		}
+		return "unknown";
+	}
 }

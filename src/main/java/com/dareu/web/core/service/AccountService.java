@@ -13,6 +13,7 @@ import com.dareu.web.data.exception.AuthenticationException;
 import com.dareu.web.exception.EntityRegistrationException;
 import com.dareu.web.exception.InternalApplicationException;
 import com.dareu.web.exception.InvalidRequestException;
+import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 /**
  *
  * @author MACARENA
@@ -127,5 +128,23 @@ public interface AccountService {
      * @throws InternalApplicationException 
      */
     public Response findFriends(int pageNumber, String query) throws InternalApplicationException;
+
+    /**
+     * Returns details about a registered connection
+     * @param friendshipId
+     * @param auth
+     * @return 
+     * @throws com.dareu.web.exception.InternalApplicationException 
+     * @throws com.dareu.web.exception.InvalidRequestException 
+     */
+    public Response findFriendshipDetails(String friendshipId, String auth) throws InternalApplicationException, InvalidRequestException;
+
+    /**
+     * Updates a profile image 
+     * @param input
+     * @param auth
+     * @return 
+     */
+    public Response updateProfileImage(MultipartFormDataInput input, String auth)throws InternalApplicationException;
     
 }

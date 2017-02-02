@@ -9,6 +9,7 @@ import com.dareu.web.data.entity.Dare;
 import com.dareu.web.data.entity.DareUser;
 import com.dareu.web.data.entity.Friendship;
 import com.dareu.web.data.entity.FriendshipRequest;
+import com.dareu.web.dto.response.message.ConnectionAcceptedMessage;
 import com.dareu.web.dto.response.message.ConnectionRequestMessage;
 import com.dareu.web.dto.response.message.NewDareMessage;
 import com.github.roar109.syring.annotation.ApplicationProperty;
@@ -47,6 +48,8 @@ public class DareuMessagingServiceImpl implements DareuMessagingService {
         
     }
     
+   
+    
     @Override
     public void sendConnectionRequestedNotification(FriendshipRequest friendship, String fcmToken){
         ConnectionRequestMessage message = new ConnectionRequestMessage(); 
@@ -67,6 +70,13 @@ public class DareuMessagingServiceImpl implements DareuMessagingService {
         message.setDareName(dare.getName());
         message.setTimer(dare.getEstimatedDareTime());
         client.send(new DataUnicastMessage(options, fcmToken, message)); 
+    }
+
+    public void sendConnectionAcceptedNotification(String userFcmToken, FriendshipRequest f) {
+        ConnectionAcceptedMessage message = new ConnectionAcceptedMessage();
+        message.setFriendshipId(f.getId());
+        
+        client.send(new DataUnicastMessage(options, userFcmToken, message));
     }
 
 }

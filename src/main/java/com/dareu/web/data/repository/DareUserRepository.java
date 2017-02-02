@@ -144,4 +144,11 @@ public interface DareUserRepository extends BaseRepository<DareUser> {
      * @throws DataAccessException 
      */
     public String getUserFcmToken(String userId)throws DataAccessException; 
+
+    /**
+     * 
+     * @param id
+     * @throws DataAccessException 
+     */
+    public void updateImageUrl(String id) throws DataAccessException;
 }
