@@ -132,21 +132,21 @@ public class AccountResource {
         return accountService.updateProfileImage(input, auth);  
     }
     
-    @Path("me/profile")
+    /**@Path("me/profile")
     @Produces(MediaType.APPLICATION_JSON)
     @GET
     @Secured
     public Response getImage(@HeaderParam("Authorization")String auth)throws InternalApplicationException, InvalidRequestException{
         return accountService.getAccountImage(auth);
-    }
+    }**/
     
 
-    @Path("getAccountImage/{userId}")
+    @Path("me/profile")
     @Produces("image/jpeg")
     @GET
     @Secured
-    public Response getImage(@PathParam("userId")String userId) throws InvalidRequestException, InternalApplicationException{
-        return accountService.getAccountImage(userId); 
+    public Response getImage(@HeaderParam("Authorization")String auth) throws InvalidRequestException, InternalApplicationException{
+        return accountService.getAccountImage(auth); 
     }
     
     @Path("discoverUsers")
