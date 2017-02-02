@@ -331,13 +331,15 @@ public class AccountServiceImpl extends AbstractService implements AccountServic
 
         try {
             if (userId == null || userId.isEmpty()) {
+                log.info("Searching user by token");
                 //get image from token
                 user = dareUserRepository.findUserByToken(auth);
-            } else 
+            } else {
+                log.info("Searching user by userId");
                 user = dareUserRepository.find(userId);
-            
-
+            }
             stream = fileService.getFile(user.getId() + ".jpg", FileType.PROFILE_IMAGE);
+            log.info("Image is null: " + (stream == null));
             BufferedImage image = ImageIO.read(stream);
             ByteArrayOutputStream out = new ByteArrayOutputStream();
 
