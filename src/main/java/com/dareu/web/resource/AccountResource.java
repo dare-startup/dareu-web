@@ -140,13 +140,26 @@ public class AccountResource {
         return accountService.getAccountImage(auth);
     }**/
     
-
+    /**
+     *
+     * @param userId
+     * @param auth
+     * @return 
+     * @throws com.dareu.web.exception.InvalidRequestException
+     * @throws com.dareu.web.exception.InternalApplicationException
+     * @Path ("me/profile")
+     * @Produces (MediaType.APPLICATION_JSON)
+     * @GET
+     * @Secured public Response getImage(@HeaderParam("Authorization")String auth)throws InternalApplicationException, InvalidRequestException{
+        return accountService.getAccountImage(auth);
+    }
+     */
     @Path("me/profile")
     @Produces("image/jpeg")
     @GET
     @Secured
-    public Response getImage(@HeaderParam("Authorization")String auth) throws InvalidRequestException, InternalApplicationException{
-        return accountService.getAccountImage(auth); 
+    public Response getImage(@QueryParam("userId") String userId, @HeaderParam("Authorization")String auth) throws InvalidRequestException, InternalApplicationException{
+        return accountService.getAccountImage(userId, auth); 
     }
     
     @Path("discoverUsers")

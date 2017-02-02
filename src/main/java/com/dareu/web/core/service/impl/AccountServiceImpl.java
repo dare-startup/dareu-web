@@ -268,7 +268,7 @@ public class AccountServiceImpl extends AbstractService implements AccountServic
             throws InvalidRequestException, InternalApplicationException {
         if (userId == null) {
             throw new InvalidRequestException("Invalid friendship response body");
-        }else if (accepted == null) {
+        } else if (accepted == null) {
             throw new InvalidRequestException("Invalid friendship id provided");
         }
 
@@ -280,14 +280,16 @@ public class AccountServiceImpl extends AbstractService implements AccountServic
                 throw new InvalidRequestException("Friendship id not valid");
             }
             friendshipRepository.updateFriendhip(accepted, f.getId());
-            
-            if(accepted){
+
+            if (accepted) {
                 //get fcm token from user id 
-                String userFcmToken = dareUserRepository.getUserFcmToken(f.getUser().getGCM()); 
-                if(userFcmToken != null && ! userFcmToken.isEmpty()) //check if user updated token
+                String userFcmToken = dareUserRepository.getUserFcmToken(f.getUser().getGCM());
+                if (userFcmToken != null && !userFcmToken.isEmpty()) //check if user updated token
+                {
                     messagingService.sendConnectionAcceptedNotification(userFcmToken, f);
-                }   
-                
+                }
+            }
+
             //send notification to requested user 
             //
             return Response
@@ -321,14 +323,20 @@ public class AccountServiceImpl extends AbstractService implements AccountServic
     }
 
     @Override
-    public Response getAccountImage(String userId) throws InvalidRequestException, InternalApplicationException {
-        if (userId == null || userId.isEmpty()) {
-            throw new InvalidRequestException("No user id provided");
-        }
+    public Response getAccountImage(String userId, String auth) throws InvalidRequestException, InternalApplicationException {
         //get file 
         InputStream stream = null;
+        String id;
+        DareUser user;
+
         try {
-            DareUser user = dareUserRepository.findUserByToken(userId);
+            if (userId == null || userId.isEmpty()) {
+                //get image from token
+                user = dareUserRepository.findUserByToken(auth);
+            } else 
+                user = dareUserRepository.find(userId);
+            
+
             stream = fileService.getFile(user.getId() + ".jpg", FileType.PROFILE_IMAGE);
             BufferedImage image = ImageIO.read(stream);
             ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -341,7 +349,7 @@ public class AccountServiceImpl extends AbstractService implements AccountServic
             throw new InvalidRequestException("The provided id is not valid");
         } catch (IOException ex) {
             throw new InternalApplicationException("Could not get account profile image: " + ex.getMessage());
-        }catch(DataAccessException ex){
+        } catch (DataAccessException ex) {
             throw new InternalApplicationException(ex.getMessage());
         }
     }
@@ -438,69 +446,70 @@ public class AccountServiceImpl extends AbstractService implements AccountServic
         }
     }
 
-    public Response findFriendshipDetails(String friendshipId, String auth) throws InternalApplicationException, InvalidRequestException{
-        ConnectionDetails details; 
-        
-        if(friendshipId == null || friendshipId.isEmpty())
-            throw new InvalidRequestException("Friendship ID must be provided"); 
-        
-        try{
-            FriendshipRequest request = friendshipRepository.find(friendshipId); 
-            if(request == null)
-                throw new InvalidRequestException("This connection does not exists"); 
-            
-            details = assembler.assembleConnectionDetails(request); 
+    public Response findFriendshipDetails(String friendshipId, String auth) throws InternalApplicationException, InvalidRequestException {
+        ConnectionDetails details;
+
+        if (friendshipId == null || friendshipId.isEmpty()) {
+            throw new InvalidRequestException("Friendship ID must be provided");
+        }
+
+        try {
+            FriendshipRequest request = friendshipRepository.find(friendshipId);
+            if (request == null) {
+                throw new InvalidRequestException("This connection does not exists");
+            }
+
+            details = assembler.assembleConnectionDetails(request);
             return Response.ok(details)
-                    .build(); 
-        }catch(DataAccessException ex){
-            throw new InternalApplicationException(ex.getMessage()); 
+                    .build();
+        } catch (DataAccessException ex) {
+            throw new InternalApplicationException(ex.getMessage());
         }
     }
 
     public Response updateProfileImage(MultipartFormDataInput input, String auth) throws InternalApplicationException {
-        Map<String, List<InputPart>> map = input.getFormDataMap(); 
-        List<InputPart> inputParts = map.get("image"); 
-        String fileName; 
-        for(InputPart part : inputParts){
-            try{
-                MultivaluedMap<String, String> header = part.getHeaders(); 
-                fileName = getFileName(header); 
-                
+        Map<String, List<InputPart>> map = input.getFormDataMap();
+        List<InputPart> inputParts = map.get("image");
+        String fileName;
+        for (InputPart part : inputParts) {
+            try {
+                MultivaluedMap<String, String> header = part.getHeaders();
+                fileName = getFileName(header);
+
                 log.info("Received new file " + fileName);
                 InputStream stream = part.getBody(InputStream.class, null);
-                
+
                 //get user id 
-                DareUser dareUser = dareUserRepository.findUserByToken(auth); 
-                fileService.saveFile(stream, FileType.PROFILE_IMAGE, dareUser.getId() + ".jpg"); 
-                
+                DareUser dareUser = dareUserRepository.findUserByToken(auth);
+                fileService.saveFile(stream, FileType.PROFILE_IMAGE, dareUser.getId() + ".jpg");
+
                 //update file path 
                 dareUserRepository.updateImageUrl(dareUser.getId());
-                
-                
+
                 return Response.ok(new UpdatedEntityResponse("Image has been updated", true, "user"))
                         .build();
-            }catch(IOException ex){
+            } catch (IOException ex) {
                 throw new InternalApplicationException(ex.getMessage());
-            }catch(DataAccessException ex){
+            } catch (DataAccessException ex) {
                 throw new InternalApplicationException(ex.getMessage());
             }
         }
         return null;
     }
-    
+
     private String getFileName(MultivaluedMap<String, String> header) {
 
-		String[] contentDisposition = header.getFirst("Content-Disposition").split(";");
+        String[] contentDisposition = header.getFirst("Content-Disposition").split(";");
 
-		for (String filename : contentDisposition) {
-			if ((filename.trim().startsWith("filename"))) {
+        for (String filename : contentDisposition) {
+            if ((filename.trim().startsWith("filename"))) {
 
-				String[] name = filename.split("=");
+                String[] name = filename.split("=");
 
-				String finalFileName = name[1].trim().replaceAll("\"", "");
-				return finalFileName;
-			}
-		}
-		return "unknown";
-	}
+                String finalFileName = name[1].trim().replaceAll("\"", "");
+                return finalFileName;
+            }
+        }
+        return "unknown";
+    }
 }

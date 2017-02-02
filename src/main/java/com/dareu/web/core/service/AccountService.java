@@ -93,7 +93,7 @@ public interface AccountService {
      * @throws InvalidRequestException
      * @throws InternalApplicationException 
      */
-    public Response getAccountImage(String auth) throws InvalidRequestException, InternalApplicationException;
+    public Response getAccountImage(String userId, String auth) throws InvalidRequestException, InternalApplicationException;
     
     /**
      * return a user using an email
