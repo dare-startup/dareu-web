@@ -328,7 +328,8 @@ public class AccountServiceImpl extends AbstractService implements AccountServic
         //get file 
         InputStream stream = null;
         try {
-            stream = fileService.getFile(userId + ".jpg", FileType.PROFILE_IMAGE);
+            DareUser user = dareUserRepository.findUserByToken(userId);
+            stream = fileService.getFile(user.getId() + ".jpg", FileType.PROFILE_IMAGE);
             BufferedImage image = ImageIO.read(stream);
             ByteArrayOutputStream out = new ByteArrayOutputStream();
 
@@ -340,6 +341,8 @@ public class AccountServiceImpl extends AbstractService implements AccountServic
             throw new InvalidRequestException("The provided id is not valid");
         } catch (IOException ex) {
             throw new InternalApplicationException("Could not get account profile image: " + ex.getMessage());
+        }catch(DataAccessException ex){
+            throw new InternalApplicationException(ex.getMessage());
         }
     }
 
