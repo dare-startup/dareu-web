@@ -348,10 +348,13 @@ public class AccountServiceImpl extends AbstractService implements AccountServic
             return Response.ok(out.toByteArray())
                     .build();
         } catch (FileNotFoundException ex) {
+            log.info(ex.getMessage());
             throw new InvalidRequestException("The provided id is not valid");
         } catch (IOException ex) {
+            log.info(ex.getMessage());
             throw new InternalApplicationException("Could not get account profile image: " + ex.getMessage());
         } catch (DataAccessException ex) {
+            log.info(ex.getMessage());
             throw new InternalApplicationException(ex.getMessage());
         }
     }
