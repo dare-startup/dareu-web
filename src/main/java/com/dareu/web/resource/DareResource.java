@@ -92,4 +92,5 @@ public class DareResource {
     public Response findDareDescription(@QueryParam("dareId")String dareId)throws InternalApplicationException, InvalidRequestException{
         return dareService.findDareDescription(dareId); 
     }
+    
 }

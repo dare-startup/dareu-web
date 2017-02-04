@@ -221,7 +221,7 @@ public class DareServiceImpl implements DareService {
                 challengerDescription.setImageUrl(challenger.getImagePath());
                 challengerDescription.setName(challenger.getName());
                 challengerDescription.setUserSinceDate(challenger.getUserSince());
-                
+                unacceptedDare.setTimer(dare.getEstimatedDareTime());
                 unacceptedDare.setChallenger(challengerDescription);
                 return Response.ok(unacceptedDare)
                         .build(); 
