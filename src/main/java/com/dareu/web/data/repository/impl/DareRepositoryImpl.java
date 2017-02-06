@@ -27,7 +27,7 @@ public class DareRepositoryImpl extends AbstractRepository<Dare> implements Dare
 
     @Inject
     private DareuAssembler assembler;
-    
+
     public DareRepositoryImpl() {
         super(Dare.class);
     }
@@ -39,77 +39,85 @@ public class DareRepositoryImpl extends AbstractRepository<Dare> implements Dare
 
     @Override
     public List<Dare> findUnapprovedDares(int pageNumber) throws DataAccessException {
-        try{
-            Query q = em.createQuery("SELECT d FROM Dare d WHERE d.approved = false")
+        try {
+            Query q = em.createQuery("SELECT d FROM Dare d WHERE d.approved = 0 AND d.declined = 0")
                     .setMaxResults(DEFAULT_PAGE_NUMBER)
                     .setFirstResult((pageNumber * DEFAULT_PAGE_NUMBER) - DEFAULT_PAGE_NUMBER);
             return q.getResultList();
-        }catch(Exception ex){
-            throw new DataAccessException("Could not get unapproved dares: " + ex.getMessage(), ex); 
+        } catch (Exception ex) {
+            throw new DataAccessException("Could not get unapproved dares: " + ex.getMessage(), ex);
         }
     }
 
     public int daresCount(String userId) throws DataAccessException {
-        Long count = 0L; 
-        try{
+        Long count = 0L;
+        try {
             Query q = em.createQuery("SELECT COUNT(d) FROM Dare d WHERE d.challengerUser.id = :userId", Long.class)
-                    .setParameter("userId", userId); 
-            count = (Long)q.getSingleResult(); 
-            
-            return count.intValue(); 
-        }catch(Exception ex){
-            throw new DataAccessException("Could not get dares count: " + ex.getMessage()); 
+                    .setParameter("userId", userId);
+            count = (Long) q.getSingleResult();
+
+            return count.intValue();
+        } catch (Exception ex) {
+            throw new DataAccessException("Could not get dares count: " + ex.getMessage());
         }
     }
 
     public Dare findUnacceptedDare(String userId) throws DataAccessException {
         Dare dare = null;
         List<Dare> list;
-        try{
-            Query query = em.createQuery("SELECT d FROM Dare d WHERE d.challengedUser.id = :userId AND d.accepted = 0 ORDER BY d.creationDate ASC")
+        try {
+            Query query = em.createQuery("SELECT d FROM Dare d WHERE d.challengedUser.id = :userId AND d.accepted = 0  AND d.declined = 0 ORDER BY d.creationDate ASC")
                     .setParameter("userId", userId);
-            
+
             list = query.getResultList();
-            if(list.isEmpty())return null;
+            if (list.isEmpty()) {
+                return null;
+            }
             return list.get(0);//returns first position to simulate a queue
-        }catch(NoResultException ex){
-            return null; 
-        }catch(Exception ex){
+        } catch (NoResultException ex) {
+            return null;
+        } catch (Exception ex) {
             throw new DataAccessException("Could not get dare: " + ex.getMessage());
         }
-            
+
     }
 
     public void confirmDareRequest(String dareId, boolean accepted) throws DataAccessException {
-        try{
-            Query q = em.createQuery("UPDATE Dare d SET d.accepted = :accepted WHERE d.id = :dareId")
-                    .setParameter("dareId", dareId)
-                    .setParameter("accepted", accepted);
+        Query q;
+        try {
+            if (accepted) {
+                q = em.createQuery("UPDATE Dare d SET d.accepted = 1, d.declined = 0 WHERE d.id = :dareId")
+                    .setParameter("dareId", dareId);
+            } else {
+                q = em.createQuery("UPDATE Dare d SET d.accepted = 0, d.declined = 1 WHERE d.id = :dareId")
+                    .setParameter("dareId", dareId);
+            }
             q.executeUpdate();
-        }catch(Exception ex){
+
+        } catch (Exception ex) {
             throw new DataAccessException("Could not update dare confirmation: " + ex.getMessage(), ex);
         }
     }
 
     @Override
     public Page<DareDescription> discoverDares(int pageNumber, String userId) throws DataAccessException {
-        Page<DareDescription> daresPage; 
-        List<Dare> dares; 
+        Page<DareDescription> daresPage;
+        List<Dare> dares;
         List<DareDescription> descs;
         Long count;
-        try{
+        try {
             Query q = em.createQuery("SELECT d FROM Dare d WHERE d.challengedUser.id <> :userId AND d.challengerUser.id <> :userId")
                     .setParameter("userId", userId)
                     .setMaxResults(DEFAULT_PAGE_NUMBER)
                     .setFirstResult(getFirstResult(pageNumber));
-            
+
             dares = q.getResultList();
-            
+
             //get count 
             q = em.createQuery("SELECT COUNT(d.id) FROM Dare d WHERE d.challengedUser.id <> :userId AND d.challengerUser.id <> :userId")
                     .setParameter("userId", userId);
-            count = (Long)q.getSingleResult();
-            
+            count = (Long) q.getSingleResult();
+
             daresPage = new Page<DareDescription>();
             daresPage.setPageNumber(pageNumber);
             daresPage.setPageSize(DEFAULT_PAGE_NUMBER);
@@ -117,10 +125,9 @@ public class DareRepositoryImpl extends AbstractRepository<Dare> implements Dare
             descs = assembler.assembleDareDescriptions(dares);
             daresPage.setItems(descs);
             return daresPage;
-        }catch(Exception ex){
+        } catch (Exception ex) {
             throw new DataAccessException("Could not get dares: " + ex.getMessage());
         }
     }
-    
-    
+
 }
