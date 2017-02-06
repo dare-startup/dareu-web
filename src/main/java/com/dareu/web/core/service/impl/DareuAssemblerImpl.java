@@ -68,6 +68,7 @@ public class DareuAssemblerImpl implements DareuAssembler{
             desc = new DareDescription(dare.getId(), dare.getName(), dare.getDescription(), 
                     dare.getCategory().getName(), String.format("%d hours", dare.getEstimatedDareTime()), 
                     DareUtils.DATE_FORMAT.format(dare.getCreationDate()));
+            desc.setCompleted(dare.isCompleted());
             desc.setChallenger(assembleUserDescription(dare.getChallengerUser()));
             list.add(desc); 
         }
@@ -85,6 +86,7 @@ public class DareuAssemblerImpl implements DareuAssembler{
                     dare.getCategory().getName(), String.format("%d hours", dare.getEstimatedDareTime()), 
                     DareUtils.DATE_FORMAT.format(dare.getCreationDate()));
             desc.setChallenger(assembleUserDescription(dare.getChallengerUser()));
+            desc.setCompleted(dare.isCompleted());
             return desc; 
     }
 

@@ -33,6 +33,7 @@ create table dare(
     creation_date datetime not null, 
     challenged_user_id varchar(36)not null, 
     challenger_user_id varchar(36) not null, 
+    completed tinyint default 0,
     foreign key(category_id)references category(id),
     foreign key(challenger_user_id) references dareu_user(id), 
     foreign key(challenged_user_id)references dareu_user(id)); 

@@ -39,6 +39,12 @@ public class Dare extends BaseEntity{
     @Column(name = "approved")
     private boolean approved;
     
+    @Column(name = "completed")
+    private boolean completed;
+    
+    @Column(name = "declined")
+    private boolean declined;
+    
     @Column(name = "accepted")
     private boolean accepted;
     
@@ -140,6 +146,23 @@ public class Dare extends BaseEntity{
     public void setChallengerUser(DareUser challengerUser) {
         this.challengerUser = challengerUser;
     }
+
+    public boolean isCompleted() {
+        return completed;
+    }
+
+    public void setCompleted(boolean completed) {
+        this.completed = completed;
+    }
+
+    public boolean isDeclined() {
+        return declined;
+    }
+
+    public void setDeclined(boolean declined) {
+        this.declined = declined;
+    }
         
-        
+    
+   
 }
