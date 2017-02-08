@@ -7,32 +7,34 @@ create table dareu_user(
     email varchar(100)not null, 
     password varbinary(255)not null, 
     user_since_date varchar(10) not null,
-	security_token varchar(40),
+    security_token varchar(40),
     gcm_reg_id varchar(200), 
     coins int not null default 1, 
-	role int not null,
+    role int not null,
     uscore int not null default 1,
-	birthday varchar(10),
+    birthday varchar(10),
     verified tinyint default 0);
     
 create table category(
-	id varchar(36) not null primary key, 
+    id varchar(36) not null primary key, 
     name varchar(100)not null, 
     description varchar(200)); 
     
 create table dare(
-	id varchar(36) not null primary key, 
+    id varchar(36) not null primary key, 
     name varchar(100)not null, 
     description varchar(500) not null, 
     category_id varchar(36) not null, 
     estimated_dare_time int not null default 24,  
     approved tinyint default 0, 
+    answered tinyint default 0,
     accepted tinyint default 0,
     accepted_date varchar(30),
     creation_date datetime not null, 
     challenged_user_id varchar(36)not null, 
     challenger_user_id varchar(36) not null, 
     completed tinyint default 0,
+    declined tinyint default 0,
     foreign key(category_id)references category(id),
     foreign key(challenger_user_id) references dareu_user(id), 
     foreign key(challenged_user_id)references dareu_user(id)); 

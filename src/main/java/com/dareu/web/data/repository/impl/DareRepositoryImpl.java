@@ -140,7 +140,7 @@ public class DareRepositoryImpl extends AbstractRepository<Dare> implements Dare
                     .setFirstResult(getFirstResult(pageNumber));
             List<Dare> dares = q.getResultList(); 
             //get count 
-            Long count = (Long)em.createQuery("SELECT COUNT(d.id)d FROM Dare d WHERE d.challengerUser.id = :userId")
+            Long count = (Long)em.createQuery("SELECT COUNT(d.id) FROM Dare d WHERE d.challengerUser.id = :userId")
                     .setParameter("userId", id)
                     .getSingleResult(); 
             
