@@ -9,10 +9,10 @@ import com.dareu.web.core.service.DareuAssembler;
 import com.dareu.web.data.entity.Dare;
 import com.dareu.web.data.repository.DareRepository;
 import com.dareu.web.data.exception.DataAccessException;
+import com.dareu.web.dto.response.entity.ActiveDare;
 import com.dareu.web.dto.response.entity.CreatedDare;
 import com.dareu.web.dto.response.entity.DareDescription;
 import com.dareu.web.dto.response.entity.Page;
-import java.math.BigInteger;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -50,6 +50,7 @@ public class DareRepositoryImpl extends AbstractRepository<Dare> implements Dare
         }
     }
 
+    @Override
     public int daresCount(String userId) throws DataAccessException {
         Long count = 0L;
         try {
@@ -63,6 +64,7 @@ public class DareRepositoryImpl extends AbstractRepository<Dare> implements Dare
         }
     }
 
+    @Override
     public Dare findUnacceptedDare(String userId) throws DataAccessException {
         Dare dare = null;
         List<Dare> list;
@@ -83,6 +85,7 @@ public class DareRepositoryImpl extends AbstractRepository<Dare> implements Dare
 
     }
 
+    @Override
     public void confirmDareRequest(String dareId, boolean accepted) throws DataAccessException {
         Query q;
         try {
@@ -131,6 +134,7 @@ public class DareRepositoryImpl extends AbstractRepository<Dare> implements Dare
         }
     }
 
+    @Override
     public Page<CreatedDare> findCreatedDares(String id, int pageNumber) throws DataAccessException {
         Page<CreatedDare> createdDares = null; 
         try{
@@ -153,6 +157,19 @@ public class DareRepositoryImpl extends AbstractRepository<Dare> implements Dare
             return createdDares; 
         }catch(Exception ex){
             throw new DataAccessException("Could not get created dares: " + ex.getMessage()); 
+        }
+    }
+
+    @Override
+    public ActiveDare getCurrentActiveDare(String userId) throws DataAccessException {
+        try{
+            Query q = em.createQuery("SELECT d FROM Dare d WHERE d.accepted = 1 AND d.completed = 0 AND d.challengedUser.id = :userId")
+                    .setParameter("userId", userId);
+            List<Dare> dares = q.getResultList(); 
+            if(dares.isEmpty())return null; 
+            return assembler.assembleActiveDare(dares.get(0));
+        }catch(Exception ex){
+            throw new DataAccessException("Could not get current active dare: " + ex.getMessage());
         }
     }
 

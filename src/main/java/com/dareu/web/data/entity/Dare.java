@@ -62,6 +62,9 @@ public class Dare extends BaseEntity{
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "challenger_user_id")
     private DareUser challengerUser; 
+    
+    @Column(name = "accepted_date")
+    private String acceptedDate; 
 
     public Dare(String name, String description, String category,
                 int estimatedDareTime, boolean approved,
@@ -173,7 +176,12 @@ public class Dare extends BaseEntity{
     public void setAnswered(boolean answered) {
         this.answered = answered;
     }
-        
-    
-   
+
+    public String getAcceptedDate() {
+        return acceptedDate;
+    }
+
+    public void setAcceptedDate(String acceptedDate) {
+        this.acceptedDate = acceptedDate;
+    }
 }

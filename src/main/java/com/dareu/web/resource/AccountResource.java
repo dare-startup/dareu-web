@@ -76,20 +76,18 @@ public class AccountResource {
         return accountService.requestFriendship(requestedUserId);
     }
 
-    
     /**
-     * 
+     *
      * @param pageNumber
      * @param query
-     * @return 
-     * @throws com.dareu.web.exception.InternalApplicationException 
+     * @return
+     * @throws com.dareu.web.exception.InternalApplicationException
      */
-    
     @GET
     @Path("friends/find")
     @Produces(MediaType.APPLICATION_JSON)
     @Secured
-    public Response friends(@QueryParam("pageNumber") int pageNumber, @QueryParam("q")String query)throws InternalApplicationException{
+    public Response friends(@QueryParam("pageNumber") int pageNumber, @QueryParam("q") String query) throws InternalApplicationException {
         return accountService.findFriends(pageNumber, query);
     }
 
@@ -112,62 +110,63 @@ public class AccountResource {
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Secured
-    public Response responseFriendship(@PathParam(value = "userId")String userId, @QueryParam(value = "accepted")Boolean accepted) throws InvalidRequestException, InternalApplicationException {
+    public Response responseFriendship(@PathParam(value = "userId") String userId, @QueryParam(value = "accepted") Boolean accepted) throws InvalidRequestException, InternalApplicationException {
         return accountService.friendshipResponse(userId, accepted);
     }
-    
+
     @Path("friendship/find")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Secured
-    public Response findFriendshipDetails(@QueryParam("friendshipId")String friendshipId, @HeaderParam("Authorization")String auth) throws InternalApplicationException, InvalidRequestException{
-        return accountService.findFriendshipDetails(friendshipId, auth); 
-    } 
-    
+    public Response findFriendshipDetails(@QueryParam("friendshipId") String friendshipId, @HeaderParam("Authorization") String auth) throws InternalApplicationException, InvalidRequestException {
+        return accountService.findFriendshipDetails(friendshipId, auth);
+    }
+
     @Path("me/profile")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @POST
     @Secured
-    public Response updateImage(MultipartFormDataInput input, @HeaderParam("Authorization")String auth)throws InternalApplicationException{
-        return accountService.updateProfileImage(input, auth);  
+    public Response updateImage(MultipartFormDataInput input, @HeaderParam("Authorization") String auth) throws InternalApplicationException {
+        return accountService.updateProfileImage(input, auth);
     }
-    
-    /**@Path("me/profile")
-    @Produces(MediaType.APPLICATION_JSON)
-    @GET
-    @Secured
-    public Response getImage(@HeaderParam("Authorization")String auth)throws InternalApplicationException, InvalidRequestException{
-        return accountService.getAccountImage(auth);
-    }**/
-    
+
+    /**
+     * @Path("me/profile")
+     * @Produces(MediaType.APPLICATION_JSON)
+     * @GET
+     * @Secured public Response getImage(@HeaderParam("Authorization")String
+     * auth)throws InternalApplicationException, InvalidRequestException{ return
+     * accountService.getAccountImage(auth);
+    }*
+     */
     /**
      *
      * @param userId
      * @param auth
-     * @return 
+     * @return
      * @throws com.dareu.web.exception.InvalidRequestException
      * @throws com.dareu.web.exception.InternalApplicationException
      * @Path ("me/profile")
      * @Produces (MediaType.APPLICATION_JSON)
      * @GET
-     * @Secured public Response getImage(@HeaderParam("Authorization")String auth)throws InternalApplicationException, InvalidRequestException{
-        return accountService.getAccountImage(auth);
-    }
+     * @Secured public Response getImage(@HeaderParam("Authorization")String
+     * auth)throws InternalApplicationException, InvalidRequestException{ return
+     * accountService.getAccountImage(auth); }
      */
     @Path("me/profile")
     @Produces("image/jpeg")
     @GET
     @Secured
-    public Response getImage(@QueryParam("userId") String userId, @HeaderParam("Authorization")String auth) throws InvalidRequestException, InternalApplicationException{
-        return accountService.getAccountImage(userId, auth); 
+    public Response getImage(@QueryParam("userId") String userId, @HeaderParam("Authorization") String auth) throws InvalidRequestException, InternalApplicationException {
+        return accountService.getAccountImage(userId, auth);
     }
-    
+
     @Path("discoverUsers")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Secured
-    public Response discoverUsers(@QueryParam("pageNumber")int pageNumber)throws InternalApplicationException{
-        return accountService.discoverUsers(pageNumber); 
+    public Response discoverUsers(@QueryParam("pageNumber") int pageNumber) throws InternalApplicationException {
+        return accountService.discoverUsers(pageNumber);
     }
 }

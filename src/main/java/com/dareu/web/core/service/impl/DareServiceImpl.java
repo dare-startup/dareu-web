@@ -24,6 +24,7 @@ import com.dareu.web.core.service.DareuAssembler;
 import com.dareu.web.core.service.DareuMessagingService;
 import com.dareu.web.dto.request.DareConfirmationRequest;
 import com.dareu.web.dto.response.UpdatedEntityResponse;
+import com.dareu.web.dto.response.entity.ActiveDare;
 import com.dareu.web.dto.response.entity.CategoryDescription;
 import com.dareu.web.dto.response.entity.CreatedDare;
 import com.dareu.web.dto.response.entity.DareDescription;
@@ -195,6 +196,7 @@ public class DareServiceImpl implements DareService {
         }
     }
 
+    @Override
     public Response findUnacceptedDare(String auth) throws InternalApplicationException {
         DareUser user;
         UnacceptedDare unacceptedDare;
@@ -235,6 +237,7 @@ public class DareServiceImpl implements DareService {
         }
     }
 
+    @Override
     public Response confirmDareRequest(DareConfirmationRequest request) throws InternalApplicationException, InvalidRequestException {
         //validate
         if(request == null)
@@ -253,6 +256,7 @@ public class DareServiceImpl implements DareService {
         
     }
 
+    @Override
     public Response discoverDares(int pageNumber, String authToken) throws InternalApplicationException {
         DareUser user; 
         try{
@@ -267,6 +271,7 @@ public class DareServiceImpl implements DareService {
         }
     }
 
+    @Override
     public Response findDareDescription(String dareId) throws InternalApplicationException, InvalidRequestException {
         if(dareId == null || dareId.isEmpty())
             throw new InvalidRequestException("dareId must be provided"); 
@@ -283,6 +288,7 @@ public class DareServiceImpl implements DareService {
         }
     }
 
+    @Override
     public Response findCreatedDares(String auth, int pageNumber) throws InternalApplicationException, InvalidRequestException {
         DareUser user; 
         try{
@@ -296,6 +302,20 @@ public class DareServiceImpl implements DareService {
                     .build(); 
         }catch(DataAccessException ex){
             throw new InternalApplicationException(ex.getMessage()); 
+        }
+    }
+
+    @Override
+    public Response getCurrentActiveDare(String auth) throws InternalApplicationException {
+        try{
+            DareUser user = dareUserRepository.findUserByToken(auth); 
+            String id = user.getId();
+            
+            ActiveDare description = dareRepository.getCurrentActiveDare(id); 
+            return Response.ok(description)
+                    .build();
+        }catch(DataAccessException ex){
+            throw new InternalApplicationException(ex.getMessage());
         }
     }
 

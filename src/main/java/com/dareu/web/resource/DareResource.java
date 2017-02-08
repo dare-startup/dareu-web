@@ -36,9 +36,6 @@ public class DareResource {
     private DareService dareService;
 
     @Inject
-    private AccountService accountService;
-
-    @Inject
     private Logger log;
     
     @GET
@@ -46,6 +43,14 @@ public class DareResource {
     @Secured
     public Response getCreatedDares(@HeaderParam("Authorization")String auth, @DefaultValue("1") @QueryParam("pageNumber") int pageNumber)throws InternalApplicationException, InvalidRequestException{
        return dareService.findCreatedDares(auth, pageNumber);
+    }
+    
+    @Path("active")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Secured
+    public Response getCurrentActiveDare(@HeaderParam("Authorization")String auth)throws InternalApplicationException{
+        return dareService.getCurrentActiveDare(auth);
     }
 
     @Path("create")

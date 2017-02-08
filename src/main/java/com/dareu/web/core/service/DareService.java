@@ -93,4 +93,12 @@ public interface DareService {
      * @throws com.dareu.web.exception.InvalidRequestException 
      */
     public Response findCreatedDares(String auth, int pageNumber)throws InternalApplicationException, InvalidRequestException;
+    
+    /**
+     * Return a DareDescription currently active
+     * @param auth
+     * @return
+     * @throws InternalApplicationException 
+     */
+    public Response getCurrentActiveDare(String auth)throws InternalApplicationException;
 }

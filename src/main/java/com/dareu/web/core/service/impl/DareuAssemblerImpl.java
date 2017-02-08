@@ -6,6 +6,7 @@ import com.dareu.web.data.entity.Dare;
 import com.dareu.web.data.entity.DareUser;
 import com.dareu.web.core.service.DareuAssembler;
 import com.dareu.web.data.entity.FriendshipRequest;
+import com.dareu.web.dto.response.entity.ActiveDare;
 import com.dareu.web.dto.response.entity.CategoryDescription;
 import com.dareu.web.dto.response.entity.ConnectionDetails;
 import com.dareu.web.dto.response.entity.CreatedDare;
@@ -162,6 +163,17 @@ public class DareuAssemblerImpl implements DareuAssembler{
             createdDares.add(dare); 
         }
         return createdDares; 
+    }
+
+    public ActiveDare assembleActiveDare(Dare dare) {
+        ActiveDare activeDare = new ActiveDare(); 
+        activeDare.setId(dare.getId());
+        activeDare.setName(dare.getName());
+        activeDare.setDescription(dare.getDescription());
+        activeDare.setTimer(dare.getEstimatedDareTime());
+        activeDare.setAcceptedDate(dare.getAcceptedDate());
+        activeDare.setChallenger(assembleUserDescription(dare.getChallengerUser()));
+        return activeDare; 
     }
     
 }

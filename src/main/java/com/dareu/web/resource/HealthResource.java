@@ -15,7 +15,7 @@ import javax.ws.rs.core.Response;
  *
  * @author MACARENA
  */
-@Path("health/")
+@Path("health")
 public class HealthResource {
 	
 	@GET

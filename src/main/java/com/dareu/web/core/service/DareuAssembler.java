@@ -4,6 +4,7 @@ import com.dareu.web.data.entity.Category;
 import com.dareu.web.data.entity.Dare;
 import com.dareu.web.data.entity.DareUser;
 import com.dareu.web.data.entity.FriendshipRequest;
+import com.dareu.web.dto.response.entity.ActiveDare;
 import com.dareu.web.dto.response.entity.CategoryDescription;
 import com.dareu.web.dto.response.entity.ConnectionDetails;
 import com.dareu.web.dto.response.entity.CreatedDare;
@@ -109,4 +110,11 @@ public interface DareuAssembler {
      * @return 
      */
     public List<CreatedDare> assembleCreatedDares(List<Dare> dares);
+    
+    /**
+     * Assembles a new active dare from a dare entity
+     * @param dare
+     * @return 
+     */
+    public ActiveDare assembleActiveDare(Dare dare);
 }
