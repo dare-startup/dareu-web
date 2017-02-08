@@ -83,4 +83,14 @@ public interface DareService {
      * @throws InvalidRequestException 
      */
     public Response findDareDescription(String dareId)throws InternalApplicationException, InvalidRequestException; 
+
+    /**
+     * Returns a page of dares created by the user corresponding to the authentication header
+     * @param auth
+     * @param pageNumber
+     * @return 
+     * @throws com.dareu.web.exception.InternalApplicationException 
+     * @throws com.dareu.web.exception.InvalidRequestException 
+     */
+    public Response findCreatedDares(String auth, int pageNumber)throws InternalApplicationException, InvalidRequestException;
 }

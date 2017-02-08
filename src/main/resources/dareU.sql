@@ -11,7 +11,6 @@ create table dareu_user(
     gcm_reg_id varchar(200), 
     coins int not null default 1, 
 	role int not null,
-	image_path varchar(500),
     uscore int not null default 1,
 	birthday varchar(10),
     verified tinyint default 0);

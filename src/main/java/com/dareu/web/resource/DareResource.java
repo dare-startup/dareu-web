@@ -23,6 +23,7 @@ import com.dareu.web.exception.InternalApplicationException;
 import com.dareu.web.exception.InvalidRequestException;
 
 import io.swagger.annotations.Api;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.QueryParam;
 
@@ -39,6 +40,13 @@ public class DareResource {
 
     @Inject
     private Logger log;
+    
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Secured
+    public Response getCreatedDares(@HeaderParam("Authorization")String auth, @DefaultValue("1") @QueryParam("pageNumber") int pageNumber)throws InternalApplicationException, InvalidRequestException{
+       return dareService.findCreatedDares(auth, pageNumber);
+    }
 
     @Path("create")
     @POST
@@ -92,5 +100,6 @@ public class DareResource {
     public Response findDareDescription(@QueryParam("dareId")String dareId)throws InternalApplicationException, InvalidRequestException{
         return dareService.findDareDescription(dareId); 
     }
+    
     
 }

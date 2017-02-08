@@ -8,6 +8,7 @@ import com.dareu.web.core.service.DareuAssembler;
 import com.dareu.web.data.entity.FriendshipRequest;
 import com.dareu.web.dto.response.entity.CategoryDescription;
 import com.dareu.web.dto.response.entity.ConnectionDetails;
+import com.dareu.web.dto.response.entity.CreatedDare;
 import com.dareu.web.dto.response.entity.DareDescription;
 import com.dareu.web.dto.response.entity.DiscoverUserAccount;
 import com.dareu.web.dto.response.entity.FriendSearchDescription;
@@ -45,7 +46,7 @@ public class DareuAssemblerImpl implements DareuAssembler{
         UserAccount account = new UserAccount(user.getId(), user.getName(),
                         user.getEmail(), user.getSecurityToken(), user.isVerified(),
                         user.getPassword(), user.getRole().getValue(), user.getuScore(), 
-                        user.getCoins(), user.getUserSince(), user.getImagePath());
+                        user.getCoins(), user.getUserSince());
         return account; 
     }
 
@@ -105,14 +106,14 @@ public class DareuAssemblerImpl implements DareuAssembler{
     @Override
     public DiscoverUserAccount assembleDiscoverUserAccount(DareUser user) {
         return new DiscoverUserAccount(user.getId(), user.getName(), 
-                    user.getCoins(), user.getuScore(), user.getImagePath());
+                    user.getCoins(), user.getuScore());
     }
 
     @Override
     public List<FriendSearchDescription> transformFriendRequests(List<DareUser> users, Long count) { 
         List<FriendSearchDescription> list = new ArrayList(); 
         for(DareUser user : users)
-            list.add(new FriendSearchDescription(user.getId(), user.getImagePath(), user.getName())); 
+            list.add(new FriendSearchDescription(user.getId(), user.getName())); 
         return list; 
     }
     
@@ -134,7 +135,7 @@ public class DareuAssemblerImpl implements DareuAssembler{
 
     @Override
     public UserDescription assembleUserDescription(DareUser user) {
-        return new UserDescription(user.getId(), user.getName(), user.getImagePath(), user.getUserSince());
+        return new UserDescription(user.getId(), user.getName(), user.getUserSince());
     }
 
     public ConnectionDetails assembleConnectionDetails(FriendshipRequest request) {
@@ -143,12 +144,24 @@ public class DareuAssemblerImpl implements DareuAssembler{
         details.setAccepted(request.isAccepted());
         details.setCreationDate(request.getRequestDate());
         details.setRequestedUserId(request.getRequestedUser().getId());
-        details.setRequestedUserImageUrl(request.getRequestedUser().getImagePath());
         details.setRequestedUserName(request.getRequestedUser().getName());
         details.setUserId(request.getUser().getId());
-        details.setUserImageUrl(request.getUser().getImagePath());
         details.setUserName(request.getUser().getName());
         return details; 
+    }
+
+    public List<CreatedDare> assembleCreatedDares(List<Dare> dares) {
+        List<CreatedDare> createdDares = new ArrayList(); 
+        CreatedDare dare; 
+        
+        for(Dare d : dares){
+            dare = new CreatedDare(d.getId(), d.getName(), d.getDescription(), d.isAccepted(), 
+                d.isAnswered(), d.isDeclined(), new UserDescription(d.getChallengedUser().getId(), 
+                        d.getChallengedUser().getName(), d.getChallengedUser().getUserSince()), 
+            DareUtils.DATE_FORMAT.format(d.getCreationDate() ), d.getCategory().getName()); 
+            createdDares.add(dare); 
+        }
+        return createdDares; 
     }
     
 }

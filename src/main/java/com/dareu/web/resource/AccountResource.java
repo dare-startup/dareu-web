@@ -53,7 +53,7 @@ public class AccountResource {
             nickname = "me")
     @ApiResponses(value = {
         @ApiResponse(code = 200, message = "The request has been processed successfully"),
-        @ApiResponse(code = 401, message = "Unauthorized to process request")})
+        @ApiResponse(code = 401, message = "Unauthorized to access this operation")})
     @Secured
     public Response me() {
         return null;
@@ -84,6 +84,7 @@ public class AccountResource {
      * @return 
      * @throws com.dareu.web.exception.InternalApplicationException 
      */
+    
     @GET
     @Path("friends/find")
     @Produces(MediaType.APPLICATION_JSON)

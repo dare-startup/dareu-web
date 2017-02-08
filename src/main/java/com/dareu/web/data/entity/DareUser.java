@@ -54,9 +54,6 @@ public class DareUser extends BaseEntity {
     @Enumerated(EnumType.ORDINAL)
     private SecurityRole role;
 
-    @Column(name = "image_path")
-    private String imagePath;
-
     @Column(name = "birthday")
     private String birthday;
     
@@ -88,7 +85,6 @@ public class DareUser extends BaseEntity {
 		this.uScore = uScore;
 		this.verified = verified;
 		this.role = role;
-		this.imagePath = imagePath;
 		this.birthday = birthday;
 		this.securityToken = securityToken;
 	}
@@ -162,14 +158,6 @@ public class DareUser extends BaseEntity {
 
 	public void setRole(SecurityRole role) {
 		this.role = role;
-	}
-
-	public String getImagePath() {
-		return imagePath;
-	}
-
-	public void setImagePath(String imagePath) {
-		this.imagePath = imagePath;
 	}
 
 	public String getBirthday() {

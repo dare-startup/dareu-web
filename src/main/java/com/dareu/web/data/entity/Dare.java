@@ -48,6 +48,9 @@ public class Dare extends BaseEntity{
     @Column(name = "accepted")
     private boolean accepted;
     
+    @Column(name = "answered")
+    private boolean answered; 
+    
     @Column(name = "creation_date")
     @Temporal(TemporalType.TIMESTAMP)
     private Date creationDate;
@@ -161,6 +164,14 @@ public class Dare extends BaseEntity{
 
     public void setDeclined(boolean declined) {
         this.declined = declined;
+    }
+
+    public boolean isAnswered() {
+        return answered;
+    }
+
+    public void setAnswered(boolean answered) {
+        this.answered = answered;
     }
         
     

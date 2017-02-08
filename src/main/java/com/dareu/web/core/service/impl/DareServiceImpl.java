@@ -25,6 +25,7 @@ import com.dareu.web.core.service.DareuMessagingService;
 import com.dareu.web.dto.request.DareConfirmationRequest;
 import com.dareu.web.dto.response.UpdatedEntityResponse;
 import com.dareu.web.dto.response.entity.CategoryDescription;
+import com.dareu.web.dto.response.entity.CreatedDare;
 import com.dareu.web.dto.response.entity.DareDescription;
 import com.dareu.web.dto.response.entity.Page;
 import com.dareu.web.dto.response.entity.UnacceptedDare;
@@ -218,7 +219,6 @@ public class DareServiceImpl implements DareService {
                 challenger = dare.getChallengerUser(); 
                 challengerDescription = new UserDescription(); 
                 challengerDescription.setId(challenger.getId());
-                challengerDescription.setImageUrl(challenger.getImagePath());
                 challengerDescription.setName(challenger.getName());
                 challengerDescription.setUserSinceDate(challenger.getUserSince());
                 unacceptedDare.setTimer(dare.getEstimatedDareTime());
@@ -277,6 +277,22 @@ public class DareServiceImpl implements DareService {
             DareDescription desc = assembler.assembleDareDescription(dare); 
             
             return Response.ok(desc)
+                    .build(); 
+        }catch(DataAccessException ex){
+            throw new InternalApplicationException(ex.getMessage()); 
+        }
+    }
+
+    public Response findCreatedDares(String auth, int pageNumber) throws InternalApplicationException, InvalidRequestException {
+        DareUser user; 
+        try{
+            user = dareUserRepository.findUserByToken(auth); 
+            //get all created dares 
+            
+            Page<CreatedDare> createdDaresPage = dareRepository.findCreatedDares(user.getId(), pageNumber);
+            
+            //return response
+            return Response.ok(createdDaresPage)
                     .build(); 
         }catch(DataAccessException ex){
             throw new InternalApplicationException(ex.getMessage()); 

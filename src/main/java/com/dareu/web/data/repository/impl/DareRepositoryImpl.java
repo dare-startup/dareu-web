@@ -9,6 +9,7 @@ import com.dareu.web.core.service.DareuAssembler;
 import com.dareu.web.data.entity.Dare;
 import com.dareu.web.data.repository.DareRepository;
 import com.dareu.web.data.exception.DataAccessException;
+import com.dareu.web.dto.response.entity.CreatedDare;
 import com.dareu.web.dto.response.entity.DareDescription;
 import com.dareu.web.dto.response.entity.Page;
 import java.math.BigInteger;
@@ -127,6 +128,31 @@ public class DareRepositoryImpl extends AbstractRepository<Dare> implements Dare
             return daresPage;
         } catch (Exception ex) {
             throw new DataAccessException("Could not get dares: " + ex.getMessage());
+        }
+    }
+
+    public Page<CreatedDare> findCreatedDares(String id, int pageNumber) throws DataAccessException {
+        Page<CreatedDare> createdDares = null; 
+        try{
+            Query q = em.createQuery("SELECT d FROM Dare d WHERE d.challengerUser.id = :userId")
+                    .setParameter("userId", id)
+                    .setMaxResults(DEFAULT_PAGE_NUMBER)
+                    .setFirstResult(getFirstResult(pageNumber));
+            List<Dare> dares = q.getResultList(); 
+            //get count 
+            Long count = (Long)em.createQuery("SELECT COUNT(d.id)d FROM Dare d WHERE d.challengerUser.id = :userId")
+                    .setParameter("userId", id)
+                    .getSingleResult(); 
+            
+            List<CreatedDare> list = assembler.assembleCreatedDares(dares); 
+            createdDares = new Page<CreatedDare>(); 
+            createdDares.setItems(list);
+            createdDares.setPageNumber(pageNumber);
+            createdDares.setPageSize(DEFAULT_PAGE_NUMBER);
+            createdDares.setPagesAvailable(getPagesAvailable(pageNumber, count.intValue()));
+            return createdDares; 
+        }catch(Exception ex){
+            throw new DataAccessException("Could not get created dares: " + ex.getMessage()); 
         }
     }
 
