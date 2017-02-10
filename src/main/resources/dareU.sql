@@ -42,7 +42,6 @@ create table dare(
 create table dare_response(
     id varchar(36) not null primary key, 
     response_date datetime not null, 
-    video_url varchar(500)not null, 
     views_count int not null default 0, 
     likes int not null default 0, 
     dare_id varchar(36)not null, 

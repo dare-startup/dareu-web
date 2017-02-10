@@ -6,6 +6,7 @@
 package com.dareu.web.core.service.impl;
 
 import com.dareu.web.core.service.MultipartService;
+import com.dareu.web.dto.request.DareUploadRequest;
 import com.dareu.web.dto.request.SignupRequest;
 import com.dareu.web.exception.InvalidRequestException;
 import java.io.IOException;
@@ -13,6 +14,7 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 import javax.ejb.Stateless;
+import javax.ws.rs.core.MultivaluedMap;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 
@@ -20,36 +22,63 @@ import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
  *
  * @author MACARENA
  */
-@Stateless
 public class MultipartServiceImpl implements MultipartService{
-    
+
     @Override
-    public SignupRequest getSignupRequest(MultipartFormDataInput input)throws 
-            InvalidRequestException, IOException{
-        Map<String, List<InputPart>> map = input.getFormDataMap(); 
-        String name = map.get("name") .get(0).getBodyAsString(); 
-        String email = map.get("email") .get(0).getBodyAsString();
-        String password = map.get("password") .get(0).getBodyAsString();
-        String birthday = map.get("birthday") .get(0).getBodyAsString();
+    public InputStream getImageProfile(MultipartFormDataInput input) throws IOException{
+        Map<String, List<InputPart>> map = input.getFormDataMap();
+        List<InputPart> inputParts = map.get("image");
+        String fileName;
+        InputStream stream = null; 
+        for(InputPart part : inputParts){
+            MultivaluedMap<String, String> header = part.getHeaders();
+                fileName = getFileName(header);
+                stream = part.getBody(InputStream.class, null);
+                break; 
+        }
         
-        List<InputPart> list = map.get("file");
-        InputStream file = null; 
-        
-        if(list != null && ! list.isEmpty()){
-             file = list.get(0).getBody(InputStream.class, null); 
-        }else
-            throw new InvalidRequestException("No image attached to request"); 
-        
-        if(name == null)
-            throw new InvalidRequestException("No name field provided"); 
-        if(email == null)
-            throw new InvalidRequestException("No email field provided"); 
-        if(password == null)
-            throw new InvalidRequestException("No password field provided"); 
-        if(birthday == null)
-            throw new InvalidRequestException("No birthday field provided"); 
-        if(file == null)
-            throw new InvalidRequestException("No file field provided"); 
-        return new SignupRequest(name, email, password, birthday); 
+        return stream; 
     }
+    
+    private String getFileName(MultivaluedMap<String, String> header) {
+
+        String[] contentDisposition = header.getFirst("Content-Disposition").split(";");
+
+        for (String filename : contentDisposition) {
+            if ((filename.trim().startsWith("filename"))) {
+
+                String[] name = filename.split("=");
+
+                String finalFileName = name[1].trim().replaceAll("\"", "");
+                return finalFileName;
+            }
+        }
+        return "unknown";
+    }
+
+    public DareUploadRequest getDareUploadRequest(MultipartFormDataInput input)throws IOException {
+        Map<String, List<InputPart>> map = input.getFormDataMap();
+        List<InputPart> inputParts = map.get("video");
+        List<InputPart> dareIdParts = map.get("dareId"); 
+        String fileName;
+        String dareId = ""; 
+        InputStream stream = null; 
+        for(InputPart part : inputParts){
+            MultivaluedMap<String, String> header = part.getHeaders();
+                fileName = getFileName(header);
+                stream = part.getBody(InputStream.class, null);
+                break; 
+        }
+        
+        //get dare Id 
+        for(InputPart part : dareIdParts){
+            dareId = part.getBodyAsString();
+            break; 
+        }
+            
+        
+        return new DareUploadRequest(dareId, stream); 
+    }
+    
+    
 }

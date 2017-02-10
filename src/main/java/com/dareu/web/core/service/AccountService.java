@@ -144,6 +144,7 @@ public interface AccountService {
      * @param input
      * @param auth
      * @return 
+     * @throws com.dareu.web.exception.InternalApplicationException 
      */
     public Response updateProfileImage(MultipartFormDataInput input, String auth)throws InternalApplicationException;
     

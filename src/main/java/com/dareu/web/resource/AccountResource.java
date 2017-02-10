@@ -122,7 +122,7 @@ public class AccountResource {
         return accountService.findFriendshipDetails(friendshipId, auth);
     }
 
-    @Path("me/profile")
+    @Path("profile/image")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @POST
@@ -154,7 +154,7 @@ public class AccountResource {
      * auth)throws InternalApplicationException, InvalidRequestException{ return
      * accountService.getAccountImage(auth); }
      */
-    @Path("me/profile")
+    @Path("profile/image")
     @Produces("image/jpeg")
     @GET
     @Secured

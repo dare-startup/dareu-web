@@ -5,6 +5,7 @@
  */
 package com.dareu.web.data.repository.impl;
 
+import com.dareu.web.core.DareUtils;
 import com.dareu.web.core.service.DareuAssembler;
 import com.dareu.web.data.entity.Dare;
 import com.dareu.web.data.repository.DareRepository;
@@ -13,6 +14,7 @@ import com.dareu.web.dto.response.entity.ActiveDare;
 import com.dareu.web.dto.response.entity.CreatedDare;
 import com.dareu.web.dto.response.entity.DareDescription;
 import com.dareu.web.dto.response.entity.Page;
+import java.util.Date;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -90,8 +92,10 @@ public class DareRepositoryImpl extends AbstractRepository<Dare> implements Dare
         Query q;
         try {
             if (accepted) {
-                q = em.createQuery("UPDATE Dare d SET d.accepted = 1, d.declined = 0 WHERE d.id = :dareId")
-                    .setParameter("dareId", dareId);
+                String acceptedDate = DareUtils.DETAILS_DATE_FORMAT.format(new Date());
+                q = em.createQuery("UPDATE Dare d SET d.accepted = 1, d.declined = 0, d.acceptedDate = :acceptedDate WHERE d.id = :dareId")
+                    .setParameter("dareId", dareId)
+                    .setParameter("acceptedDate", acceptedDate);
             } else {
                 q = em.createQuery("UPDATE Dare d SET d.accepted = 0, d.declined = 1 WHERE d.id = :dareId")
                     .setParameter("dareId", dareId);

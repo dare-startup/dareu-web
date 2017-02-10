@@ -5,6 +5,7 @@ import com.dareu.web.data.entity.Category;
 import com.dareu.web.data.entity.Dare;
 import com.dareu.web.data.entity.DareUser;
 import com.dareu.web.core.service.DareuAssembler;
+import com.dareu.web.core.service.FileService;
 import com.dareu.web.data.entity.FriendshipRequest;
 import com.dareu.web.dto.response.entity.ActiveDare;
 import com.dareu.web.dto.response.entity.CategoryDescription;
@@ -20,6 +21,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.inject.Inject;
 
 /**
  *
@@ -27,6 +29,9 @@ import java.util.Map;
  */
 public class DareuAssemblerImpl implements DareuAssembler{
 
+    @Inject
+    private FileService fileService;
+    
     public DareuAssemblerImpl() {
     }
 
@@ -106,15 +111,22 @@ public class DareuAssemblerImpl implements DareuAssembler{
 
     @Override
     public DiscoverUserAccount assembleDiscoverUserAccount(DareUser user) {
-        return new DiscoverUserAccount(user.getId(), user.getName(), 
+        DiscoverUserAccount acc = new DiscoverUserAccount(user.getId(), user.getName(), 
                     user.getCoins(), user.getuScore());
+        acc.setProfileImageAvailable(fileService.userHasProfileImage(user.getId()));
+        return acc; 
     }
 
     @Override
     public List<FriendSearchDescription> transformFriendRequests(List<DareUser> users, Long count) { 
         List<FriendSearchDescription> list = new ArrayList(); 
-        for(DareUser user : users)
-            list.add(new FriendSearchDescription(user.getId(), user.getName())); 
+        FriendSearchDescription desc; 
+        for(DareUser user : users){
+            desc = new FriendSearchDescription(user.getId(), user.getName()); 
+            desc.setProfileImageAvailable(fileService.userHasProfileImage(user.getId()));
+            list.add(desc); 
+        }
+            
         return list; 
     }
     
@@ -136,7 +148,9 @@ public class DareuAssemblerImpl implements DareuAssembler{
 
     @Override
     public UserDescription assembleUserDescription(DareUser user) {
-        return new UserDescription(user.getId(), user.getName(), user.getUserSince());
+        UserDescription desc = new UserDescription(user.getId(), user.getName(), user.getUserSince());
+        desc.setProfileImageAvailable(fileService.userHasProfileImage(user.getId()));
+        return desc; 
     }
 
     public ConnectionDetails assembleConnectionDetails(FriendshipRequest request) {
@@ -157,8 +171,7 @@ public class DareuAssemblerImpl implements DareuAssembler{
         
         for(Dare d : dares){
             dare = new CreatedDare(d.getId(), d.getName(), d.getDescription(), d.isAccepted(), 
-                d.isAnswered(), d.isDeclined(), new UserDescription(d.getChallengedUser().getId(), 
-                        d.getChallengedUser().getName(), d.getChallengedUser().getUserSince()), 
+                d.isAnswered(), d.isDeclined(), assembleUserDescription(d.getChallengedUser()), 
             DareUtils.DATE_FORMAT.format(d.getCreationDate() ), d.getCategory().getName()); 
             createdDares.add(dare); 
         }

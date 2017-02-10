@@ -18,9 +18,6 @@ public class DareResponse extends BaseEntity {
     @Column(name = "response_date")
     private String responseDate; 
     
-    @Column(name = "video_url")
-    private String videoPath;
-    
     @Column(name = "views_count")
     private int viewsCount; 
     
@@ -45,15 +42,7 @@ public class DareResponse extends BaseEntity {
     public void setResponseDate(String responseDate) {
         this.responseDate = responseDate;
     }
-
-    public String getVideoPath() {
-        return videoPath;
-    }
-
-    public void setVideoPath(String videoPath) {
-        this.videoPath = videoPath;
-    }
-
+    
     public int getViewsCount() {
         return viewsCount;
     }

@@ -1,7 +1,6 @@
 package com.dareu.web.resource.open;
 
 import com.dareu.web.core.service.AccountService;
-import com.dareu.web.core.service.MultipartService;
 import com.dareu.web.dto.request.SignupRequest;
 import com.dareu.web.exception.InternalApplicationException;
 import javax.inject.Inject;
@@ -13,7 +12,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 
 /**
  *
@@ -21,9 +19,6 @@ import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
  */
 @Path("open")
 public class OpenResource {
-    
-    @Inject
-    private MultipartService multipartService; 
     
     @Inject
     private AccountService accountService; 

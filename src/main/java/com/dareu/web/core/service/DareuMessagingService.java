@@ -1,6 +1,7 @@
 package com.dareu.web.core.service;
 
 import com.dareu.web.data.entity.Dare;
+import com.dareu.web.data.entity.DareResponse;
 import com.dareu.web.data.entity.Friendship;
 import com.dareu.web.data.entity.FriendshipRequest;
 
@@ -26,4 +27,11 @@ public interface DareuMessagingService {
      * @param f 
      */
     public void sendConnectionAcceptedNotification(String userFcmToken, FriendshipRequest f);
+    
+    /**
+     * 
+     * @param response
+     * @param userFcmToken 
+     */
+    public void sendDareResponseUploaded(DareResponse response, String userFcmToken); 
 }

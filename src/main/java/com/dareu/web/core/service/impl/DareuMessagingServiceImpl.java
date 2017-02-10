@@ -6,12 +6,14 @@ import javax.inject.Inject;
 
 import com.dareu.web.core.service.DareuMessagingService;
 import com.dareu.web.data.entity.Dare;
+import com.dareu.web.data.entity.DareResponse;
 import com.dareu.web.data.entity.DareUser;
 import com.dareu.web.data.entity.Friendship;
 import com.dareu.web.data.entity.FriendshipRequest;
 import com.dareu.web.dto.response.message.ConnectionAcceptedMessage;
 import com.dareu.web.dto.response.message.ConnectionRequestMessage;
 import com.dareu.web.dto.response.message.NewDareMessage;
+import com.dareu.web.dto.response.message.UploadedResponseMessage;
 import com.github.roar109.syring.annotation.ApplicationProperty;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
@@ -39,7 +41,7 @@ public class DareuMessagingServiceImpl implements DareuMessagingService {
     
     
     private static final FcmMessageOptions options = FcmMessageOptions.builder()
-            .setTimeToLive(Duration.ofHours(6))
+            .setTimeToLive(Duration.ofHours(12))
             .setDelayWhileIdle(true)
             .setPriorityEnum(PriorityEnum.High)
             .build();
@@ -72,9 +74,19 @@ public class DareuMessagingServiceImpl implements DareuMessagingService {
         client.send(new DataUnicastMessage(options, fcmToken, message)); 
     }
 
+    @Override
     public void sendConnectionAcceptedNotification(String userFcmToken, FriendshipRequest f) {
         ConnectionAcceptedMessage message = new ConnectionAcceptedMessage();
         message.setFriendshipId(f.getId());
+        
+        client.send(new DataUnicastMessage(options, userFcmToken, message));
+    }
+
+    @Override
+    public void sendDareResponseUploaded(DareResponse response, String userFcmToken) {
+        UploadedResponseMessage message = new UploadedResponseMessage(); 
+        message.setDareResponseId(response.getId());
+        message.setMessage(response.getUser().getName() + " just uploaded a response to your dare");
         
         client.send(new DataUnicastMessage(options, userFcmToken, message));
     }

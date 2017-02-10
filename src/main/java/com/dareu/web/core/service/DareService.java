@@ -7,6 +7,7 @@ import com.dareu.web.dto.request.CreateDareRequest;
 import com.dareu.web.dto.request.DareConfirmationRequest;
 import com.dareu.web.exception.InternalApplicationException;
 import com.dareu.web.exception.InvalidRequestException;
+import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 
 public interface DareService {
 
@@ -101,4 +102,13 @@ public interface DareService {
      * @throws InternalApplicationException 
      */
     public Response getCurrentActiveDare(String auth)throws InternalApplicationException;
+    
+    /**
+     * Creates a new dare response and saves a new dare video 
+     * @param input
+     * @param auth
+     * @return
+     * @throws InternalApplicationException 
+     */
+    public Response uploadDareResponse(MultipartFormDataInput input, String auth)throws InternalApplicationException; 
 }

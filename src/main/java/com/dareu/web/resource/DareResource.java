@@ -26,6 +26,7 @@ import io.swagger.annotations.Api;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.QueryParam;
+import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 
 @Api(value = "dare")
 @Path("dare/")
@@ -106,5 +107,11 @@ public class DareResource {
         return dareService.findDareDescription(dareId); 
     }
     
-    
+    @Path("response/create")
+    @POST
+    @Produces(MediaType.APPLICATION_JSON)
+    @Secured
+    public Response uploadDareResponse(MultipartFormDataInput input, @HeaderParam("Authorization")String auth){
+        return null; 
+    }
 }

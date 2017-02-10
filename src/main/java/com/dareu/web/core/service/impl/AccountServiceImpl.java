@@ -30,6 +30,7 @@ import com.dareu.web.data.exception.AuthenticationException;
 import com.dareu.web.data.exception.DataAccessException;
 import com.dareu.web.core.service.DareuAssembler;
 import com.dareu.web.core.service.DareuMessagingService;
+import com.dareu.web.core.service.MultipartService;
 import com.dareu.web.data.repository.DareRepository;
 import com.dareu.web.data.repository.DareResponseRepository;
 import com.dareu.web.dto.security.PasswordEncryptor;
@@ -97,6 +98,9 @@ public class AccountServiceImpl extends AbstractService implements AccountServic
 
     @Inject
     private DareuMessagingService messagingService;
+
+    @Inject
+    private MultipartService multipartService;
 
     @Override
     public Response registerDareUser(SignupRequest request)
@@ -473,48 +477,20 @@ public class AccountServiceImpl extends AbstractService implements AccountServic
     }
 
     public Response updateProfileImage(MultipartFormDataInput input, String auth) throws InternalApplicationException {
-        Map<String, List<InputPart>> map = input.getFormDataMap();
-        List<InputPart> inputParts = map.get("image");
-        String fileName;
-        for (InputPart part : inputParts) {
-            try {
-                MultivaluedMap<String, String> header = part.getHeaders();
-                fileName = getFileName(header);
+        try {
+            InputStream stream = multipartService.getImageProfile(input);
+            //get user id 
+            DareUser dareUser = dareUserRepository.findUserByToken(auth);
+            fileService.saveFile(stream, FileType.PROFILE_IMAGE, dareUser.getId() + ".jpg");
+            //update file path 
+            dareUserRepository.updateImageUrl(dareUser.getId());
 
-                log.info("Received new file " + fileName);
-                InputStream stream = part.getBody(InputStream.class, null);
-
-                //get user id 
-                DareUser dareUser = dareUserRepository.findUserByToken(auth);
-                fileService.saveFile(stream, FileType.PROFILE_IMAGE, dareUser.getId() + ".jpg");
-
-                //update file path 
-                dareUserRepository.updateImageUrl(dareUser.getId());
-
-                return Response.ok(new UpdatedEntityResponse("Image has been updated", true, "user"))
-                        .build();
-            } catch (IOException ex) {
-                throw new InternalApplicationException(ex.getMessage());
-            } catch (DataAccessException ex) {
-                throw new InternalApplicationException(ex.getMessage());
-            }
+            return Response.ok(new UpdatedEntityResponse("Image has been updated", true, "user"))
+                    .build();
+        } catch (IOException ex) {
+            throw new InternalApplicationException(ex.getMessage());
+        } catch (DataAccessException ex) {
+            throw new InternalApplicationException(ex.getMessage());
         }
-        return null;
-    }
-
-    private String getFileName(MultivaluedMap<String, String> header) {
-
-        String[] contentDisposition = header.getFirst("Content-Disposition").split(";");
-
-        for (String filename : contentDisposition) {
-            if ((filename.trim().startsWith("filename"))) {
-
-                String[] name = filename.split("=");
-
-                String finalFileName = name[1].trim().replaceAll("\"", "");
-                return finalFileName;
-            }
-        }
-        return "unknown";
     }
 }

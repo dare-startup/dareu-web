@@ -22,7 +22,12 @@ import com.dareu.web.dto.response.EntityRegistrationResponse.RegistrationType;
 import com.dareu.web.data.exception.DataAccessException;
 import com.dareu.web.core.service.DareuAssembler;
 import com.dareu.web.core.service.DareuMessagingService;
+import com.dareu.web.core.service.FileService;
+import com.dareu.web.core.service.MultipartService;
+import com.dareu.web.data.entity.DareResponse;
+import com.dareu.web.data.repository.DareResponseRepository;
 import com.dareu.web.dto.request.DareConfirmationRequest;
+import com.dareu.web.dto.request.DareUploadRequest;
 import com.dareu.web.dto.response.UpdatedEntityResponse;
 import com.dareu.web.dto.response.entity.ActiveDare;
 import com.dareu.web.dto.response.entity.CategoryDescription;
@@ -33,6 +38,8 @@ import com.dareu.web.dto.response.entity.UnacceptedDare;
 import com.dareu.web.dto.response.entity.UserDescription;
 import com.dareu.web.exception.InternalApplicationException;
 import com.dareu.web.exception.InvalidRequestException;
+import java.io.IOException;
+import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 
 public class DareServiceImpl implements DareService {
 
@@ -46,10 +53,19 @@ public class DareServiceImpl implements DareService {
     private DareUserRepository dareUserRepository;
     
     @Inject
-    private DareuAssembler assembler; 
+    private DareResponseRepository dareResponseRepository; 
+
+    @Inject
+    private DareuAssembler assembler;
+
+    @Inject
+    private DareuMessagingService messagingService;
     
     @Inject
-    private DareuMessagingService messagingService; 
+    private MultipartService multipartService; 
+    
+    @Inject
+    private FileService fileService; 
 
     @Inject
     private Logger log;
@@ -89,13 +105,13 @@ public class DareServiceImpl implements DareService {
         dare.setDescription(request.getDescription());
         dare.setEstimatedDareTime(request.getTimer()); //time is in hours
         dare.setName(request.getName());
-        
+
         //get the challenged user 
         DareUser challengedUser = null;
-        
+
         //get challenger user 
         DareUser challengerUser = null;
-        
+
         try {
             challengedUser = dareUserRepository.find(request.getFriendId());
             challengerUser = dareUserRepository.findUserByToken(authenticationToken);
@@ -109,18 +125,17 @@ public class DareServiceImpl implements DareService {
             //set users 
             dare.setChallengerUser(challengerUser);
             dare.setChallengedUser(challengedUser);
-            
+
             String id = dareRepository.createDare(dare);
             log.info("Successfully created new dare with id: " + id);
 
             //send push notification to the dared user 
-            String dareUserFcmToken = dareUserRepository.getUserFcmToken(challengedUser.getId()); 
-            if(dareUserFcmToken != null && ! dareUserFcmToken.isEmpty()){
+            String dareUserFcmToken = dareUserRepository.getUserFcmToken(challengedUser.getId());
+            if (dareUserFcmToken != null && !dareUserFcmToken.isEmpty()) {
                 messagingService.sendNewDareNotification(dare, dareUserFcmToken);
                 log.info("Sending FCM message to " + challengedUser.getName());
             }
-                
-            
+
             //return response
             return Response
                     .ok(new EntityRegistrationResponse("Successfully created new dare",
@@ -169,10 +184,11 @@ public class DareServiceImpl implements DareService {
     public Response getCategories(int pageNumber) throws InternalApplicationException {
         //get all categories 
         try {
-            if(pageNumber < 1)
+            if (pageNumber < 1) {
                 pageNumber = 1;
+            }
             List<Category> categories = categoryRepository.findCategoriesByPage(pageNumber);
-            
+
             Page<CategoryDescription> page = assembler.assembleCategories(categories, pageNumber);
             return Response.ok(page)
                     .build();
@@ -183,16 +199,17 @@ public class DareServiceImpl implements DareService {
 
     @Override
     public Response findUnapprovedDares(int pageNumber) throws InternalApplicationException {
-        if(pageNumber < 1)
-            pageNumber = 1; 
-        try{
-            List<Dare> dares = dareRepository.findUnapprovedDares(pageNumber); 
-            Page<DareDescription> dto = assembler.assembleDareDescriptions(dares, pageNumber); 
-            
+        if (pageNumber < 1) {
+            pageNumber = 1;
+        }
+        try {
+            List<Dare> dares = dareRepository.findUnapprovedDares(pageNumber);
+            Page<DareDescription> dto = assembler.assembleDareDescriptions(dares, pageNumber);
+
             return Response.ok(dto)
-                    .build(); 
-        }catch(DataAccessException ex){
-            throw new InternalApplicationException("Could not get dares: " + ex.getMessage(), ex); 
+                    .build();
+        } catch (DataAccessException ex) {
+            throw new InternalApplicationException("Could not get dares: " + ex.getMessage(), ex);
         }
     }
 
@@ -203,36 +220,38 @@ public class DareServiceImpl implements DareService {
         DareUser challenger;
         Dare dare;
         UserDescription challengerDescription;
-        try{
+        try {
             //find user by token
             user = dareUserRepository.findUserByToken(auth);
             //get id 
             String id = user.getId();
             //find dare
             dare = dareRepository.findUnacceptedDare(id);
-            
-            if(dare != null){
+
+            if (dare != null) {
                 //created unaccepted dare 
                 unacceptedDare = new UnacceptedDare();
                 unacceptedDare.setId(dare.getId());
                 unacceptedDare.setName(dare.getName());
                 unacceptedDare.setDescription(dare.getDescription());
                 unacceptedDare.setCreationDate(DareUtils.DETAILS_DATE_FORMAT.format(dare.getCreationDate()));
-                challenger = dare.getChallengerUser(); 
-                challengerDescription = new UserDescription(); 
+                challenger = dare.getChallengerUser();
+                challengerDescription = new UserDescription();
                 challengerDescription.setId(challenger.getId());
                 challengerDescription.setName(challenger.getName());
                 challengerDescription.setUserSinceDate(challenger.getUserSince());
+                challengerDescription.setProfileImageAvailable(fileService.userHasProfileImage(challenger.getId())); 
                 unacceptedDare.setTimer(dare.getEstimatedDareTime());
                 unacceptedDare.setChallenger(challengerDescription);
                 return Response.ok(unacceptedDare)
-                        .build(); 
-            }else 
-                //return an empty response
+                        .build();
+            } else //return an empty response
+            {
                 return Response.ok()
                         .build();
-            
-        }catch(DataAccessException ex){
+            }
+
+        } catch (DataAccessException ex) {
             throw new InternalApplicationException("");
         }
     }
@@ -240,82 +259,124 @@ public class DareServiceImpl implements DareService {
     @Override
     public Response confirmDareRequest(DareConfirmationRequest request) throws InternalApplicationException, InvalidRequestException {
         //validate
-        if(request == null)
+        if (request == null) {
             throw new InvalidRequestException("No request provided");
-        if(request.getDareId() == null || request.getDareId().isEmpty())
-            throw new InvalidRequestException("No dare id provided"); 
-        
-        try{
+        }
+        if (request.getDareId() == null || request.getDareId().isEmpty()) {
+            throw new InvalidRequestException("No dare id provided");
+        }
+
+        try {
             //update dare 
             dareRepository.confirmDareRequest(request.getDareId(), request.isAccepted());
             return Response.ok(new UpdatedEntityResponse("Updated dare", true, "dare"))
                     .build();
-        }catch(DataAccessException ex){
+        } catch (DataAccessException ex) {
             throw new InternalApplicationException(ex.getMessage());
         }
-        
+
     }
 
     @Override
     public Response discoverDares(int pageNumber, String authToken) throws InternalApplicationException {
-        DareUser user; 
-        try{
+        DareUser user;
+        try {
             user = dareUserRepository.findUserByToken(authToken);
-            
+
             Page<DareDescription> descs = dareRepository.discoverDares(pageNumber, user.getId());
-            
+
             return Response.ok(descs)
                     .build();
-        }catch(DataAccessException ex){
-            throw new InternalApplicationException(ex.getMessage(), ex); 
+        } catch (DataAccessException ex) {
+            throw new InternalApplicationException(ex.getMessage(), ex);
         }
     }
 
     @Override
     public Response findDareDescription(String dareId) throws InternalApplicationException, InvalidRequestException {
-        if(dareId == null || dareId.isEmpty())
-            throw new InvalidRequestException("dareId must be provided"); 
-        
-        try{
-            Dare dare = dareRepository.find(dareId); 
-            
-            DareDescription desc = assembler.assembleDareDescription(dare); 
-            
+        if (dareId == null || dareId.isEmpty()) {
+            throw new InvalidRequestException("dareId must be provided");
+        }
+
+        try {
+            Dare dare = dareRepository.find(dareId);
+
+            DareDescription desc = assembler.assembleDareDescription(dare);
+
             return Response.ok(desc)
-                    .build(); 
-        }catch(DataAccessException ex){
-            throw new InternalApplicationException(ex.getMessage()); 
+                    .build();
+        } catch (DataAccessException ex) {
+            throw new InternalApplicationException(ex.getMessage());
         }
     }
 
     @Override
     public Response findCreatedDares(String auth, int pageNumber) throws InternalApplicationException, InvalidRequestException {
-        DareUser user; 
-        try{
-            user = dareUserRepository.findUserByToken(auth); 
+        DareUser user;
+        try {
+            user = dareUserRepository.findUserByToken(auth);
             //get all created dares 
-            
+
             Page<CreatedDare> createdDaresPage = dareRepository.findCreatedDares(user.getId(), pageNumber);
-            
+
             //return response
             return Response.ok(createdDaresPage)
-                    .build(); 
-        }catch(DataAccessException ex){
-            throw new InternalApplicationException(ex.getMessage()); 
+                    .build();
+        } catch (DataAccessException ex) {
+            throw new InternalApplicationException(ex.getMessage());
         }
     }
 
     @Override
     public Response getCurrentActiveDare(String auth) throws InternalApplicationException {
-        try{
-            DareUser user = dareUserRepository.findUserByToken(auth); 
+        try {
+            DareUser user = dareUserRepository.findUserByToken(auth);
             String id = user.getId();
-            
-            ActiveDare description = dareRepository.getCurrentActiveDare(id); 
+
+            ActiveDare description = dareRepository.getCurrentActiveDare(id);
             return Response.ok(description)
                     .build();
-        }catch(DataAccessException ex){
+        } catch (DataAccessException ex) {
             throw new InternalApplicationException(ex.getMessage());
+        }
+    }
+
+    @Override
+    public Response uploadDareResponse(MultipartFormDataInput input, String auth) throws InternalApplicationException {
+        try{
+            //get request object 
+            DareUploadRequest request = multipartService.getDareUploadRequest(input); 
+            //get user uplaoding video 
+            DareUser user = dareUserRepository.findUserByToken(auth); 
+            //validate
+            if(request == null || request.getDareId() == null || request.getStream() == null)
+                throw new InternalApplicationException("Invalid multipart request"); 
+            //save file 
+            fileService.saveFile(request.getStream(), FileService.FileType.DARE_VIDEO, user.getId().concat(".jpg")); 
+            //create new Dare response 
+            DareResponse dareResponse = new DareResponse(); 
+            dareResponse.setViewsCount(0);
+            dareResponse.setUser(user);
+            dareResponse.setResponseDate(DareUtils.DETAILS_DATE_FORMAT.format(new Date()));
+            //get dare 
+            Dare dare = dareRepository.find(request.getDareId());
+            if(dare == null)
+                throw new InternalApplicationException("Dare id is not valid"); 
+            dareResponse.setDare(dare);
+            dareResponse.setLikes(0);
+            dareResponseRepository.persist(dareResponse);
+            //get fcm token from challenger user
+            String challengerFcmToken = dareUserRepository.getUserFcmToken(dare.getChallengerUser().getId()); 
+            //send notification
+            messagingService.sendDareResponseUploaded(dareResponse, challengerFcmToken);
+            //return response
+            return Response.ok(new EntityRegistrationResponse("Dare response has been created", RegistrationType.DARE_RESPONSE, 
+                                DareUtils.DETAILS_DATE_FORMAT.format(new Date()), dareResponse.getId()))
+                    .build();
+        }catch(DataAccessException ex){
+            throw new InternalApplicationException(ex.getMessage()); 
+        }catch(IOException ex){
+            throw new InternalApplicationException(ex.getMessage()); 
         }
     }
 
