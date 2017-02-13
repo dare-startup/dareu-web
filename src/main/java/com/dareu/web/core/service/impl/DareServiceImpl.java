@@ -240,7 +240,7 @@ public class DareServiceImpl implements DareService {
                 challengerDescription.setId(challenger.getId());
                 challengerDescription.setName(challenger.getName());
                 challengerDescription.setUserSinceDate(challenger.getUserSince());
-                challengerDescription.setProfileImageAvailable(fileService.userHasProfileImage(challenger.getId())); 
+                challengerDescription.setProfileImageAvailable(fileService.fileExists(FileService.FileType.PROFILE_IMAGE, challenger.getId())); 
                 unacceptedDare.setTimer(dare.getEstimatedDareTime());
                 unacceptedDare.setChallenger(challengerDescription);
                 return Response.ok(unacceptedDare)

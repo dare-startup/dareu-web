@@ -19,6 +19,7 @@ import com.dareu.web.dto.response.entity.FriendSearchDescription;
 import com.dareu.web.dto.response.entity.Page;
 import com.dareu.web.dto.response.entity.UserAccount;
 import com.dareu.web.dto.response.entity.UserDescription;
+import com.sun.javafx.scene.control.skin.VirtualFlow;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -115,7 +116,7 @@ public class DareuAssemblerImpl implements DareuAssembler{
     public DiscoverUserAccount assembleDiscoverUserAccount(DareUser user) {
         DiscoverUserAccount acc = new DiscoverUserAccount(user.getId(), user.getName(), 
                     user.getCoins(), user.getuScore());
-        acc.setProfileImageAvailable(fileService.userHasProfileImage(user.getId()));
+        acc.setProfileImageAvailable(fileService.fileExists(FileService.FileType.PROFILE_IMAGE, user.getId()));
         return acc; 
     }
 
@@ -125,7 +126,7 @@ public class DareuAssemblerImpl implements DareuAssembler{
         FriendSearchDescription desc; 
         for(DareUser user : users){
             desc = new FriendSearchDescription(user.getId(), user.getName()); 
-            desc.setProfileImageAvailable(fileService.userHasProfileImage(user.getId()));
+            desc.setProfileImageAvailable(fileService.fileExists(FileService.FileType.PROFILE_IMAGE, user.getId()));
             list.add(desc); 
         }
             
@@ -151,7 +152,7 @@ public class DareuAssemblerImpl implements DareuAssembler{
     @Override
     public UserDescription assembleUserDescription(DareUser user) {
         UserDescription desc = new UserDescription(user.getId(), user.getName(), user.getUserSince());
-        desc.setProfileImageAvailable(fileService.userHasProfileImage(user.getId()));
+        desc.setProfileImageAvailable(fileService.fileExists(FileService.FileType.PROFILE_IMAGE, user.getId()));
         return desc; 
     }
 
@@ -191,11 +192,16 @@ public class DareuAssemblerImpl implements DareuAssembler{
         return activeDare; 
     }
 
-    public Page<DareResponseDescription> assembleDareResponseDescriptionPage(List<DareResponse> responses, int pageNumber, int count) {
-        Page<DareResponseDescription> page = null; 
+    public List<DareResponseDescription> assembleDareResponseDescriptions(List<DareResponse> responses) {
         List<DareResponseDescription> list = new ArrayList(); 
-        page
-        return page; 
+        DareResponseDescription desc; 
+        for(DareResponse response : responses){
+            desc = new DareResponseDescription(); 
+            desc.setDare(assembleDareDescription(response.getDare()));
+            desc.setId(response.getId());
+            desc.setThumbAvailable(fileService.fileExists(FileService.FileType.VIDEO_THUMBNAIL, response.getId()));
+            list.add(desc);
+        }
+        return list; 
     }
-    
 }

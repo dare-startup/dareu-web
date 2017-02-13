@@ -33,6 +33,10 @@ public class FileServiceImpl implements FileService {
     @Inject
     @ApplicationProperty(name = "dare.videos.directory", type = Types.SYSTEM)
     private String dareVideosDirectory;
+    
+    @Inject
+    @ApplicationProperty(name = "com.dareu.web.video.thumb.directory", type = Types.SYSTEM)
+    private String dareVideoThumbDirectory; 
 
     @Inject
     private Logger log;
@@ -65,6 +69,17 @@ public class FileServiceImpl implements FileService {
                         break;
                 }
                 break;
+            case VIDEO_THUMBNAIL: 
+                outputDirectory = dareVideoThumbDirectory + fileName; 
+                switch(currentHostingProvider){
+                    case LOCAL: 
+                        writeLocalFile(outputDirectory, stream); 
+                        break; 
+                    case AMAZON: 
+                        //TODO: save to amazon here
+                        break; 
+                }
+                break; 
             default:
                 throw new AssertionError();
         }
@@ -100,11 +115,21 @@ public class FileServiceImpl implements FileService {
         }
     }
 
-    @Override
-    public boolean userHasProfileImage(String userId) {
-        InputStream stream; 
+    public boolean fileExists(FileType fileType, String id) {
+        InputStream stream = null; 
         try{
-            stream = getFile(userId + ".jpg", FileType.PROFILE_IMAGE); 
+            switch(fileType){
+                case DARE_VIDEO: 
+                    stream = getFile(id + ".mp4", FileType.DARE_VIDEO); 
+                    break; 
+                case PROFILE_IMAGE: 
+                    stream = getFile(id + ".jpg", FileType.PROFILE_IMAGE);
+                    break; 
+                case VIDEO_THUMBNAIL:
+                    stream = getFile(id + ".jpg", FileType.VIDEO_THUMBNAIL); 
+                    break; 
+            }
+            
             return stream != null; 
         }catch(IOException ex){
             return false; 

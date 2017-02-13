@@ -51,7 +51,13 @@ public class DareResponseRepositoryImpl extends AbstractRepository<DareResponse>
             List<DareResponse> responses = q.getResultList(); 
             //get count 
             int count = responsesCount(userId); 
-            
+            Page<DareResponseDescription> page = new Page<DareResponseDescription>(); 
+            List<DareResponseDescription> descriptions = assembler.assembleDareResponseDescriptions(responses); 
+            page.setItems(descriptions);
+            page.setPageNumber(pageNumber);
+            page.setPageSize(DEFAULT_PAGE_NUMBER);
+            page.setPagesAvailable(getPagesAvailable(pageNumber, count));
+            return page; 
         }catch(Exception ex){
             throw new DataAccessException("Could not get responses from user: " + ex.getMessage()); 
         }

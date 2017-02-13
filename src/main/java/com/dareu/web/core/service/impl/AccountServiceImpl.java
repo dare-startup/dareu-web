@@ -500,6 +500,10 @@ public class AccountServiceImpl extends AbstractService implements AccountServic
             String id = getPrincipal().getId(); 
             //get account profile 
             AccountProfile accountProfile = dareUserRepository.getAccountProfile(id); 
+            return Response.ok(accountProfile)
+                    .build(); 
+        }catch(DataAccessException ex){
+            throw new InternalApplicationException(ex.getMessage());
         }
     }
 }

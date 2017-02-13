@@ -119,13 +119,12 @@ public interface DareuAssembler {
      * @return 
      */
     public ActiveDare assembleActiveDare(Dare dare);
-    
+
     /**
-     * assembles a page of dare responses
+     * Assembles a list of dare response descriptions
      * @param responses
-     * @param pageNumber
-     * @param count
      * @return 
      */
-    public Page<DareResponseDescription> assembleDareResponseDescriptionPage(List<DareResponse> responses, int pageNumber, int count); 
+    public List<DareResponseDescription> assembleDareResponseDescriptions(List<DareResponse> responses);
+    
 }

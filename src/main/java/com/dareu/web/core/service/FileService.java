@@ -16,9 +16,9 @@ import java.io.InputStream;
 public interface FileService {
     public String saveFile(InputStream stream, FileType fileType, String fileName)throws IOException;
     public InputStream getFile(String fileName, FileType fileType)throws FileNotFoundException, IOException;
-    public boolean userHasProfileImage(String userId);
+    public boolean fileExists(FileType fileType, String id); 
     
     public enum FileType{
-    	PROFILE_IMAGE, DARE_VIDEO; 
+    	PROFILE_IMAGE, DARE_VIDEO, VIDEO_THUMBNAIL; 
     }
 }

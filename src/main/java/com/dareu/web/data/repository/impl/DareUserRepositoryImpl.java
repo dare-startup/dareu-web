@@ -1,6 +1,7 @@
 package com.dareu.web.data.repository.impl;
 
 import com.dareu.web.core.security.DareuPrincipal;
+import com.dareu.web.core.service.FileService;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -13,6 +14,7 @@ import com.dareu.web.data.repository.DareResponseRepository;
 import com.dareu.web.dto.response.entity.AccountProfile;
 import com.dareu.web.dto.response.entity.CreatedDare;
 import com.dareu.web.dto.response.entity.DareDescription;
+import com.dareu.web.dto.response.entity.DareResponseDescription;
 import com.dareu.web.dto.response.entity.Page;
 import java.math.BigInteger;
 
@@ -33,6 +35,9 @@ public class DareUserRepositoryImpl extends AbstractRepository<DareUser> impleme
 
     @Inject
     private DareRepository dareRepository; 
+    
+    @Inject
+    private FileService fileService; 
     
     @Inject
     private DareResponseRepository dareResponseRepository; 
@@ -288,10 +293,15 @@ public class DareUserRepositoryImpl extends AbstractRepository<DareUser> impleme
             profile.setUscore(user.getuScore());
             profile.setUserSinceDate(user.getUserSince());
             Page<CreatedDare> dares = dareRepository.findCreatedDares(id, 1); 
+            Page<DareResponseDescription> responses = dareResponseRepository.getResponses(id, 1); 
             profile.setCreatedDares(dares);
-            Page<DareResponseDescription> responses = dareResponseRepository.
+            profile.setCreatedResponses(responses);
+            profile.setProfileImageAvailable(fileService.fileExists(FileService.FileType.PROFILE_IMAGE, id));
+            return profile; 
+        }catch(Exception ex){
+            throw new DataAccessException(ex.getMessage()); 
         }
-        return profile; 
+        
     }
 
 }
