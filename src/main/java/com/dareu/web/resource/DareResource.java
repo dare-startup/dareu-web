@@ -111,7 +111,7 @@ public class DareResource {
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Secured
-    public Response uploadDareResponse(MultipartFormDataInput input, @HeaderParam("Authorization")String auth){
-        return null; 
+    public Response uploadDareResponse(MultipartFormDataInput input, @HeaderParam("Authorization")String auth)throws InternalApplicationException{
+        return dareService.uploadDareResponse(input, auth); 
     }
 }

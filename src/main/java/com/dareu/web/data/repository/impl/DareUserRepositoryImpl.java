@@ -8,6 +8,11 @@ import com.dareu.web.data.entity.DareUser;
 import com.dareu.web.data.repository.DareUserRepository;
 import com.dareu.web.data.exception.AuthenticationException;
 import com.dareu.web.data.exception.DataAccessException;
+import com.dareu.web.data.repository.DareRepository;
+import com.dareu.web.data.repository.DareResponseRepository;
+import com.dareu.web.dto.response.entity.AccountProfile;
+import com.dareu.web.dto.response.entity.CreatedDare;
+import com.dareu.web.dto.response.entity.DareDescription;
 import com.dareu.web.dto.response.entity.Page;
 import java.math.BigInteger;
 
@@ -23,8 +28,14 @@ import javax.transaction.Transactional;
  */
 @Stateless
 public class DareUserRepositoryImpl extends AbstractRepository<DareUser> implements DareUserRepository {
+
+    private Logger log = Logger.getLogger("DareUserRepository");
+
+    @Inject
+    private DareRepository dareRepository; 
     
-    private Logger log = Logger.getLogger("DareUserRepository"); 
+    @Inject
+    private DareResponseRepository dareResponseRepository; 
     
     public DareUserRepositoryImpl() {
         super(DareUser.class);
@@ -115,8 +126,7 @@ public class DareUserRepositoryImpl extends AbstractRepository<DareUser> impleme
     public List<DareUser> findFriends(String userId) throws DataAccessException {
         List<DareUser> users = null;
         /**
-         * try{ Query q = em.createQuery("SELECT u FROM User u WHERE "); 
-		}*
+         * try{ Query q = em.createQuery("SELECT u FROM User u WHERE "); }*
          */
         return users;
     }
@@ -168,39 +178,42 @@ public class DareUserRepositoryImpl extends AbstractRepository<DareUser> impleme
 
     @Override
     public DareUser findUserByEmail(String email) throws DataAccessException {
-        try{
+        try {
             Query q = em.createQuery("SELECT u FROM User u WHERE u.email = :email")
-                    .setParameter("email", email); 
-            DareUser user = (DareUser)q.getSingleResult(); 
-            return user; 
-        }catch(NoResultException ex){
-            
-            return null; 
-        }catch(Exception ex){
-            throw new DataAccessException("Could not get user by email: " + ex.getMessage()); 
+                    .setParameter("email", email);
+            DareUser user = (DareUser) q.getSingleResult();
+            return user;
+        } catch (NoResultException ex) {
+
+            return null;
+        } catch (Exception ex) {
+            throw new DataAccessException("Could not get user by email: " + ex.getMessage());
         }
     }
 
     @Override
     public List<DareUser> findUsersByPage(int pageNumber, boolean excludePrincipal, String userId) throws DataAccessException {
-        List<DareUser> users = null; 
-        try{
-            Query query = null; 
-            if(excludePrincipal)
+        List<DareUser> users = null;
+        try {
+            Query query = null;
+            if (excludePrincipal) {
                 query = em.createQuery("SELECT u FROM User u WHERE u.id != :id")
                         .setParameter("id", userId);
-            else query = em.createQuery("SELECT u FROM User u");
+            } else {
+                query = em.createQuery("SELECT u FROM User u");
+            }
             query.setMaxResults(DEFAULT_PAGE_NUMBER)
-                    .setFirstResult(getFirstResult(pageNumber)); 
-            users = query.getResultList(); 
-            return users; 
-        }catch(Exception ex){
-            throw new DataAccessException("Could not get users by page: " + ex.getMessage()); 
+                    .setFirstResult(getFirstResult(pageNumber));
+            users = query.getResultList();
+            return users;
+        } catch (Exception ex) {
+            throw new DataAccessException("Could not get users by page: " + ex.getMessage());
         }
     }
 
+    @Override
     public Page<DareUser> discoverUsers(int pageNumber, String userId) throws DataAccessException {
-        try{
+        try {
             //list
             Query q = em.createNativeQuery("select * from dareu_user "
                     + "where id not in (select (case ?1 when user_id then requested_user_id else user_id end) id from friendship "
@@ -222,8 +235,8 @@ public class DareUserRepositoryImpl extends AbstractRepository<DareUser> impleme
                     .setParameter(2, userId)
                     .setParameter(3, userId)
                     .setParameter(4, userId);
-            BigInteger count = (BigInteger)q.getSingleResult();
-            
+            BigInteger count = (BigInteger) q.getSingleResult();
+
             //creates a new page 
             Page<DareUser> page = new Page<DareUser>();
             page.setItems(users);
@@ -231,32 +244,54 @@ public class DareUserRepositoryImpl extends AbstractRepository<DareUser> impleme
             page.setPageSize(DEFAULT_PAGE_NUMBER);
             page.setPagesAvailable(getPagesAvailable(pageNumber, count.intValue()));
             return page;
-        }catch(Exception ex){
+        } catch (Exception ex) {
             throw new DataAccessException(ex.getMessage());
         }
     }
 
+    @Override
     public String getUserFcmToken(String userId) throws DataAccessException {
-        try{
+        try {
             Query q = em.createQuery("SELECT u.GCM FROM User u WHERE u.id = :id")
-                    .setParameter("id", userId); 
-            
-            String fcm = (String)q.getSingleResult(); 
-            return fcm; 
-        }catch(Exception ex){
+                    .setParameter("id", userId);
+
+            String fcm = (String) q.getSingleResult();
+            return fcm;
+        } catch (Exception ex) {
             throw new DataAccessException(ex.getMessage());
         }
     }
 
+    @Override
     public void updateImageUrl(String id) throws DataAccessException {
-        try{
+        try {
             Query q = em.createQuery("UPDATE User u SET u.imagePath = :id WHERE u.id = :id")
-                    .setParameter("id", id); 
-            
-            q.executeUpdate(); 
-        }catch(Exception ex){
-            throw new DataAccessException(ex.getMessage()); 
+                    .setParameter("id", id);
+
+            q.executeUpdate();
+        } catch (Exception ex) {
+            throw new DataAccessException(ex.getMessage());
         }
+    }
+
+    public AccountProfile getAccountProfile(String id) throws DataAccessException {
+        AccountProfile profile = null; 
+        
+        try{
+            Query q = em.createQuery("SELECT d FROM User d WHERE d.id = :id")
+                    .setParameter("id", id);
+            DareUser user = (DareUser)q.getSingleResult(); 
+            profile = new AccountProfile(); 
+            profile.setCoins(user.getCoins());
+            profile.setId(id);
+            profile.setName(user.getName());
+            profile.setUscore(user.getuScore());
+            profile.setUserSinceDate(user.getUserSince());
+            Page<CreatedDare> dares = dareRepository.findCreatedDares(id, 1); 
+            profile.setCreatedDares(dares);
+            Page<DareResponseDescription> responses = dareResponseRepository.
+        }
+        return profile; 
     }
 
 }

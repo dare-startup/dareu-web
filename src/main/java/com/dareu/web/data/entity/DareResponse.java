@@ -1,6 +1,7 @@
 package com.dareu.web.data.entity;
 
 import java.util.Date;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -14,23 +15,26 @@ import javax.persistence.Table;
 @Entity(name = "DareResponse")
 @Table(name = "dare_response")
 public class DareResponse extends BaseEntity {
-    
+
     @Column(name = "response_date")
-    private String responseDate; 
-    
+    private String responseDate;
+
     @Column(name = "views_count")
-    private int viewsCount; 
-    
+    private int viewsCount;
+
     @Column(name = "likes")
-    private int likes; 
-    
-    @OneToOne(fetch = FetchType.EAGER)
+    private int likes;
+
+    @Column(name = "comment")
+    private String comment;
+
+    @OneToOne(fetch = FetchType.EAGER,  cascade = CascadeType.REFRESH)
     @JoinColumn(name = "user_id")
-    private DareUser user; 
-    
-    @OneToOne(fetch = FetchType.EAGER)
+    private DareUser user;
+
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.REFRESH)
     @JoinColumn(name = "dare_id")
-    private Dare dare; 
+    private Dare dare;
 
     public DareResponse() {
     }
@@ -42,7 +46,7 @@ public class DareResponse extends BaseEntity {
     public void setResponseDate(String responseDate) {
         this.responseDate = responseDate;
     }
-    
+
     public int getViewsCount() {
         return viewsCount;
     }
@@ -51,13 +55,13 @@ public class DareResponse extends BaseEntity {
         this.viewsCount = viewsCount;
     }
 
-	public int getLikes() {
-		return likes;
-	}
+    public int getLikes() {
+        return likes;
+    }
 
-	public void setLikes(int likes) {
-		this.likes = likes;
-	}
+    public void setLikes(int likes) {
+        this.likes = likes;
+    }
 
     public DareUser getUser() {
         return user;
@@ -74,8 +78,13 @@ public class DareResponse extends BaseEntity {
     public void setDare(Dare dare) {
         this.dare = dare;
     }
-    
-    
-    
-    
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
+
 }

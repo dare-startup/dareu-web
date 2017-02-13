@@ -41,6 +41,7 @@ create table dare(
     
 create table dare_response(
     id varchar(36) not null primary key, 
+    comment varchar(100)not null,
     response_date datetime not null, 
     views_count int not null default 0, 
     likes int not null default 0, 

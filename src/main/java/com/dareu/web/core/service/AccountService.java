@@ -21,6 +21,13 @@ import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 public interface AccountService {
     
     /**
+     * Returns a profile object
+     * @return
+     * @throws InternalApplicationException 
+     */
+    public Response me() throws InternalApplicationException;
+    
+    /**
      * 
      * @param request
      * @return

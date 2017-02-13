@@ -5,10 +5,15 @@
  */
 package com.dareu.web.data.repository.impl;
 
+import com.dareu.web.core.service.DareuAssembler;
 import com.dareu.web.data.entity.DareResponse;
 import com.dareu.web.data.exception.DataAccessException;
 import com.dareu.web.data.repository.DareResponseRepository;
+import com.dareu.web.dto.response.entity.DareResponseDescription;
+import com.dareu.web.dto.response.entity.Page;
+import java.util.List;
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.persistence.Query;
 
 /**
@@ -17,6 +22,10 @@ import javax.persistence.Query;
  */
 @Stateless
 public class DareResponseRepositoryImpl extends AbstractRepository<DareResponse>implements DareResponseRepository{
+    
+    @Inject
+    private DareuAssembler assembler; 
+    
     public DareResponseRepositoryImpl(){
         super(DareResponse.class);
     }
@@ -30,6 +39,21 @@ public class DareResponseRepositoryImpl extends AbstractRepository<DareResponse>
             return count.intValue(); 
         }catch(Exception e){
             throw new DataAccessException("Could not get responses count: " + e.getMessage()); 
+        }
+    }
+
+    public Page<DareResponseDescription> getResponses(String userId, int pageNumber) throws DataAccessException {
+        try{
+            Query q = em.createQuery("SELECT r FROM DareResponse r WHERE r.user.id = :userId")
+                    .setParameter("userId", userId)
+                    .setMaxResults(DEFAULT_PAGE_NUMBER)
+                    .setFirstResult(getFirstResult(pageNumber));
+            List<DareResponse> responses = q.getResultList(); 
+            //get count 
+            int count = responsesCount(userId); 
+            
+        }catch(Exception ex){
+            throw new DataAccessException("Could not get responses from user: " + ex.getMessage()); 
         }
     }
 }

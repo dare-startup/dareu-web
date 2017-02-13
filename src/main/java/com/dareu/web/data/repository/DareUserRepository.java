@@ -11,6 +11,7 @@ import com.dareu.web.data.entity.DareUser;
 import com.dareu.web.data.entity.FriendshipRequest;
 import com.dareu.web.data.exception.AuthenticationException;
 import com.dareu.web.data.exception.DataAccessException;
+import com.dareu.web.dto.response.entity.AccountProfile;
 import com.dareu.web.dto.response.entity.Page;
 
 /**
@@ -151,4 +152,12 @@ public interface DareUserRepository extends BaseRepository<DareUser> {
      * @throws DataAccessException 
      */
     public void updateImageUrl(String id) throws DataAccessException;
+
+    /**
+     * Returns an account profile from a user id
+     * @param id
+     * @return
+     * @throws DataAccessException 
+     */
+    public AccountProfile getAccountProfile(String id) throws DataAccessException;
 }

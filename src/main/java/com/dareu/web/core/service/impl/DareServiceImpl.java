@@ -352,9 +352,10 @@ public class DareServiceImpl implements DareService {
             if(request == null || request.getDareId() == null || request.getStream() == null)
                 throw new InternalApplicationException("Invalid multipart request"); 
             //save file 
-            fileService.saveFile(request.getStream(), FileService.FileType.DARE_VIDEO, user.getId().concat(".jpg")); 
+            fileService.saveFile(request.getStream(), FileService.FileType.DARE_VIDEO, user.getId().concat(".mp4")); 
             //create new Dare response 
             DareResponse dareResponse = new DareResponse(); 
+            dareResponse.setComment(request.getComment());
             dareResponse.setViewsCount(0);
             dareResponse.setUser(user);
             dareResponse.setResponseDate(DareUtils.DETAILS_DATE_FORMAT.format(new Date()));
@@ -368,7 +369,8 @@ public class DareServiceImpl implements DareService {
             //get fcm token from challenger user
             String challengerFcmToken = dareUserRepository.getUserFcmToken(dare.getChallengerUser().getId()); 
             //send notification
-            messagingService.sendDareResponseUploaded(dareResponse, challengerFcmToken);
+            if(challengerFcmToken != null && ! challengerFcmToken.isEmpty())
+                messagingService.sendDareResponseUploaded(dareResponse, challengerFcmToken);
             //return response
             return Response.ok(new EntityRegistrationResponse("Dare response has been created", RegistrationType.DARE_RESPONSE, 
                                 DareUtils.DETAILS_DATE_FORMAT.format(new Date()), dareResponse.getId()))

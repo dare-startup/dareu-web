@@ -44,6 +44,7 @@ public class AccountResource {
      * Get current profile from a logged user
      *
      * @return
+     * @throws com.dareu.web.exception.InternalApplicationException
      */
     @Path("me")
     @Produces(MediaType.APPLICATION_JSON)
@@ -55,8 +56,8 @@ public class AccountResource {
         @ApiResponse(code = 200, message = "The request has been processed successfully"),
         @ApiResponse(code = 401, message = "Unauthorized to access this operation")})
     @Secured
-    public Response me() {
-        return null;
+    public Response me() throws InternalApplicationException{
+        return accountService.me() ;
     }
 
     /**

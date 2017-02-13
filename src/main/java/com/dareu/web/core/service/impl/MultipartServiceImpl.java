@@ -58,10 +58,12 @@ public class MultipartServiceImpl implements MultipartService{
 
     public DareUploadRequest getDareUploadRequest(MultipartFormDataInput input)throws IOException {
         Map<String, List<InputPart>> map = input.getFormDataMap();
-        List<InputPart> inputParts = map.get("video");
+        List<InputPart> inputParts = map.get("file");
         List<InputPart> dareIdParts = map.get("dareId"); 
+        List<InputPart> commentParts = map.get("comment"); 
         String fileName;
         String dareId = ""; 
+        String comment = ""; 
         InputStream stream = null; 
         for(InputPart part : inputParts){
             MultivaluedMap<String, String> header = part.getHeaders();
@@ -75,9 +77,13 @@ public class MultipartServiceImpl implements MultipartService{
             dareId = part.getBodyAsString();
             break; 
         }
-            
+            //get dare Id 
+        for(InputPart part : commentParts){
+            comment = part.getBodyAsString();
+            break; 
+        }
         
-        return new DareUploadRequest(dareId, stream); 
+        return new DareUploadRequest(dareId, stream, comment); 
     }
     
     

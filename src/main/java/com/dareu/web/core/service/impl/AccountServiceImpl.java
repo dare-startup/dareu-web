@@ -36,6 +36,7 @@ import com.dareu.web.data.repository.DareResponseRepository;
 import com.dareu.web.dto.security.PasswordEncryptor;
 import com.dareu.web.dto.response.BadRequestResponse;
 import com.dareu.web.dto.response.UpdatedEntityResponse;
+import com.dareu.web.dto.response.entity.AccountProfile;
 import com.dareu.web.dto.response.entity.ConnectionDetails;
 import com.dareu.web.dto.response.entity.DiscoverUserAccount;
 import com.dareu.web.dto.response.entity.FriendSearchDescription;
@@ -491,6 +492,14 @@ public class AccountServiceImpl extends AbstractService implements AccountServic
             throw new InternalApplicationException(ex.getMessage());
         } catch (DataAccessException ex) {
             throw new InternalApplicationException(ex.getMessage());
+        }
+    }
+
+    public Response me() throws InternalApplicationException {
+        try{
+            String id = getPrincipal().getId(); 
+            //get account profile 
+            AccountProfile accountProfile = dareUserRepository.getAccountProfile(id); 
         }
     }
 }

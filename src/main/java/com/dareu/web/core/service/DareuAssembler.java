@@ -2,6 +2,7 @@ package com.dareu.web.core.service;
 
 import com.dareu.web.data.entity.Category;
 import com.dareu.web.data.entity.Dare;
+import com.dareu.web.data.entity.DareResponse;
 import com.dareu.web.data.entity.DareUser;
 import com.dareu.web.data.entity.FriendshipRequest;
 import com.dareu.web.dto.response.entity.ActiveDare;
@@ -9,6 +10,7 @@ import com.dareu.web.dto.response.entity.CategoryDescription;
 import com.dareu.web.dto.response.entity.ConnectionDetails;
 import com.dareu.web.dto.response.entity.CreatedDare;
 import com.dareu.web.dto.response.entity.DareDescription;
+import com.dareu.web.dto.response.entity.DareResponseDescription;
 import com.dareu.web.dto.response.entity.DiscoverUserAccount;
 import com.dareu.web.dto.response.entity.FriendSearchDescription;
 import com.dareu.web.dto.response.entity.Page;
@@ -117,4 +119,13 @@ public interface DareuAssembler {
      * @return 
      */
     public ActiveDare assembleActiveDare(Dare dare);
+    
+    /**
+     * assembles a page of dare responses
+     * @param responses
+     * @param pageNumber
+     * @param count
+     * @return 
+     */
+    public Page<DareResponseDescription> assembleDareResponseDescriptionPage(List<DareResponse> responses, int pageNumber, int count); 
 }
