@@ -19,7 +19,6 @@ import com.dareu.web.dto.response.entity.FriendSearchDescription;
 import com.dareu.web.dto.response.entity.Page;
 import com.dareu.web.dto.response.entity.UserAccount;
 import com.dareu.web.dto.response.entity.UserDescription;
-import com.sun.javafx.scene.control.skin.VirtualFlow;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
