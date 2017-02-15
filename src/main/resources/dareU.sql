@@ -38,6 +38,14 @@ create table dare(
     foreign key(category_id)references category(id),
     foreign key(challenger_user_id) references dareu_user(id), 
     foreign key(challenged_user_id)references dareu_user(id)); 
+
+create table dare_flag(
+    id varchar(36)not null primary key, 
+    dare_id varchar(36)not null, 
+    comment varchar(100)not null, 
+    flag_date varchar(50)not null, 
+    foreign key(dare_id) references dare(id)
+);
     
 create table dare_response(
     id varchar(36) not null primary key, 

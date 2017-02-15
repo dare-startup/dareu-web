@@ -4,8 +4,14 @@ import com.dareu.web.core.annotation.AllowedUsers;
 import com.dareu.web.dto.security.SecurityRole;
 import com.dareu.web.core.annotation.Secured;
 import com.dareu.web.core.service.AccountService;
+import com.dareu.web.dto.response.ResourceAvailableResponse;
 import com.dareu.web.exception.InternalApplicationException;
 import com.dareu.web.exception.InvalidRequestException;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.Authorization;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -21,6 +27,7 @@ import javax.ws.rs.core.Response;
  *
  * @author jose.rubalcaba
  */
+@Api(value = "admin/account")
 @Path("admin/account")
 @AllowedUsers(securityRoles = { SecurityRole.ADMIN })
 public class AdminAccountResource {
@@ -32,6 +39,14 @@ public class AdminAccountResource {
      * Register a new sponsor user
      * @return 
      */
+    @ApiOperation(value = "Register a new sponsor user", produces = "application/json", 
+            authorizations = { @Authorization(value = "ALL")}, 
+            notes = "Register a new sponsor user")
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "The operation ran successfuly", 
+                response = ResourceAvailableResponse.class), 
+        
+    })
     @Path("registerSponsor")
     @Produces(MediaType.APPLICATION_JSON)
     @POST

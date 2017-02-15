@@ -37,7 +37,8 @@
       if (url && url.length > 1) {
         url = decodeURIComponent(url[1]);
       } else {
-        url = "http://localhost:8080/dareu-services/rest/swagger.json";
+          var host = window.location.origin;
+          url = host + "/dareu-services/rest/swagger.json";
       }
 
       hljs.configure({

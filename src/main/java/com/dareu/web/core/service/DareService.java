@@ -5,6 +5,7 @@ import javax.ws.rs.core.Response;
 import com.dareu.web.dto.request.CreateCategoryRequest;
 import com.dareu.web.dto.request.CreateDareRequest;
 import com.dareu.web.dto.request.DareConfirmationRequest;
+import com.dareu.web.dto.request.FlagDareRequest;
 import com.dareu.web.exception.InternalApplicationException;
 import com.dareu.web.exception.InvalidRequestException;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
@@ -111,4 +112,14 @@ public interface DareService {
      * @throws InternalApplicationException 
      */
     public Response uploadDareResponse(MultipartFormDataInput input, String auth)throws InternalApplicationException; 
+
+    /**
+     * Flag a dare using a comment
+     * @param request
+     * @param auth
+     * @return
+     * @throws InternalApplicationException
+     * @throws InvalidRequestException 
+     */
+    public Response flagDare(FlagDareRequest request, String auth)throws InternalApplicationException, InvalidRequestException;
 }

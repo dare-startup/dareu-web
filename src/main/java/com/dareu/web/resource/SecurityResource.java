@@ -14,6 +14,9 @@ import com.dareu.web.data.exception.AuthenticationException;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 
 @Api(value = "security")
 @Path("security/")
@@ -23,16 +26,23 @@ public class SecurityResource {
     private AccountService accountService;
 
     /**
-     * Signin using a google account
+     * Signin
      *
+     * @param request
      * @return
+     * @throws com.dareu.web.data.exception.AuthenticationException
      */
     @Path("authenticate")
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @ApiOperation(value = "authenticate", consumes = "application/json", httpMethod = "POST", produces = "application/json", response = SigninRequest.class)
-    public Response signin(SigninRequest request) throws AuthenticationException {
+    @ApiOperation(value = "authenticate", consumes = "application/json", httpMethod = "POST", 
+            produces = "application/json", response = SigninRequest.class, notes = "Authenticates against Dareu services")
+    @ApiResponses(value = { 
+        @ApiResponse(code = 200, message = "Authentication has been executed successfuly"), 
+        @ApiResponse(code = 401, message = "Authentication failed")})
+    public Response signin(@ApiParam(required = true, name = "signinRequest", allowableValues = "SigninRequest class")
+            SigninRequest request) throws AuthenticationException {
         return accountService.authenticate(request);
     }
 }

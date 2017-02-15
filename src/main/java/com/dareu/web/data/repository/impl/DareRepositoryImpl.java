@@ -8,6 +8,7 @@ package com.dareu.web.data.repository.impl;
 import com.dareu.web.core.DareUtils;
 import com.dareu.web.core.service.DareuAssembler;
 import com.dareu.web.data.entity.Dare;
+import com.dareu.web.data.entity.DareFlag;
 import com.dareu.web.data.repository.DareRepository;
 import com.dareu.web.data.exception.DataAccessException;
 import com.dareu.web.dto.response.entity.ActiveDare;
@@ -16,6 +17,7 @@ import com.dareu.web.dto.response.entity.DareDescription;
 import com.dareu.web.dto.response.entity.Page;
 import java.util.Date;
 import java.util.List;
+import javax.ejb.NoSuchEntityException;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.NoResultException;
@@ -174,6 +176,24 @@ public class DareRepositoryImpl extends AbstractRepository<Dare> implements Dare
             return assembler.assembleActiveDare(dares.get(0));
         }catch(Exception ex){
             throw new DataAccessException("Could not get current active dare: " + ex.getMessage());
+        }
+    }
+
+    @Override
+    public void flagDare(DareFlag dareFlag) throws DataAccessException {
+        try{
+            //a dare can have multiple flags ? 
+            //check if dare is already flagged 
+            Query q  = em.createQuery("SELECT f FROM DareFlag f WHERE f.dare.id = :dareId")
+                    .setParameter("dareId", dareFlag.getDare().getId()); 
+            DareFlag repeated = (DareFlag)q.getSingleResult(); 
+            if(repeated != null)
+                throw new DataAccessException("This dare is already flagged"); 
+        }catch(NoSuchEntityException ex){
+            //the entity does not exists, try to persis 
+            em.persist(dareFlag); 
+        }catch(Exception ex){
+            throw new DataAccessException(ex.getMessage()); 
         }
     }
 

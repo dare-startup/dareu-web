@@ -28,6 +28,7 @@ import com.dareu.web.data.entity.DareResponse;
 import com.dareu.web.data.repository.DareResponseRepository;
 import com.dareu.web.dto.request.DareConfirmationRequest;
 import com.dareu.web.dto.request.DareUploadRequest;
+import com.dareu.web.dto.request.FlagDareRequest;
 import com.dareu.web.dto.response.UpdatedEntityResponse;
 import com.dareu.web.dto.response.entity.ActiveDare;
 import com.dareu.web.dto.response.entity.CategoryDescription;
@@ -380,6 +381,10 @@ public class DareServiceImpl implements DareService {
         }catch(IOException ex){
             throw new InternalApplicationException(ex.getMessage()); 
         }
+    }
+
+    public Response flagDare(FlagDareRequest request, String auth) throws InternalApplicationException, InvalidRequestException {
+        return null; 
     }
 
 }
