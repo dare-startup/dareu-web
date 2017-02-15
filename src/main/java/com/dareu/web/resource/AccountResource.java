@@ -12,6 +12,7 @@ import com.dareu.web.dto.security.SecurityRole;
 import com.dareu.web.core.service.AccountService;
 import com.dareu.web.core.service.MultipartService;
 import com.dareu.web.data.exception.AuthenticationException;
+import com.dareu.web.dto.request.ChangeEmailAddressRequest;
 import com.dareu.web.exception.InternalApplicationException;
 import com.dareu.web.exception.InvalidRequestException;
 
@@ -169,5 +170,14 @@ public class AccountResource {
     @Secured
     public Response discoverUsers(@QueryParam("pageNumber") int pageNumber) throws InternalApplicationException {
         return accountService.discoverUsers(pageNumber);
+    }
+    
+    @Path("changeEmailAddress")
+    @POST
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Secured
+    public Response changeEmailAddress(ChangeEmailAddressRequest request, @HeaderParam("Authorization")String auth)throws InternalApplicationException, InvalidRequestException{
+        return accountService.changeEmailAddress(request, auth); 
     }
 }

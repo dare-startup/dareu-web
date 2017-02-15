@@ -33,6 +33,7 @@ import com.dareu.web.core.service.DareuMessagingService;
 import com.dareu.web.core.service.MultipartService;
 import com.dareu.web.data.repository.DareRepository;
 import com.dareu.web.data.repository.DareResponseRepository;
+import com.dareu.web.dto.request.ChangeEmailAddressRequest;
 import com.dareu.web.dto.security.PasswordEncryptor;
 import com.dareu.web.dto.response.BadRequestResponse;
 import com.dareu.web.dto.response.UpdatedEntityResponse;
@@ -501,6 +502,23 @@ public class AccountServiceImpl extends AbstractService implements AccountServic
             //get account profile 
             AccountProfile accountProfile = dareUserRepository.getAccountProfile(id); 
             return Response.ok(accountProfile)
+                    .build(); 
+        }catch(DataAccessException ex){
+            throw new InternalApplicationException(ex.getMessage());
+        }
+    }
+
+    public Response changeEmailAddress(ChangeEmailAddressRequest request, String token) throws InvalidRequestException, InternalApplicationException {
+        UpdatedEntityResponse response = null; 
+        try{
+            if(request == null)
+                throw new InvalidRequestException("Request body not valid"); 
+            if(request.getNewEmail() == null || request.getNewEmail().isEmpty())
+                throw new InvalidRequestException("Email is not valid");
+            
+            dareUserRepository.changeEmailAddress(request.getNewEmail(), token); 
+            response = new UpdatedEntityResponse("Email has been updated", true, "user"); 
+            return Response.ok(response)
                     .build(); 
         }catch(DataAccessException ex){
             throw new InternalApplicationException(ex.getMessage());

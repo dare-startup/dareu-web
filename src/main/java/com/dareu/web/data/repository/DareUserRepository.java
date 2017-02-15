@@ -160,4 +160,12 @@ public interface DareUserRepository extends BaseRepository<DareUser> {
      * @throws DataAccessException 
      */
     public AccountProfile getAccountProfile(String id) throws DataAccessException;
+
+    /**
+     * 
+     * @param newEmail
+     * @param token
+     * @throws DataAccessException 
+     */
+    public void changeEmailAddress(String newEmail, String token) throws DataAccessException;
 }

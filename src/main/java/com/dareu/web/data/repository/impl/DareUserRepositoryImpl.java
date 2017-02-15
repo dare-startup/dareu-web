@@ -279,6 +279,7 @@ public class DareUserRepositoryImpl extends AbstractRepository<DareUser> impleme
         }
     }
 
+    @Override
     public AccountProfile getAccountProfile(String id) throws DataAccessException {
         AccountProfile profile = null; 
         
@@ -296,12 +297,25 @@ public class DareUserRepositoryImpl extends AbstractRepository<DareUser> impleme
             Page<DareResponseDescription> responses = dareResponseRepository.getResponses(id, 1); 
             profile.setCreatedDares(dares);
             profile.setCreatedResponses(responses);
+            profile.setEmail(user.getEmail());
             profile.setProfileImageAvailable(fileService.fileExists(FileService.FileType.PROFILE_IMAGE, id));
             return profile; 
         }catch(Exception ex){
             throw new DataAccessException(ex.getMessage()); 
         }
         
+    }
+
+    @Override
+    public void changeEmailAddress(String newEmail, String token) throws DataAccessException {
+        try{
+            Query q = em.createQuery("UPDATE User u SET u.email = :email WHERE u.securityToken = :token")
+                    .setParameter("email", newEmail)
+                    .setParameter("token", token); 
+            q.executeUpdate(); 
+        }catch(Exception ex){
+            throw new DataAccessException(ex.getMessage()); 
+        }
     }
 
 }

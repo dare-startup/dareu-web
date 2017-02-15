@@ -10,6 +10,7 @@ import javax.ws.rs.core.Response;
 import com.dareu.web.dto.request.SigninRequest;
 import com.dareu.web.dto.request.SignupRequest;
 import com.dareu.web.data.exception.AuthenticationException;
+import com.dareu.web.dto.request.ChangeEmailAddressRequest;
 import com.dareu.web.exception.EntityRegistrationException;
 import com.dareu.web.exception.InternalApplicationException;
 import com.dareu.web.exception.InvalidRequestException;
@@ -154,5 +155,15 @@ public interface AccountService {
      * @throws com.dareu.web.exception.InternalApplicationException 
      */
     public Response updateProfileImage(MultipartFormDataInput input, String auth)throws InternalApplicationException;
+
+    /**
+     * Change an email address from a specified user
+     * @param request
+     * @param token
+     * @return
+     * @throws InvalidRequestException
+     * @throws InternalApplicationException 
+     */
+    public Response changeEmailAddress(ChangeEmailAddressRequest request, String token)throws InvalidRequestException, InternalApplicationException;
     
 }

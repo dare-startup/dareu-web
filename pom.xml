@@ -119,6 +119,7 @@
             <artifactId>dareu-dto</artifactId>
             <version>1.0</version>
         </dependency>
+        
     </dependencies>
     <build>
         <finalName>dareu-services</finalName>
