@@ -350,12 +350,15 @@ public class DareServiceImpl implements DareService {
             //get user uplaoding video 
             DareUser user = dareUserRepository.findUserByToken(auth); 
             //validate
-            if(request == null || request.getDareId() == null || request.getStream() == null)
+            if(request == null || request.getDareId() == null || request.getStream() == null || request.getThumb() == null)
                 throw new InternalApplicationException("Invalid multipart request"); 
-            //save file 
-            fileService.saveFile(request.getStream(), FileService.FileType.DARE_VIDEO, user.getId().concat(".mp4")); 
             //create new Dare response 
             DareResponse dareResponse = new DareResponse(); 
+            //save file 
+            fileService.saveFile(request.getStream(), FileService.FileType.DARE_VIDEO, dareResponse.getId().concat(".mp4")); 
+            //save thumb file 
+            fileService.saveFile(request.getThumb(), FileService.FileType.VIDEO_THUMBNAIL, dareResponse.getId().concat(".jpg"));
+            //populate response
             dareResponse.setComment(request.getComment());
             dareResponse.setViewsCount(0);
             dareResponse.setUser(user);

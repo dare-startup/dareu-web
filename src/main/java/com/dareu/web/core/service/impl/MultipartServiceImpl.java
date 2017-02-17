@@ -61,10 +61,12 @@ public class MultipartServiceImpl implements MultipartService{
         List<InputPart> inputParts = map.get("file");
         List<InputPart> dareIdParts = map.get("dareId"); 
         List<InputPart> commentParts = map.get("comment"); 
+        List<InputPart> thumbParts = map.get("thumb");
         String fileName;
         String dareId = ""; 
         String comment = ""; 
         InputStream stream = null; 
+        InputStream thumb = null;
         for(InputPart part : inputParts){
             MultivaluedMap<String, String> header = part.getHeaders();
                 fileName = getFileName(header);
@@ -83,7 +85,12 @@ public class MultipartServiceImpl implements MultipartService{
             break; 
         }
         
-        return new DareUploadRequest(dareId, stream, comment); 
+        for(InputPart part : thumbParts){
+            thumb = part.getBody(InputStream.class, null);
+            break; 
+        }
+        
+        return new DareUploadRequest(dareId, stream, comment, thumb); 
     }
     
     
