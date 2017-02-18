@@ -116,7 +116,7 @@ public class DareRepositoryImpl extends AbstractRepository<Dare> implements Dare
         List<DareDescription> descs;
         Long count;
         try {
-            Query q = em.createQuery("SELECT d FROM Dare d WHERE d.challengedUser.id <> :userId AND d.challengerUser.id <> :userId")
+            Query q = em.createQuery("SELECT d FROM Dare d WHERE d.challengedUser.id <> :userId AND d.challengerUser.id <> :userId AND d.completed = true AND d.answered = true")
                     .setParameter("userId", userId)
                     .setMaxResults(DEFAULT_PAGE_NUMBER)
                     .setFirstResult(getFirstResult(pageNumber));
@@ -124,7 +124,7 @@ public class DareRepositoryImpl extends AbstractRepository<Dare> implements Dare
             dares = q.getResultList();
 
             //get count 
-            q = em.createQuery("SELECT COUNT(d.id) FROM Dare d WHERE d.challengedUser.id <> :userId AND d.challengerUser.id <> :userId")
+            q = em.createQuery("SELECT COUNT(d.id) FROM Dare d WHERE d.challengedUser.id <> :userId AND d.challengerUser.id <> :userId AND d.completed = true AND d.answered = true")
                     .setParameter("userId", userId);
             count = (Long) q.getSingleResult();
 
@@ -169,7 +169,7 @@ public class DareRepositoryImpl extends AbstractRepository<Dare> implements Dare
     @Override
     public ActiveDare getCurrentActiveDare(String userId) throws DataAccessException {
         try{
-            Query q = em.createQuery("SELECT d FROM Dare d WHERE d.accepted = 1 AND d.completed = 0 AND d.challengedUser.id = :userId")
+            Query q = em.createQuery("SELECT d FROM Dare d WHERE d.accepted = true AND d.completed = false AND d.expired = false AND d.challengedUser.id = :userId")
                     .setParameter("userId", userId);
             List<Dare> dares = q.getResultList(); 
             if(dares.isEmpty())return null; 
@@ -199,6 +199,17 @@ public class DareRepositoryImpl extends AbstractRepository<Dare> implements Dare
             }
         }catch(Exception ex){
             throw new DataAccessException(ex.getMessage());
+        }
+    }
+
+    @Override
+    public void setDareCompleted(String dareId) throws DataAccessException {
+        try{
+            Query q = em.createQuery("UPDATE Dare d SET d.completed = true, d.answered = true WHERE d.id = :dareId")
+                    .setParameter("dareId", dareId); 
+            q.executeUpdate(); 
+        }catch(Exception ex){
+            throw new DataAccessException(ex.getMessage()); 
         }
     }
 }

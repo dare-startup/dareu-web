@@ -99,4 +99,11 @@ public interface DareRepository extends BaseRepository<Dare> {
      * @throws DataAccessException 
      */
     public void setDareExpiration(String dareId) throws DataAccessException; 
+    
+    /**
+     * Set a dare as completed
+     * @param dareId
+     * @throws DataAccessException 
+     */
+    public void setDareCompleted(String dareId)throws DataAccessException; 
 }

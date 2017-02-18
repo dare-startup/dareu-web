@@ -387,6 +387,9 @@ public class DareServiceImpl implements DareService {
             //send notification
             if(challengerFcmToken != null && ! challengerFcmToken.isEmpty())
                 messagingService.sendDareResponseUploaded(dareResponse, challengerFcmToken);
+            
+            //set dare as complete 
+            dareRepository.setDareCompleted(dare.getId());
             //return response
             return Response.ok(new EntityRegistrationResponse("Dare response has been created", RegistrationType.DARE_RESPONSE, 
                                 DareUtils.DETAILS_DATE_FORMAT.format(new Date()), dareResponse.getId()))
