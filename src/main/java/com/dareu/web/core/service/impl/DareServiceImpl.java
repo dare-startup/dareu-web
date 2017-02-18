@@ -439,15 +439,30 @@ public class DareServiceImpl implements DareService {
     public Response findResponses(int pageNumber, String auth) throws InternalApplicationException, InvalidRequestException {
         return null;
     }
-    
-    
-    @Asynchronous
-    public void searchForExpired(@Observes DareEvent expiredDare){
-        switch(expiredDare){
-            case EXPIRED_DARE: 
-                log.info("Expired dare search event handler");
-                break; 
+
+    public Response setDareExpired(String dareId, String auth) throws InternalApplicationException, InvalidRequestException {
+        try{
+            //get user 
+            DareUser requestingUser = dareUserRepository.findUserByToken(auth); 
+            //get dare 
+            Dare dare = dareRepository.find(dareId); 
+            if(dare == null)
+                throw new InvalidRequestException("Provided dare id is not valid"); 
+            //get user from dare 
+            DareUser dareUser = dare.getChallengedUser(); 
+            
+            //check id's 
+            if(! dareUser.getId().equals(requestingUser.getId()))
+                throw new InvalidRequestException("Only challenged user can expire this dare"); 
+            
+            dareRepository.setDareExpiration(dareId);
+           
+            return Response.ok(new UpdatedEntityResponse("Success", true, "dare"))
+                    .build(); 
+        }catch(DataAccessException ex){
+            throw new InternalApplicationException(ex.getMessage()); 
         }
     }
+    
 
 }

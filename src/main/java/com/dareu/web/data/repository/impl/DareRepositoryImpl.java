@@ -196,4 +196,17 @@ public class DareRepositoryImpl extends AbstractRepository<Dare> implements Dare
             throw new DataAccessException(ex.getMessage()); 
         }
     }
+
+    @Override
+    public void setDareExpiration(String dareId) throws DataAccessException {
+        try{
+            Dare dare = find(dareId); 
+            if(dare != null){
+                dare.setExpired(true);
+                em.merge(dare); 
+            }
+        }catch(Exception ex){
+            throw new DataAccessException(ex.getMessage());
+        }
+    }
 }

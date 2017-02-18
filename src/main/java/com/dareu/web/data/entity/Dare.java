@@ -51,6 +51,9 @@ public class Dare extends BaseEntity{
     @Column(name = "answered")
     private boolean answered; 
     
+    @Column(name = "expired")
+    private boolean expired; 
+    
     @Column(name = "creation_date")
     @Temporal(TemporalType.TIMESTAMP)
     private Date creationDate;
@@ -196,6 +199,14 @@ public class Dare extends BaseEntity{
 
     public void setFlag(DareFlag flag) {
         this.flag = flag;
+    }
+
+    public boolean isExpired() {
+        return expired;
+    }
+
+    public void setExpired(boolean expired) {
+        this.expired = expired;
     }
     
     

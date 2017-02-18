@@ -41,7 +41,10 @@ import javax.ws.rs.HeaderParam;
 import javax.ws.rs.QueryParam;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 
-@Api(value = "dare")
+@Api(value = "dare", authorizations = {
+                @Authorization(value = "MEMBER"),
+                @Authorization(value = "ADMIN"),
+                @Authorization(value = "SPONSOR")})
 @Path("dare/")
 @AllowedUsers(securityRoles = {SecurityRole.SPONSOR, SecurityRole.USER, SecurityRole.ADMIN})
 public class DareResource {
@@ -53,10 +56,6 @@ public class DareResource {
     private Logger log;
 
     @ApiOperation(value = "Get created dares", produces = "application/json",
-            authorizations = {
-                @Authorization(value = "MEMBER"),
-                @Authorization(value = "ADMIN"),
-                @Authorization(value = "SPONSOR")},
             notes = "Get created dares from logged user")
     @ApiResponses(value = {
         @ApiResponse(code = 200, message = "The operation ran successfuly",
@@ -74,10 +73,6 @@ public class DareResource {
     }
 
     @ApiOperation(value = "Get the current active/accepted dare", produces = "application/json",
-            authorizations = {
-                @Authorization(value = "MEMBER"),
-                @Authorization(value = "ADMIN"),
-                @Authorization(value = "SPONSOR")},
             notes = "Returns no content if ther is no current active dare")
     @ApiResponses(value = {
         @ApiResponse(code = 200, message = "The operation ran successfuly",
@@ -94,11 +89,7 @@ public class DareResource {
     }
 
     @ApiOperation(value = "Creates a new dare", produces = "application/json",
-            consumes = "application/json",
-            authorizations = {
-                @Authorization(value = "MEMBER"),
-                @Authorization(value = "ADMIN"),
-                @Authorization(value = "SPONSOR")})
+            consumes = "application/json")
     @ApiResponses(value = {
         @ApiResponse(code = 200, message = "The operation ran successfuly",
                 response = EntityRegistrationResponse.class),
@@ -119,10 +110,6 @@ public class DareResource {
 
     @ApiOperation(value = "Confirms a dare request", produces = "application/json",
             consumes = "application/json",
-            authorizations = {
-                @Authorization(value = "MEMBER"),
-                @Authorization(value = "ADMIN"),
-                @Authorization(value = "SPONSOR")},
             notes = "Accept or decline a dare request")
     @ApiResponses(value = {
         @ApiResponse(code = 200, message = "The operation ran successfuly",
@@ -142,10 +129,6 @@ public class DareResource {
     }
 
     @ApiOperation(value = "get the top unaccepted/pending dare", produces = "application/json",
-            authorizations = {
-                @Authorization(value = "MEMBER"),
-                @Authorization(value = "ADMIN"),
-                @Authorization(value = "SPONSOR")},
             notes = "Get an unaccepted/pending dare")
     @ApiResponses(value = {
         @ApiResponse(code = 200, message = "The operation ran successfuly",
@@ -162,10 +145,6 @@ public class DareResource {
     }
 
     @ApiOperation(value = "Discover dares", produces = "application/json",
-            authorizations = {
-                @Authorization(value = "MEMBER"),
-                @Authorization(value = "ADMIN"),
-                @Authorization(value = "SPONSOR")},
             notes = "Discover a list of dares using pagination")
     @ApiResponses(value = {
         @ApiResponse(code = 200, message = "The operation ran successfuly",
@@ -184,10 +163,6 @@ public class DareResource {
     }
 
     @ApiOperation(value = "Get a list of categories", produces = "application/json",
-            authorizations = {
-                @Authorization(value = "MEMBER"),
-                @Authorization(value = "ADMIN"),
-                @Authorization(value = "SPONSOR")},
             notes = "Retrieve a list of categories")
     @ApiResponses(value = {
         @ApiResponse(code = 200, message = "The operation ran successfuly",
@@ -206,8 +181,6 @@ public class DareResource {
     }
 
     @ApiOperation(value = "Find a dare description", produces = "application/json", 
-            authorizations = { @Authorization(value = "MEMBER"), 
-            @Authorization(value = "ADMIN"), @Authorization(value = "SPONSOR")}, 
             notes = "Retrieve a dare description using a dare ID")
     @ApiResponses(value = {
         @ApiResponse(code = 200, message = "The operation ran successfuly", 
@@ -226,9 +199,7 @@ public class DareResource {
     }
 
     @ApiOperation(value = "Creates a dare response", produces = "application/json",
-            consumes = "multipart/form-data",
-            authorizations = { @Authorization(value = "MEMBER"), 
-            @Authorization(value = "ADMIN"), @Authorization(value = "SPONSOR")}, 
+            consumes = "multipart/form-data", 
             notes = "Uplaods a dare response video")
     @ApiResponses(value = {
         @ApiResponse(code = 200, message = "The operation ran successfuly", 
@@ -246,9 +217,7 @@ public class DareResource {
     }
     
     @ApiOperation(value = "Get all dare responses created by a user", produces = "application/json",
-            response = Page.class, authorizations = { 
-            @Authorization(value = "ADMIN"), @Authorization(value = "SPONSOR"), 
-            @Authorization(value = "MEMBER")})
+            response = Page.class)
     @ApiResponses(value = {
         @ApiResponse(code = 200, message = "The operation ran successfuly", 
                 response = EntityRegistrationResponse.class), 
@@ -264,8 +233,6 @@ public class DareResource {
     }
 
     @ApiOperation(value = "Flags an existing dare", produces = "application/json", 
-            authorizations = { @Authorization(value = "MEMBER"), 
-            @Authorization(value = "ADMIN"), @Authorization(value = "SPONSOR")}, 
             notes = "Flag a dare as inappropriate")
     @ApiResponses(value = {
         @ApiResponse(code = 200, message = "The operation ran successfuly", 
@@ -282,5 +249,22 @@ public class DareResource {
             @ApiParam(allowableValues = "FlagDareRequest class", name = "request",
                     required = true) FlagDareRequest request, @HeaderParam("Authorization") String auth) throws InternalApplicationException, InvalidRequestException {
         return dareService.flagDare(request, auth);
+    }
+    
+    
+    @ApiOperation(value = "set a dare as expired", produces = "application/json", 
+            notes = "Set a dare as expired")
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "The operation ran successfuly", 
+                response = EntityRegistrationResponse.class), 
+        @ApiResponse(code = 401, message = "User is not authorized to access this resource", 
+                response = AuthorizationResponse.class)
+    })
+    @Path("expired")
+    @POST
+    @Produces(MediaType.APPLICATION_JSON)
+    @Secured
+    public Response expireDare(@QueryParam("dareId")String dareId, @HeaderParam("Authorization")String auth)throws InternalApplicationException, InvalidRequestException{
+        return dareService.setDareExpired(dareId, auth); 
     }
 }

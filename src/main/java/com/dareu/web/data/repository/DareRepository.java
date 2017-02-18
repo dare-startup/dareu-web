@@ -92,4 +92,11 @@ public interface DareRepository extends BaseRepository<Dare> {
      * @throws DataAccessException 
      */
     public void flagDare(DareFlag dareFlag) throws DataAccessException; 
+    
+    /**
+     * Set a dare to expired
+     * @param dareId
+     * @throws DataAccessException 
+     */
+    public void setDareExpiration(String dareId) throws DataAccessException; 
 }

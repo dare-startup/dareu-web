@@ -132,4 +132,14 @@ public interface DareService {
      * @throws InvalidRequestException 
      */
     public Response findResponses(int pageNumber, String auth)throws InternalApplicationException, InvalidRequestException;
+
+    /**
+     * 
+     * @param dareId
+     * @param auth
+     * @return
+     * @throws InternalApplicationException
+     * @throws InvalidRequestException 
+     */
+    public Response setDareExpired(String dareId, String auth)throws InternalApplicationException, InvalidRequestException;
 }
