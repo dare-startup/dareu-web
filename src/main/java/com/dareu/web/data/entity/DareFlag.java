@@ -19,16 +19,12 @@ public class DareFlag extends BaseEntity{
     @Column(name = "comment")
     private String comment;
     
-    @OneToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
-    @JoinColumn(name = "dare_id")
-    private Dare dare; 
     
     @Column(name = "flag_date")
     private String flagDate; 
 
-    public DareFlag(String comment, Dare dare, String flagDate) {
+    public DareFlag(String comment, String flagDate) {
         this.comment = comment;
-        this.dare = dare;
         this.flagDate = flagDate;
     }
 
@@ -41,14 +37,6 @@ public class DareFlag extends BaseEntity{
 
     public void setComment(String comment) {
         this.comment = comment;
-    }
-
-    public Dare getDare() {
-        return dare;
-    }
-
-    public void setDare(Dare dare) {
-        this.dare = dare;
     }
 
     public String getFlagDate() {

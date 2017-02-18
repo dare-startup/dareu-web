@@ -421,7 +421,6 @@ public class DareServiceImpl implements DareService {
             //create a flag 
             DareFlag flag = new DareFlag(); 
             flag.setComment(request.getComment());
-            flag.setDare(dare);
             flag.setFlagDate(DareUtils.DETAILS_DATE_FORMAT.format(new Date()));
             
             //persist
