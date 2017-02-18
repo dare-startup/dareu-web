@@ -9,7 +9,7 @@ import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
 import com.dareu.web.dto.response.ApplicationErrorResponse;
-import com.dareu.web.exception.DareuException;
+import com.dareu.web.exception.application.DareuException;
 import com.dareu.web.exception.EntityRegistrationException;
 
 @Provider

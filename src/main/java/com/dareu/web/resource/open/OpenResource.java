@@ -6,7 +6,7 @@ import com.dareu.web.dto.response.AuthenticationResponse;
 import com.dareu.web.dto.response.AuthorizationResponse;
 import com.dareu.web.dto.response.ResourceAvailableResponse;
 import com.dareu.web.dto.response.entity.ActiveDare;
-import com.dareu.web.exception.InternalApplicationException;
+import com.dareu.web.exception.application.InternalApplicationException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -57,7 +57,7 @@ public class OpenResource {
      * check if a nickname is available
      * @param email
      * @return 
-     * @throws com.dareu.web.exception.InternalApplicationException 
+     * @throws com.dareu.web.exception.application.InternalApplicationException 
      */
     @ApiOperation(value = "Check if an email is available", produces = "application/json", 
             authorizations = { @Authorization(value = "ALL")}, 

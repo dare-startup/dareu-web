@@ -8,6 +8,8 @@ import javax.inject.Inject;
 import javax.ws.rs.core.Response;
 
 import com.dareu.web.core.DareUtils;
+import com.dareu.web.core.observable.DareEvent;
+import com.dareu.web.core.observable.DareuEventHandler;
 import com.dareu.web.core.service.DareService;
 import com.dareu.web.data.entity.Category;
 import com.dareu.web.data.entity.Dare;
@@ -24,6 +26,7 @@ import com.dareu.web.core.service.DareuAssembler;
 import com.dareu.web.core.service.DareuMessagingService;
 import com.dareu.web.core.service.FileService;
 import com.dareu.web.core.service.MultipartService;
+import com.dareu.web.data.entity.DareFlag;
 import com.dareu.web.data.entity.DareResponse;
 import com.dareu.web.data.repository.DareResponseRepository;
 import com.dareu.web.dto.request.DareConfirmationRequest;
@@ -37,13 +40,19 @@ import com.dareu.web.dto.response.entity.DareDescription;
 import com.dareu.web.dto.response.entity.Page;
 import com.dareu.web.dto.response.entity.UnacceptedDare;
 import com.dareu.web.dto.response.entity.UserDescription;
-import com.dareu.web.exception.InternalApplicationException;
-import com.dareu.web.exception.InvalidRequestException;
+import com.dareu.web.exception.application.InternalApplicationException;
+import com.dareu.web.exception.application.InvalidRequestException;
 import java.io.IOException;
+import javax.ejb.Asynchronous;
+import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 
 public class DareServiceImpl implements DareService {
 
+    @Inject
+    private DareuEventHandler eventHandler; 
+    
     @Inject
     private DareRepository dareRepository;
 
@@ -70,6 +79,8 @@ public class DareServiceImpl implements DareService {
 
     @Inject
     private Logger log;
+    
+    private Event<DareEvent> expiredDaresEvent; 
 
     public DareServiceImpl() {
 
@@ -78,6 +89,7 @@ public class DareServiceImpl implements DareService {
     @Override
     public Response createNewDare(CreateDareRequest request, String authenticationToken)
             throws InvalidRequestException, InternalApplicationException {
+        
         if (request == null) {
             throw new InvalidRequestException("Invalid dare request");
         }
@@ -295,9 +307,9 @@ public class DareServiceImpl implements DareService {
 
     @Override
     public Response findDareDescription(String dareId) throws InternalApplicationException, InvalidRequestException {
-        if (dareId == null || dareId.isEmpty()) {
+        if (dareId == null || dareId.isEmpty()) 
             throw new InvalidRequestException("dareId must be provided");
-        }
+        
 
         try {
             Dare dare = dareRepository.find(dareId);
@@ -386,8 +398,56 @@ public class DareServiceImpl implements DareService {
         }
     }
 
+    @Override
     public Response flagDare(FlagDareRequest request, String auth) throws InternalApplicationException, InvalidRequestException {
-        return null; 
+        //valdiate 
+        if(request == null)
+            throw new InvalidRequestException("No request body provided");
+        if(request.getDareId() == null || request.getDareId().isEmpty())
+            throw new InvalidRequestException("No dare id provided");
+        
+        //check if dare is already flagged
+        try{
+            //get dare 
+            Dare dare = dareRepository.find(request.getDareId()); 
+            if(dare == null)
+                throw new InvalidRequestException("Provided dare id is not valid"); 
+            
+            if(dare.getFlag() != null)
+                return Response.ok(new EntityRegistrationResponse("This dare is already flagged", 
+                        RegistrationType.DARE_FLAG, DareUtils.DETAILS_DATE_FORMAT.format(new Date()), "N/A"))
+                        .build(); 
+            
+            //create a flag 
+            DareFlag flag = new DareFlag(); 
+            flag.setComment(request.getComment());
+            flag.setDare(dare);
+            flag.setFlagDate(DareUtils.DETAILS_DATE_FORMAT.format(new Date()));
+            
+            //persist
+            dareRepository.flagDare(flag);
+            
+            return Response.ok(new EntityRegistrationResponse("Success", RegistrationType.DARE_FLAG, 
+                    DareUtils.DETAILS_DATE_FORMAT.format(new Date()), flag.getId()))
+                    .build(); 
+        }catch(DataAccessException ex){
+            throw new InternalApplicationException(ex.getMessage(), ex);
+        }
+    }
+
+    @Override
+    public Response findResponses(int pageNumber, String auth) throws InternalApplicationException, InvalidRequestException {
+        return null;
+    }
+    
+    
+    @Asynchronous
+    public void searchForExpired(@Observes DareEvent expiredDare){
+        switch(expiredDare){
+            case EXPIRED_DARE: 
+                log.info("Expired dare search event handler");
+                break; 
+        }
     }
 
 }

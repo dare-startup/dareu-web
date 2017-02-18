@@ -18,14 +18,20 @@ create table dareu_user(
 create table category(
     id varchar(36) not null primary key, 
     name varchar(100)not null, 
-    description varchar(200)); 
+    description varchar(200));
+
+create table dare_flag(
+    id varchar(36)not null primary key, 
+    comment varchar(100)not null, 
+    flag_date varchar(50)not null
+); 
     
 create table dare(
     id varchar(36) not null primary key, 
     name varchar(100)not null, 
     description varchar(500) not null, 
     category_id varchar(36) not null, 
-    estimated_dare_time int not null default 24,  
+    estimated_dare_time int not null default 24,
     approved tinyint default 0, 
     answered tinyint default 0,
     accepted tinyint default 0,
@@ -34,18 +40,15 @@ create table dare(
     challenged_user_id varchar(36)not null, 
     challenger_user_id varchar(36) not null, 
     completed tinyint default 0,
-    declined tinyint default 0,
+    declined tinyint default 0, 
+    expired tinyint default 0,
+    flag varchar(36), 
     foreign key(category_id)references category(id),
+    foreign key(id) references dare_flag(id),
     foreign key(challenger_user_id) references dareu_user(id), 
     foreign key(challenged_user_id)references dareu_user(id)); 
 
-create table dare_flag(
-    id varchar(36)not null primary key, 
-    dare_id varchar(36)not null, 
-    comment varchar(100)not null, 
-    flag_date varchar(50)not null, 
-    foreign key(dare_id) references dare(id)
-);
+
     
 create table dare_response(
     id varchar(36) not null primary key, 

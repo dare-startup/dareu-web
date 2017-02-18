@@ -8,7 +8,7 @@ package com.dareu.web.core.service.impl;
 import com.dareu.web.core.service.MultipartService;
 import com.dareu.web.dto.request.DareUploadRequest;
 import com.dareu.web.dto.request.SignupRequest;
-import com.dareu.web.exception.InvalidRequestException;
+import com.dareu.web.exception.application.InvalidRequestException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;

@@ -1,5 +1,8 @@
 package com.dareu.web.exception;
 
+import com.dareu.web.exception.application.ErrorCode;
+import com.dareu.web.exception.application.DareuException;
+
 public class EntityRegistrationException extends DareuException{
 
 	public EntityRegistrationException() {

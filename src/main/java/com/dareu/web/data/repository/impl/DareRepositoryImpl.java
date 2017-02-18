@@ -196,5 +196,4 @@ public class DareRepositoryImpl extends AbstractRepository<Dare> implements Dare
             throw new DataAccessException(ex.getMessage()); 
         }
     }
-
 }

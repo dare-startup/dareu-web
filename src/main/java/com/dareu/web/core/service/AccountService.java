@@ -12,8 +12,8 @@ import com.dareu.web.dto.request.SignupRequest;
 import com.dareu.web.data.exception.AuthenticationException;
 import com.dareu.web.dto.request.ChangeEmailAddressRequest;
 import com.dareu.web.exception.EntityRegistrationException;
-import com.dareu.web.exception.InternalApplicationException;
-import com.dareu.web.exception.InvalidRequestException;
+import com.dareu.web.exception.application.InternalApplicationException;
+import com.dareu.web.exception.application.InvalidRequestException;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 /**
  *
@@ -124,7 +124,7 @@ public interface AccountService {
      * gets a page of user that are not friends with user principal
      * @param pageNumber
      * @return 
-     * @throws com.dareu.web.exception.InternalApplicationException 
+     * @throws com.dareu.web.exception.application.InternalApplicationException 
      */
     public Response discoverUsers(int pageNumber)throws InternalApplicationException;
 
@@ -142,8 +142,8 @@ public interface AccountService {
      * @param friendshipId
      * @param auth
      * @return 
-     * @throws com.dareu.web.exception.InternalApplicationException 
-     * @throws com.dareu.web.exception.InvalidRequestException 
+     * @throws com.dareu.web.exception.application.InternalApplicationException 
+     * @throws com.dareu.web.exception.application.InvalidRequestException 
      */
     public Response findFriendshipDetails(String friendshipId, String auth) throws InternalApplicationException, InvalidRequestException;
 
@@ -152,7 +152,7 @@ public interface AccountService {
      * @param input
      * @param auth
      * @return 
-     * @throws com.dareu.web.exception.InternalApplicationException 
+     * @throws com.dareu.web.exception.application.InternalApplicationException 
      */
     public Response updateProfileImage(MultipartFormDataInput input, String auth)throws InternalApplicationException;
 

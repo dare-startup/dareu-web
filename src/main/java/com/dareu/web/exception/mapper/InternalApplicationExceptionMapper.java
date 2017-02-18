@@ -10,8 +10,8 @@ import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
 import com.dareu.web.dto.response.ApplicationErrorResponse;
-import com.dareu.web.exception.ErrorCode;
-import com.dareu.web.exception.InternalApplicationException;
+import com.dareu.web.exception.application.ErrorCode;
+import com.dareu.web.exception.application.InternalApplicationException;
 
 @Provider
 public class InternalApplicationExceptionMapper implements ExceptionMapper<InternalApplicationException>{

@@ -6,8 +6,8 @@ import com.dareu.web.dto.request.CreateCategoryRequest;
 import com.dareu.web.dto.request.CreateDareRequest;
 import com.dareu.web.dto.request.DareConfirmationRequest;
 import com.dareu.web.dto.request.FlagDareRequest;
-import com.dareu.web.exception.InternalApplicationException;
-import com.dareu.web.exception.InvalidRequestException;
+import com.dareu.web.exception.application.InternalApplicationException;
+import com.dareu.web.exception.application.InvalidRequestException;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 
 public interface DareService {
@@ -91,8 +91,8 @@ public interface DareService {
      * @param auth
      * @param pageNumber
      * @return 
-     * @throws com.dareu.web.exception.InternalApplicationException 
-     * @throws com.dareu.web.exception.InvalidRequestException 
+     * @throws com.dareu.web.exception.application.InternalApplicationException 
+     * @throws com.dareu.web.exception.application.InvalidRequestException 
      */
     public Response findCreatedDares(String auth, int pageNumber)throws InternalApplicationException, InvalidRequestException;
     
@@ -122,4 +122,14 @@ public interface DareService {
      * @throws InvalidRequestException 
      */
     public Response flagDare(FlagDareRequest request, String auth)throws InternalApplicationException, InvalidRequestException;
+
+    /**
+     * Find a page of dare responses 
+     * @param pageNumber
+     * @param auth
+     * @return
+     * @throws InternalApplicationException
+     * @throws InvalidRequestException 
+     */
+    public Response findResponses(int pageNumber, String auth)throws InternalApplicationException, InvalidRequestException;
 }

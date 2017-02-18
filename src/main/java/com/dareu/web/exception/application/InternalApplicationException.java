@@ -1,4 +1,4 @@
-package com.dareu.web.exception;
+package com.dareu.web.exception.application;
 
 public class InternalApplicationException extends DareuException{
 

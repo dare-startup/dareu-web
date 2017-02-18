@@ -27,8 +27,8 @@ import com.dareu.web.dto.response.entity.ActiveDare;
 import com.dareu.web.dto.response.entity.DareDescription;
 import com.dareu.web.dto.response.entity.Page;
 import com.dareu.web.dto.response.entity.UnacceptedDare;
-import com.dareu.web.exception.InternalApplicationException;
-import com.dareu.web.exception.InvalidRequestException;
+import com.dareu.web.exception.application.InternalApplicationException;
+import com.dareu.web.exception.application.InvalidRequestException;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -243,6 +243,24 @@ public class DareResource {
     public Response uploadDareResponse(@ApiParam(allowableValues = "dareId, comment, thumb, file", name = "input",
             required = true) MultipartFormDataInput input, @HeaderParam("Authorization") String auth) throws InternalApplicationException {
         return dareService.uploadDareResponse(input, auth);
+    }
+    
+    @ApiOperation(value = "Get all dare responses created by a user", produces = "application/json",
+            response = Page.class, authorizations = { 
+            @Authorization(value = "ADMIN"), @Authorization(value = "SPONSOR"), 
+            @Authorization(value = "MEMBER")})
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "The operation ran successfuly", 
+                response = EntityRegistrationResponse.class), 
+        @ApiResponse(code = 401, message = "User is not authorized to access this resource", 
+                response = AuthorizationResponse.class)
+    })
+    @Path("response/")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Secured
+    public Response findResponses(@HeaderParam("Authorization")String auth, @DefaultValue("1") @QueryParam("pageNumber")int pageNumber)throws InternalApplicationException, InvalidRequestException{
+        return dareService.findResponses(pageNumber, auth);
     }
 
     @ApiOperation(value = "Flags an existing dare", produces = "application/json", 

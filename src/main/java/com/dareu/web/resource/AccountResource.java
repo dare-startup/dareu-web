@@ -19,8 +19,8 @@ import com.dareu.web.dto.response.entity.Page;
 import com.dareu.web.dto.response.EntityRegistrationResponse;
 import com.dareu.web.dto.response.UpdatedEntityResponse;
 import com.dareu.web.dto.response.entity.ConnectionDetails;
-import com.dareu.web.exception.InternalApplicationException;
-import com.dareu.web.exception.InvalidRequestException;
+import com.dareu.web.exception.application.InternalApplicationException;
+import com.dareu.web.exception.application.InvalidRequestException;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.Authorization;
 import java.io.InputStream;
@@ -54,7 +54,7 @@ public class AccountResource {
      * Get current profile from a logged user
      *
      * @return
-     * @throws com.dareu.web.exception.InternalApplicationException
+     * @throws com.dareu.web.exception.application.InternalApplicationException
      */
     @Path("me")
     @Produces(MediaType.APPLICATION_JSON)
@@ -104,7 +104,7 @@ public class AccountResource {
      * @param pageNumber
      * @param query
      * @return
-     * @throws com.dareu.web.exception.InternalApplicationException
+     * @throws com.dareu.web.exception.application.InternalApplicationException
      */
     @ApiOperation(value = "Find frinds using a search query and pagination", produces = "application/json",
             authorizations = {
@@ -134,8 +134,8 @@ public class AccountResource {
      * @param regId
      * @param auth
      * @return
-     * @throws com.dareu.web.exception.InvalidRequestException
-     * @throws com.dareu.web.exception.InternalApplicationException
+     * @throws com.dareu.web.exception.application.InvalidRequestException
+     * @throws com.dareu.web.exception.application.InternalApplicationException
      */
     @ApiOperation(value = "Updates a FCM registration id", produces = "application/json",
             authorizations = {
@@ -229,8 +229,8 @@ public class AccountResource {
      * @param userId
      * @param auth
      * @return
-     * @throws com.dareu.web.exception.InvalidRequestException
-     * @throws com.dareu.web.exception.InternalApplicationException
+     * @throws com.dareu.web.exception.application.InvalidRequestException
+     * @throws com.dareu.web.exception.application.InternalApplicationException
      * @Path ("me/profile")
      * @Produces (MediaType.APPLICATION_JSON)
      * @GET

@@ -65,6 +65,11 @@ public class Dare extends BaseEntity{
     
     @Column(name = "accepted_date")
     private String acceptedDate; 
+    
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.REFRESH)
+    @JoinColumn(name = "flag")
+    private DareFlag flag; 
+    
 
     public Dare(String name, String description, String category,
                 int estimatedDareTime, boolean approved,
@@ -184,4 +189,14 @@ public class Dare extends BaseEntity{
     public void setAcceptedDate(String acceptedDate) {
         this.acceptedDate = acceptedDate;
     }
+
+    public DareFlag getFlag() {
+        return flag;
+    }
+
+    public void setFlag(DareFlag flag) {
+        this.flag = flag;
+    }
+    
+    
 }

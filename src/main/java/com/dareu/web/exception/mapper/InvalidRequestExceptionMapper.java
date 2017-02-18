@@ -9,7 +9,7 @@ import com.dareu.web.core.DareUtils;
 import java.util.Date;
 
 import com.dareu.web.dto.response.ApplicationErrorResponse;
-import com.dareu.web.exception.InvalidRequestException;
+import com.dareu.web.exception.application.InvalidRequestException;
 
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
