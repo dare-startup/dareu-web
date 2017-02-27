@@ -343,7 +343,7 @@ public class AccountServiceImpl extends AbstractService implements AccountServic
                 log.info("Searching user by userId");
                 user = dareUserRepository.find(userId);
             }
-            stream = fileService.getFile(user.getId() + ".jpg", FileType.PROFILE_IMAGE);
+            stream = fileService.getFileStream(user.getId() + ".jpg", FileType.PROFILE_IMAGE);
             log.info("Image is null: " + (stream == null));
             BufferedImage image = ImageIO.read(stream);
             ByteArrayOutputStream out = new ByteArrayOutputStream();

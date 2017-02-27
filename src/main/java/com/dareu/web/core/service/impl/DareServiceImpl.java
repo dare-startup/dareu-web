@@ -8,6 +8,7 @@ import javax.inject.Inject;
 import javax.ws.rs.core.Response;
 
 import com.dareu.web.core.DareUtils;
+import com.dareu.web.core.codec.ThumbManager;
 import com.dareu.web.core.observable.DareEvent;
 import com.dareu.web.core.observable.DareuEventHandler;
 import com.dareu.web.core.service.DareService;
@@ -77,6 +78,9 @@ public class DareServiceImpl implements DareService {
     @Inject
     private FileService fileService; 
 
+    @Inject
+    private ThumbManager thumbManager; 
+    
     @Inject
     private Logger log;
     
@@ -359,17 +363,23 @@ public class DareServiceImpl implements DareService {
         try{
             //get request object 
             DareUploadRequest request = multipartService.getDareUploadRequest(input); 
+            
             //get user uplaoding video 
             DareUser user = dareUserRepository.findUserByToken(auth); 
             //validate
-            if(request == null || request.getDareId() == null || request.getStream() == null || request.getThumb() == null)
+            if(request == null || request.getDareId() == null || request.getStream() == null)
                 throw new InternalApplicationException("Invalid multipart request"); 
             //create new Dare response 
             DareResponse dareResponse = new DareResponse(); 
             //save file 
             fileService.saveFile(request.getStream(), FileService.FileType.DARE_VIDEO, dareResponse.getId().concat(".mp4")); 
-            //save thumb file 
-            fileService.saveFile(request.getThumb(), FileService.FileType.VIDEO_THUMBNAIL, dareResponse.getId().concat(".jpg"));
+            if(request.getThumb() == null){
+                //create new thumb
+                thumbManager.createThumb(fileService.getFile(dareResponse.getId(), FileService.FileType.DARE_VIDEO), dareResponse.getId());
+            }else{
+                //save attached thumb file 
+                fileService.saveFile(request.getThumb(), FileService.FileType.VIDEO_THUMBNAIL, dareResponse.getId().concat(".jpg"));
+            }
             //populate response
             dareResponse.setComment(request.getComment());
             dareResponse.setViewsCount(0);
@@ -442,6 +452,7 @@ public class DareServiceImpl implements DareService {
         return null;
     }
 
+    @Override
     public Response setDareExpired(String dareId, String auth) throws InternalApplicationException, InvalidRequestException {
         try{
             //get user 
@@ -464,6 +475,11 @@ public class DareServiceImpl implements DareService {
         }catch(DataAccessException ex){
             throw new InternalApplicationException(ex.getMessage()); 
         }
+    }
+
+    @Override
+    public Response hotResponses(int pageNumber) throws InternalApplicationException {
+        return null; 
     }
     
 

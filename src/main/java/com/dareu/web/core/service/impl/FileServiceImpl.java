@@ -102,14 +102,14 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public InputStream getFile(String fileName, FileType fileType) throws FileNotFoundException, IOException {
+    public InputStream getFileStream(String fileName, FileType fileType) throws FileNotFoundException, IOException {
         switch (fileType) {
             case DARE_VIDEO:
-                log.info("Looking for file " + dareVideosDirectory + fileName);
                 return new FileInputStream(new File(dareVideosDirectory + fileName));
             case PROFILE_IMAGE:
-                log.info("Looking for file " + profileImagesDirectory + fileName);
                 return new FileInputStream(new File(profileImagesDirectory + fileName));
+            case VIDEO_THUMBNAIL: 
+                return new FileInputStream(new File(dareVideoThumbDirectory + fileName)); 
             default:
                 return null;
         }
@@ -120,13 +120,13 @@ public class FileServiceImpl implements FileService {
         try{
             switch(fileType){
                 case DARE_VIDEO: 
-                    stream = getFile(id + ".mp4", FileType.DARE_VIDEO); 
+                    stream = getFileStream(id + ".mp4", FileType.DARE_VIDEO); 
                     break; 
                 case PROFILE_IMAGE: 
-                    stream = getFile(id + ".jpg", FileType.PROFILE_IMAGE);
+                    stream = getFileStream(id + ".jpg", FileType.PROFILE_IMAGE);
                     break; 
                 case VIDEO_THUMBNAIL:
-                    stream = getFile(id + ".jpg", FileType.VIDEO_THUMBNAIL); 
+                    stream = getFileStream(id + ".jpg", FileType.VIDEO_THUMBNAIL); 
                     break; 
             }
             
@@ -134,6 +134,24 @@ public class FileServiceImpl implements FileService {
         }catch(IOException ex){
             return false; 
         }
+    }
+    
+    private File getFile(FileType fileType, String fileName)throws FileNotFoundException{
+        switch (fileType) {
+            case DARE_VIDEO:
+                return new File(dareVideosDirectory + fileName);
+            case PROFILE_IMAGE:
+                return new File(profileImagesDirectory + fileName);
+            case VIDEO_THUMBNAIL: 
+                return new File(dareVideoThumbDirectory + fileName); 
+            default:
+                return null;
+        }
+    }
+
+    @Override
+    public File getFile(String fileName, FileType fileType) throws FileNotFoundException {
+        return getFile(fileType, fileName); 
     }
 
     enum DareVideoHostingProvider {

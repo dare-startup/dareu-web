@@ -267,4 +267,21 @@ public class DareResource {
     public Response expireDare(@QueryParam("dareId")String dareId, @HeaderParam("Authorization")String auth)throws InternalApplicationException, InvalidRequestException{
         return dareService.setDareExpired(dareId, auth); 
     }
+    
+    @ApiOperation(value = "set a dare as expired", produces = "application/json", 
+            notes = "Set a dare as expired")
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "The operation ran successfuly", 
+                response = EntityRegistrationResponse.class), 
+        @ApiResponse(code = 401, message = "User is not authorized to access this resource", 
+                response = AuthorizationResponse.class)
+    })
+    @Path("response/hot")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Secured
+    public Response hotResponses(@DefaultValue("1") @QueryParam("pageNumber")int pageNumber)throws InternalApplicationException{
+        return dareService.hotResponses(pageNumber); 
+    }
+    
 }

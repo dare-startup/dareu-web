@@ -17,7 +17,7 @@ public class DareUtils {
             DATE_FORMAT.setTimeZone(TimeZone.getTimeZone("PST"));
             DETAILS_DATE_FORMAT.setTimeZone(TimeZone.getTimeZone("PST"));
         }
-	private SecureRandom random = new SecureRandom();
+	private final SecureRandom random = new SecureRandom();
 	
 	public DareUtils(){
 		

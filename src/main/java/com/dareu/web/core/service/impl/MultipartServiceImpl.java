@@ -22,24 +22,24 @@ import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
  *
  * @author MACARENA
  */
-public class MultipartServiceImpl implements MultipartService{
+public class MultipartServiceImpl implements MultipartService {
 
     @Override
-    public InputStream getImageProfile(MultipartFormDataInput input) throws IOException{
+    public InputStream getImageProfile(MultipartFormDataInput input) throws IOException {
         Map<String, List<InputPart>> map = input.getFormDataMap();
         List<InputPart> inputParts = map.get("image");
         String fileName;
-        InputStream stream = null; 
-        for(InputPart part : inputParts){
+        InputStream stream = null;
+        for (InputPart part : inputParts) {
             MultivaluedMap<String, String> header = part.getHeaders();
-                fileName = getFileName(header);
-                stream = part.getBody(InputStream.class, null);
-                break; 
+            fileName = getFileName(header);
+            stream = part.getBody(InputStream.class, null);
+            break;
         }
-        
-        return stream; 
+
+        return stream;
     }
-    
+
     private String getFileName(MultivaluedMap<String, String> header) {
 
         String[] contentDisposition = header.getFirst("Content-Disposition").split(";");
@@ -56,42 +56,50 @@ public class MultipartServiceImpl implements MultipartService{
         return "unknown";
     }
 
-    public DareUploadRequest getDareUploadRequest(MultipartFormDataInput input)throws IOException {
+    public DareUploadRequest getDareUploadRequest(MultipartFormDataInput input) throws IOException {
         Map<String, List<InputPart>> map = input.getFormDataMap();
         List<InputPart> inputParts = map.get("file");
-        List<InputPart> dareIdParts = map.get("dareId"); 
-        List<InputPart> commentParts = map.get("comment"); 
+        List<InputPart> dareIdParts = map.get("dareId");
+        List<InputPart> commentParts = map.get("comment");
         List<InputPart> thumbParts = map.get("thumb");
         String fileName;
-        String dareId = ""; 
-        String comment = ""; 
-        InputStream stream = null; 
+        String dareId = "";
+        String comment = "";
+        InputStream stream = null;
         InputStream thumb = null;
-        for(InputPart part : inputParts){
-            MultivaluedMap<String, String> header = part.getHeaders();
+        if (inputParts != null) {
+            for (InputPart part : inputParts) {
+                MultivaluedMap<String, String> header = part.getHeaders();
                 fileName = getFileName(header);
                 stream = part.getBody(InputStream.class, null);
-                break; 
+                break;
+            }
         }
-        
-        //get dare Id 
-        for(InputPart part : dareIdParts){
-            dareId = part.getBodyAsString();
-            break; 
-        }
+
+        if (dareIdParts != null) {
             //get dare Id 
-        for(InputPart part : commentParts){
-            comment = part.getBodyAsString();
-            break; 
+            for (InputPart part : dareIdParts) {
+                dareId = part.getBodyAsString();
+                break;
+            }
         }
-        
-        for(InputPart part : thumbParts){
-            thumb = part.getBody(InputStream.class, null);
-            break; 
+
+        if (commentParts != null) {
+            //get dare Id 
+            for (InputPart part : commentParts) {
+                comment = part.getBodyAsString();
+                break;
+            }
         }
-        
-        return new DareUploadRequest(dareId, stream, comment, thumb); 
+
+        if (thumbParts != null) {
+            for (InputPart part : thumbParts) {
+                thumb = part.getBody(InputStream.class, null);
+                break;
+            }
+        }
+
+        return new DareUploadRequest(dareId, stream, comment, thumb);
     }
-    
-    
+
 }

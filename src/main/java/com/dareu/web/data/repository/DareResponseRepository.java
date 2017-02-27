@@ -31,4 +31,6 @@ public interface DareResponseRepository extends BaseRepository<DareResponse>{
      * @throws DataAccessException 
      */
     public Page<DareResponseDescription> getResponses(String userId, int pageNumber)throws DataAccessException; 
+    
+    
 }

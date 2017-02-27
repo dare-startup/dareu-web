@@ -14,6 +14,7 @@ import com.dareu.web.data.exception.DataAccessException;
 import com.dareu.web.dto.response.entity.ActiveDare;
 import com.dareu.web.dto.response.entity.CreatedDare;
 import com.dareu.web.dto.response.entity.DareDescription;
+import com.dareu.web.dto.response.entity.DareResponseDescription;
 import com.dareu.web.dto.response.entity.Page;
 import java.util.Date;
 import java.util.List;
@@ -211,5 +212,9 @@ public class DareRepositoryImpl extends AbstractRepository<Dare> implements Dare
         }catch(Exception ex){
             throw new DataAccessException(ex.getMessage()); 
         }
+    }
+
+    public Page<DareResponseDescription> hottestResponses(int pageNumber) throws DataAccessException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

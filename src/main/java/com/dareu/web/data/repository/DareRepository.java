@@ -11,6 +11,7 @@ import com.dareu.web.data.exception.DataAccessException;
 import com.dareu.web.dto.response.entity.ActiveDare;
 import com.dareu.web.dto.response.entity.CreatedDare;
 import com.dareu.web.dto.response.entity.DareDescription;
+import com.dareu.web.dto.response.entity.DareResponseDescription;
 import com.dareu.web.dto.response.entity.Page;
 import java.util.List;
 
@@ -106,4 +107,12 @@ public interface DareRepository extends BaseRepository<Dare> {
      * @throws DataAccessException 
      */
     public void setDareCompleted(String dareId)throws DataAccessException; 
+    
+    /**
+     * Get a page of response descriptions 
+     * @param pageNumber
+     * @return
+     * @throws DataAccessException 
+     */
+    public Page<DareResponseDescription> hottestResponses(int pageNumber)throws DataAccessException;
 }

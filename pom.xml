@@ -120,7 +120,13 @@
             <version>1.0</version>
         </dependency>
         
+        <dependency>
+            <groupId>org.bytedeco</groupId>
+            <artifactId>javacv</artifactId>
+            <version>1.3</version>
+        </dependency>
     </dependencies>
+ 
     <build>
         <finalName>dareu-services</finalName>
         <plugins>

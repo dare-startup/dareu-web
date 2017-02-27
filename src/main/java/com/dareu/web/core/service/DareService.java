@@ -142,4 +142,12 @@ public interface DareService {
      * @throws InvalidRequestException 
      */
     public Response setDareExpired(String dareId, String auth)throws InternalApplicationException, InvalidRequestException;
+
+    /**
+     * Get hottest responses
+     * @param pageNumber
+     * @return
+     * @throws InternalApplicationException 
+     */
+    public Response hotResponses(int pageNumber)throws InternalApplicationException;
 }
