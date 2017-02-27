@@ -280,8 +280,12 @@ public class AccountServiceImpl extends AbstractService implements AccountServic
         //get the friendhip 
         FriendshipRequest f = null;
         try {
+            String value = accepted ? "Accepting " : " Declining"; 
+            log.info(value + "friendship request " + userId);
             f = friendshipRepository.findFriendship(userId, getPrincipal().getId());
+            
             if (f == null) {
+                log.info("Friendship request is null"); 
                 throw new InvalidRequestException("Friendship id not valid");
             }
             friendshipRepository.updateFriendhip(accepted, f.getId());

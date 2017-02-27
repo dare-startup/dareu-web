@@ -26,7 +26,7 @@ public class ThumbManagerImpl implements ThumbManager{
     
     static final int FRAME = 100;
     public void createThumb(File inputFile, String thumbId) throws IOException {
-        CanvasFrame 
+        /**CanvasFrame 
         FFmpegFrameGrabber grabber = new FFmpegFrameGrabber(inputFile); 
         try{
             grabber.start();
@@ -36,7 +36,7 @@ public class ThumbManagerImpl implements ThumbManager{
             ImageIO.write()
         }catch(Exception ex){
             
-        }
+        }**/
     }
     
 }
