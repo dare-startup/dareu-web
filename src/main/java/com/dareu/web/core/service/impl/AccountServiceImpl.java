@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import com.dareu.web.core.DareUtils;
-import com.dareu.web.core.security.DareuPrincipal;
 import com.dareu.web.dto.security.SecurityRole;
 import com.dareu.web.core.service.AccountService;
 import com.dareu.web.core.service.FileService;
@@ -31,9 +30,12 @@ import com.dareu.web.data.exception.DataAccessException;
 import com.dareu.web.core.service.DareuAssembler;
 import com.dareu.web.core.service.DareuMessagingService;
 import com.dareu.web.core.service.MultipartService;
+import com.dareu.web.data.entity.ContactMessage;
+import com.dareu.web.data.repository.ContactMessageRepository;
 import com.dareu.web.data.repository.DareRepository;
 import com.dareu.web.data.repository.DareResponseRepository;
 import com.dareu.web.dto.request.ChangeEmailAddressRequest;
+import com.dareu.web.dto.request.ContactRequest;
 import com.dareu.web.dto.security.PasswordEncryptor;
 import com.dareu.web.dto.response.BadRequestResponse;
 import com.dareu.web.dto.response.UpdatedEntityResponse;
@@ -47,22 +49,13 @@ import com.dareu.web.exception.EntityRegistrationException;
 import com.dareu.web.exception.application.InternalApplicationException;
 import com.dareu.web.exception.application.InvalidRequestException;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Map;
-
-import javax.ejb.Stateless;
 import javax.imageio.ImageIO;
 import javax.inject.Inject;
-import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
-import org.apache.commons.io.IOUtils;
-
-import org.apache.commons.lang3.StringUtils;
-import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 
 /**
@@ -100,6 +93,9 @@ public class AccountServiceImpl extends AbstractService implements AccountServic
 
     @Inject
     private DareuMessagingService messagingService;
+
+    @Inject
+    private ContactMessageRepository contactMessageRepository;
 
     @Inject
     private MultipartService multipartService;
@@ -280,12 +276,12 @@ public class AccountServiceImpl extends AbstractService implements AccountServic
         //get the friendhip 
         FriendshipRequest f = null;
         try {
-            String value = accepted ? "Accepting " : " Declining"; 
+            String value = accepted ? "Accepting " : " Declining";
             log.info(value + "friendship request " + userId);
             f = friendshipRepository.findFriendship(userId, getPrincipal().getId());
-            
+
             if (f == null) {
-                log.info("Friendship request is null"); 
+                log.info("Friendship request is null");
                 throw new InvalidRequestException("Friendship id not valid");
             }
             friendshipRepository.updateFriendhip(accepted, f.getId());
@@ -396,6 +392,7 @@ public class AccountServiceImpl extends AbstractService implements AccountServic
         }
     }
 
+    @Override
     public Response findUsersByPage(int pageNumber) throws InternalApplicationException {
         List<DareUser> users = null;
         try {
@@ -446,6 +443,7 @@ public class AccountServiceImpl extends AbstractService implements AccountServic
         }
     }
 
+    @Override
     public Response findFriends(int pageNumber, String query) throws InternalApplicationException {
         Page<FriendSearchDescription> page = null;
         try {
@@ -461,6 +459,7 @@ public class AccountServiceImpl extends AbstractService implements AccountServic
         }
     }
 
+    @Override
     public Response findFriendshipDetails(String friendshipId, String auth) throws InternalApplicationException, InvalidRequestException {
         ConnectionDetails details;
 
@@ -482,6 +481,7 @@ public class AccountServiceImpl extends AbstractService implements AccountServic
         }
     }
 
+    @Override
     public Response updateProfileImage(MultipartFormDataInput input, String auth) throws InternalApplicationException {
         try {
             InputStream stream = multipartService.getImageProfile(input);
@@ -500,32 +500,64 @@ public class AccountServiceImpl extends AbstractService implements AccountServic
         }
     }
 
+    @Override
     public Response me() throws InternalApplicationException {
-        try{
-            String id = getPrincipal().getId(); 
+        try {
+            String id = getPrincipal().getId();
             //get account profile 
-            AccountProfile accountProfile = dareUserRepository.getAccountProfile(id); 
+            AccountProfile accountProfile = dareUserRepository.getAccountProfile(id);
             return Response.ok(accountProfile)
-                    .build(); 
-        }catch(DataAccessException ex){
+                    .build();
+        } catch (DataAccessException ex) {
             throw new InternalApplicationException(ex.getMessage());
         }
     }
 
+    @Override
     public Response changeEmailAddress(ChangeEmailAddressRequest request, String token) throws InvalidRequestException, InternalApplicationException {
-        UpdatedEntityResponse response = null; 
-        try{
-            if(request == null)
-                throw new InvalidRequestException("Request body not valid"); 
-            if(request.getNewEmail() == null || request.getNewEmail().isEmpty())
+        UpdatedEntityResponse response = null;
+        try {
+            if (request == null) {
+                throw new InvalidRequestException("Request body not valid");
+            }
+            if (request.getNewEmail() == null || request.getNewEmail().isEmpty()) {
                 throw new InvalidRequestException("Email is not valid");
-            
-            dareUserRepository.changeEmailAddress(request.getNewEmail(), token); 
-            response = new UpdatedEntityResponse("Email has been updated", true, "user"); 
+            }
+
+            dareUserRepository.changeEmailAddress(request.getNewEmail(), token);
+            response = new UpdatedEntityResponse("Email has been updated", true, "user");
             return Response.ok(response)
+                    .build();
+        } catch (DataAccessException ex) {
+            throw new InternalApplicationException(ex.getMessage());
+        }
+    }
+
+    @Override
+    public Response contactMessage(ContactRequest message) throws InternalApplicationException, InvalidRequestException {
+        EntityRegistrationResponse response = null;
+
+        if (message == null) {
+            throw new InvalidRequestException("No contact message provided");
+        }
+        try {
+            //creates a new contact entity 
+            ContactMessage entity = new ContactMessage(); 
+            entity.setComment(message.getComment());
+            entity.setDatetime(DareUtils.DETAILS_DATE_FORMAT.format(new Date()));
+            entity.setEmail(message.getEmail());
+            entity.setName(message.getName());
+            //set as pending 
+            entity.setStatus(ContactMessage.ContactMessageStatus.PENDING);
+            
+            contactMessageRepository.persist(entity);
+            
+            return Response.ok(new EntityRegistrationResponse("Contact message sent", 
+                        RegistrationType.CONTACT_MESSAGE, DareUtils.DETAILS_DATE_FORMAT.format(new Date()), 
+                        entity.getId()))
                     .build(); 
         }catch(DataAccessException ex){
-            throw new InternalApplicationException(ex.getMessage());
+            throw new InternalApplicationException(ex.getMessage(), ex); 
         }
     }
 }

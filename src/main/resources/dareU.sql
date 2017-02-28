@@ -14,6 +14,15 @@ create table dareu_user(
     uscore int not null default 1,
     birthday varchar(10),
     verified tinyint default 0);
+
+create table contact_message(
+    id varchar(36) not null primary key, 
+    name varchar(50)not null, 
+    email varchar(100),
+    comment varchar(300),
+    message_date varchar(50)not null, 
+    status int not null
+);
     
 create table category(
     id varchar(36) not null primary key, 

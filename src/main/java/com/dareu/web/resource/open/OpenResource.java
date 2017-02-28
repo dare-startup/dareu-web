@@ -1,12 +1,15 @@
 package com.dareu.web.resource.open;
 
 import com.dareu.web.core.service.AccountService;
+import com.dareu.web.dto.request.ContactRequest;
 import com.dareu.web.dto.request.SignupRequest;
 import com.dareu.web.dto.response.AuthenticationResponse;
 import com.dareu.web.dto.response.AuthorizationResponse;
+import com.dareu.web.dto.response.EntityRegistrationResponse;
 import com.dareu.web.dto.response.ResourceAvailableResponse;
 import com.dareu.web.dto.response.entity.ActiveDare;
 import com.dareu.web.exception.application.InternalApplicationException;
+import com.dareu.web.exception.application.InvalidRequestException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -97,4 +100,20 @@ public class OpenResource {
         return  accountService.registerDareUser(input); 
     }
     
+    
+    @ApiOperation(value = "Creates a new contact message to be shown on admin console", produces = "application/json", 
+            authorizations = { @Authorization(value = "ALL")}, 
+            notes = "Send a new contact message")
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "The operation ran successfuly", 
+                response = EntityRegistrationResponse.class)
+    })
+    @Path("contact")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @POST
+    public Response contactMessage(ContactRequest message)throws InternalApplicationException, InvalidRequestException{
+    	//SignupRequest request = multipartService.getSignupRequest(input); 
+        return  accountService.contactMessage(message); 
+    }
 }

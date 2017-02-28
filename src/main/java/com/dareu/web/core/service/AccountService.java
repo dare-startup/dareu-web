@@ -11,6 +11,7 @@ import com.dareu.web.dto.request.SigninRequest;
 import com.dareu.web.dto.request.SignupRequest;
 import com.dareu.web.data.exception.AuthenticationException;
 import com.dareu.web.dto.request.ChangeEmailAddressRequest;
+import com.dareu.web.dto.request.ContactRequest;
 import com.dareu.web.exception.EntityRegistrationException;
 import com.dareu.web.exception.application.InternalApplicationException;
 import com.dareu.web.exception.application.InvalidRequestException;
@@ -165,5 +166,13 @@ public interface AccountService {
      * @throws InternalApplicationException 
      */
     public Response changeEmailAddress(ChangeEmailAddressRequest request, String token)throws InvalidRequestException, InternalApplicationException;
+
+    /**
+     * Creates a new contact message
+     * @param message
+     * @return
+     * @throws InternalApplicationException 
+     */
+    public Response contactMessage(ContactRequest message)throws InternalApplicationException, InvalidRequestException;
     
 }

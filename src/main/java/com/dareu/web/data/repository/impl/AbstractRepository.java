@@ -32,7 +32,7 @@ public class AbstractRepository<T extends BaseEntity> {
 
     private transient Logger log = Logger.getLogger("AbstractRepository");
     
-    public static final Integer DEFAULT_PAGE_NUMBER = 20; 
+    public static final Integer DEFAULT_PAGE_NUMBER = 10; 
 
     @PersistenceContext
     protected EntityManager em;
