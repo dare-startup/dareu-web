@@ -103,16 +103,24 @@ public class FileServiceImpl implements FileService {
 
     @Override
     public InputStream getFileStream(String fileName, FileType fileType) throws FileNotFoundException, IOException {
+        File file = null; 
         switch (fileType) {
             case DARE_VIDEO:
-                return new FileInputStream(new File(dareVideosDirectory + fileName + ".mp4"));
+                file = new File(dareVideosDirectory + fileName + ".mp4"); 
+                break; 
             case PROFILE_IMAGE:
-                return new FileInputStream(new File(profileImagesDirectory + fileName + ".jpg"));
+                file = new File(profileImagesDirectory + fileName + ".jpg");
+                break; 
             case VIDEO_THUMBNAIL: 
-                return new FileInputStream(new File(dareVideoThumbDirectory + fileName + ".jpg")); 
+                file = new File(dareVideoThumbDirectory + fileName + ".jpg"); 
+                break; 
             default:
                 return null;
         }
+        log.info("File stream name " + file.getAbsolutePath()); 
+        if(file.exists())
+            return new FileInputStream(file);
+        else throw new FileNotFoundException("No file " + file.getAbsolutePath() + " found"); 
     }
 
     public boolean fileExists(FileType fileType, String id) {
