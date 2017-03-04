@@ -520,11 +520,11 @@ public class DareServiceImpl implements DareService {
             
             //get image 
             InputStream stream = fileService.getFileStream(responseId, FileService.FileType.VIDEO_THUMBNAIL); 
-            BufferedImage image = ImageIO.read(stream);
+            /**BufferedImage image = ImageIO.read(stream);
             ByteArrayOutputStream out = new ByteArrayOutputStream();
 
-            ImageIO.write(image, "jpg", out);
-            return Response.ok(out.toByteArray())
+            ImageIO.write(image, "jpg", out);**/
+            return Response.ok(stream)
                     .build(); 
         }catch(DataAccessException ex){
             throw new InternalApplicationException(ex.getMessage()); 
