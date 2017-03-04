@@ -67,6 +67,7 @@ create table dare_response(
     likes int not null default 0, 
     dare_id varchar(36)not null, 
     user_id varchar(36) not null, 
+    last_update varchar(50) not null,
     foreign key(user_id) references dareu_user(id),
     foreign key(dare_id)references dare(id)); 
    

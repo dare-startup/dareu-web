@@ -284,4 +284,20 @@ public class DareResource {
         return dareService.hotResponses(pageNumber); 
     }
     
+    @ApiOperation(value = "Get a page of channel responses", produces = "application/json", 
+            notes = "Get a page of channel responses")
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "The operation ran successfuly", 
+                response = EntityRegistrationResponse.class), 
+        @ApiResponse(code = 401, message = "User is not authorized to access this resource", 
+                response = AuthorizationResponse.class)
+    })
+    @Path("response/channel")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Secured
+    public Response channelResponses(@DefaultValue("1") @QueryParam("pageNumber")int pageNumber)throws InternalApplicationException{
+        return dareService.channelResponses(pageNumber); 
+    }
+    
 }

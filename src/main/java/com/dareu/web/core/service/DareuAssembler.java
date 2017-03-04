@@ -126,5 +126,12 @@ public interface DareuAssembler {
      * @return 
      */
     public List<DareResponseDescription> assembleDareResponseDescriptions(List<DareResponse> responses);
+
+    /**
+     * Get a list of dare response descriptions
+     * @param list
+     * @return 
+     */
+    public List<DareResponseDescription> getResponseDescriptions(List<DareResponse> list);
     
 }

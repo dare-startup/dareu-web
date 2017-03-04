@@ -150,4 +150,12 @@ public interface DareService {
      * @throws InternalApplicationException 
      */
     public Response hotResponses(int pageNumber)throws InternalApplicationException;
+
+    /**
+     * Returns a page of channel responses
+     * @param pageNumber
+     * @return
+     * @throws InternalApplicationException 
+     */
+    public Response channelResponses(int pageNumber) throws InternalApplicationException;
 }

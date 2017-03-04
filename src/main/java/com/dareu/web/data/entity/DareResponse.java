@@ -35,6 +35,9 @@ public class DareResponse extends BaseEntity {
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.REFRESH)
     @JoinColumn(name = "dare_id")
     private Dare dare;
+    
+    @Column(name = "last_update")
+    private String lastUpdate; 
 
     public DareResponse() {
     }
@@ -87,4 +90,13 @@ public class DareResponse extends BaseEntity {
         this.comment = comment;
     }
 
+    public String getLastUpdate() {
+        return lastUpdate;
+    }
+
+    public void setLastUpdate(String lastUpdate) {
+        this.lastUpdate = lastUpdate;
+    }
+
+    
 }

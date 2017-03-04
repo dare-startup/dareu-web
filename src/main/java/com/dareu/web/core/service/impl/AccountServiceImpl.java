@@ -137,7 +137,7 @@ public class AccountServiceImpl extends AbstractService implements AccountServic
         log.info("Generating new security token");
         //generate a new token for this user 
         String token = utils.getNextSessionToken();
-
+        
         //save the token here
         user.setSecurityToken(token);
 
@@ -165,7 +165,7 @@ public class AccountServiceImpl extends AbstractService implements AccountServic
         } else {
             //generate a new token 
             String token = utils.getNextSessionToken();
-
+            
             //update token 
             dareUserRepository.updateSecurityToken(token, user.getId());
             return Response.ok(new AuthenticationResponse(token, DareUtils.DATE_FORMAT.format(new Date()), "Welcome"))
