@@ -105,11 +105,11 @@ public class FileServiceImpl implements FileService {
     public InputStream getFileStream(String fileName, FileType fileType) throws FileNotFoundException, IOException {
         switch (fileType) {
             case DARE_VIDEO:
-                return new FileInputStream(new File(dareVideosDirectory + fileName));
+                return new FileInputStream(new File(dareVideosDirectory + fileName + ".mp4"));
             case PROFILE_IMAGE:
-                return new FileInputStream(new File(profileImagesDirectory + fileName));
+                return new FileInputStream(new File(profileImagesDirectory + fileName + ".jpg"));
             case VIDEO_THUMBNAIL: 
-                return new FileInputStream(new File(dareVideoThumbDirectory + fileName)); 
+                return new FileInputStream(new File(dareVideoThumbDirectory + fileName + ".jpg")); 
             default:
                 return null;
         }
