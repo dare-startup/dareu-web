@@ -44,10 +44,14 @@ import com.dareu.web.dto.response.entity.UnacceptedDare;
 import com.dareu.web.dto.response.entity.UserDescription;
 import com.dareu.web.exception.application.InternalApplicationException;
 import com.dareu.web.exception.application.InvalidRequestException;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import javax.ejb.Asynchronous;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
+import javax.imageio.ImageIO;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 
 public class DareServiceImpl implements DareService {
@@ -502,6 +506,31 @@ public class DareServiceImpl implements DareService {
             throw new InternalApplicationException(ex.getMessage());
         }
 
+    }
+
+    @Override
+    public Response getThumbImage(String responseId) throws InternalApplicationException, InvalidRequestException {
+        if(responseId == null && responseId.isEmpty())
+            throw new InvalidRequestException("No id provided");
+        
+        try{
+            DareResponse response = dareResponseRepository.find(responseId); 
+            if(response == null)
+                throw new InvalidRequestException("Invalid id");
+            
+            //get image 
+            InputStream stream = fileService.getFileStream(responseId, FileService.FileType.VIDEO_THUMBNAIL); 
+            BufferedImage image = ImageIO.read(stream);
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+
+            ImageIO.write(image, "jpg", out);
+            return Response.ok(stream)
+                    .build(); 
+        }catch(DataAccessException ex){
+            throw new InternalApplicationException(ex.getMessage()); 
+        }catch(IOException ex){
+            throw new InternalApplicationException(ex.getMessage()); 
+        }
     }
 
 }

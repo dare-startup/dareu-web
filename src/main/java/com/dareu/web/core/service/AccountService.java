@@ -97,6 +97,7 @@ public interface AccountService {
 
     /**
      * 
+     * @param userId
      * @param auth
      * @return
      * @throws InvalidRequestException
