@@ -524,7 +524,7 @@ public class DareServiceImpl implements DareService {
             ByteArrayOutputStream out = new ByteArrayOutputStream();
 
             ImageIO.write(image, "jpg", out);
-            return Response.ok(stream)
+            return Response.ok(out.toByteArray())
                     .build(); 
         }catch(DataAccessException ex){
             throw new InternalApplicationException(ex.getMessage()); 
