@@ -203,6 +203,11 @@ public class DareuAssemblerImpl implements DareuAssembler {
             desc.setDare(assembleDareDescription(response.getDare()));
             desc.setId(response.getId());
             desc.setThumbAvailable(fileService.fileExists(FileService.FileType.VIDEO_THUMBNAIL, response.getId()));
+            desc.setClaps(response.getLikes());
+            desc.setLastUpdate(response.getLastUpdate());
+            desc.setUploadDate(response.getResponseDate());
+            desc.setUser(assembleUserDescription(response.getUser()));
+            desc.setViews(response.getViewsCount());
             list.add(desc);
         }
         return list;
@@ -236,6 +241,8 @@ public class DareuAssemblerImpl implements DareuAssembler {
         desc.setThumbAvailable(fileService.fileExists(FileService.FileType.VIDEO_THUMBNAIL, resp.getId()));
         desc.setUser(assembleUserDescription(resp.getUser()));
         desc.setViews(resp.getViewsCount());
+        desc.setUploadDate(resp.getResponseDate());
+        
         return desc; 
     }
 }
