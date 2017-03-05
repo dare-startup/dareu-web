@@ -316,4 +316,20 @@ public class DareResource {
         return dareService.getThumbImage(responseId); 
     }
     
+    @ApiOperation(value = "Get a response description", produces = "application/json", 
+            notes = "Find an exisiting response description")
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "The operation ran successfuly", 
+                response = EntityRegistrationResponse.class), 
+        @ApiResponse(code = 401, message = "User is not authorized to access this resource", 
+                response = AuthorizationResponse.class)
+    })
+    @Path("response/find")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Secured
+    public Response findResponseDescription(@QueryParam("id")String responseId) throws InternalApplicationException, InvalidRequestException {
+        return dareService.findResponseDescription(responseId); 
+    }
+    
 }

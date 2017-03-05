@@ -1,6 +1,8 @@
 create database dareu; 
 
 use dareu; 
+
+-- DAREU USER TABLE
 create table dareu_user(
 	id varchar(36)not null primary key, 
     name varchar(150) not null, 
@@ -15,6 +17,7 @@ create table dareu_user(
     birthday varchar(10),
     verified tinyint default 0);
 
+-- CONTACT MESSAGE TABLE
 create table contact_message(
     id varchar(36) not null primary key, 
     name varchar(50)not null, 
@@ -24,17 +27,20 @@ create table contact_message(
     status int not null
 );
     
+-- CATEGORY TABLE
 create table category(
     id varchar(36) not null primary key, 
     name varchar(100)not null, 
     description varchar(200));
 
+-- DARE FLAG TABLE
 create table dare_flag(
     id varchar(36)not null primary key, 
     comment varchar(100)not null, 
     flag_date varchar(50)not null
 ); 
     
+--DARE TABLE
 create table dare(
     id varchar(36) not null primary key, 
     name varchar(100)not null, 
@@ -59,6 +65,7 @@ create table dare(
 
 
     
+-- DARE RESPONSE (VIDEO)
 create table dare_response(
     id varchar(36) not null primary key, 
     comment varchar(100)not null,
@@ -71,6 +78,7 @@ create table dare_response(
     foreign key(user_id) references dareu_user(id),
     foreign key(dare_id)references dare(id)); 
    
+-- FRIENDSHIP TABLE
 create table friendship(
 	id varchar(36)not null primary key, 
 	user_id varchar(36)not null, 
@@ -81,6 +89,7 @@ create table friendship(
 	foreign key(requested_user_id)references dareu_user(id)
 );
     
+-- DARE REQUEST TABLE
 create table dare_request(
     id varchar(36) not null primary key, 
     challenger_id varchar(36) not null, 
@@ -90,21 +99,5 @@ create table dare_request(
     foreign key(challenged_id)references dareu_user(id), 
     foreign key(dare_id)references dare(id));     
 
-CREATE or REPLACE VIEW v_friendship AS
-	select f.user_id, f.friend_name, f.friend_id, IFNULL(dcount.count,0) 'dare_count' , IFNULL(vcount.count, 0) 'video_count'
-	from (
-	select distinct du.id 'friend_id', du.name 'friend_name', f.user_id  from 
-		friendship f inner join dareu_user du on du.id = f.requested_user_id
-		where f.accepted = 1
-		union
-		select distinct du.id 'friend_id', du.name 'friend_name', f.requested_user_id 'user_id' from 
-		friendship f inner join dareu_user du on du.id = f.user_id
-		where f.accepted = 1
-	) f 
-	left join (
-	select count(*) 'count', challenger_id from dareu_user_dare group by challenger_id) dcount
-	on f.friend_id = dcount.challenger_id
-	left join (
-	select user_id, count(*) 'count' from dare_dare_response group by user_id
-	) vcount
-	on vcount.user_id = f.friend_id;
+
+-- DARE RESPONSE COMMENT TABLE 

@@ -533,4 +533,22 @@ public class DareServiceImpl implements DareService {
         }
     }
 
+    @Override
+    public Response findResponseDescription(String responseId) throws InternalApplicationException, InvalidRequestException {
+        if(responseId == null || responseId.isEmpty())
+            throw new InvalidRequestException("No response id provided"); 
+        
+        try{
+            DareResponse resp = dareResponseRepository.find(responseId); 
+            if(resp == null)
+                throw new InvalidRequestException("Invalid id"); 
+            
+            DareResponseDescription desc = assembler.assembleDareResponseDescription(resp);
+            return Response.ok(desc)
+                    .build(); 
+        }catch(Exception ex){
+            throw new InternalApplicationException(ex.getMessage(), ex); 
+        }
+    }
+
 }

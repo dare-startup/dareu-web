@@ -167,4 +167,13 @@ public interface DareService {
      * @throws InvalidRequestException 
      */
     public Response getThumbImage(String responseId) throws InternalApplicationException, InvalidRequestException;
+
+    /**
+     * 
+     * @param responseId
+     * @return
+     * @throws InternalApplicationException
+     * @throws InvalidRequestException 
+     */
+    public Response findResponseDescription(String responseId)throws InternalApplicationException, InvalidRequestException;
 }

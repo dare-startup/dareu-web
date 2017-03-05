@@ -225,4 +225,17 @@ public class DareuAssemblerImpl implements DareuAssembler {
         }
         return descs;
     }
+
+    @Override
+    public DareResponseDescription assembleDareResponseDescription(DareResponse resp) {
+        DareResponseDescription desc = new DareResponseDescription(); 
+        desc.setClaps(resp.getLikes());
+        desc.setDare(assembleDareDescription(resp.getDare()));
+        desc.setId(resp.getId());
+        desc.setLastUpdate(resp.getLastUpdate());
+        desc.setThumbAvailable(fileService.fileExists(FileService.FileType.VIDEO_THUMBNAIL, resp.getId()));
+        desc.setUser(assembleUserDescription(resp.getUser()));
+        desc.setViews(resp.getViewsCount());
+        return desc; 
+    }
 }
