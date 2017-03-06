@@ -20,6 +20,7 @@ import com.dareu.web.dto.request.CreateCategoryRequest;
 import com.dareu.web.dto.request.CreateDareRequest;
 import com.dareu.web.dto.request.DareConfirmationRequest;
 import com.dareu.web.dto.request.FlagDareRequest;
+import com.dareu.web.dto.request.NewCommentRequest;
 import com.dareu.web.dto.response.AuthorizationResponse;
 import com.dareu.web.dto.response.EntityRegistrationResponse;
 import com.dareu.web.dto.response.UpdatedEntityResponse;
@@ -330,6 +331,44 @@ public class DareResource {
     @Secured
     public Response findResponseDescription(@QueryParam("id")String responseId) throws InternalApplicationException, InvalidRequestException {
         return dareService.findResponseDescription(responseId); 
+    }
+    
+    @ApiOperation(value = "Creates a new response comment", 
+            consumes = "application/json", produces = "application/json", 
+            notes = "Creates a new comment over a response entity")
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "The operation ran successfuly", 
+                response = EntityRegistrationResponse.class), 
+        @ApiResponse(code = 401, message = "User is not authorized to access this resource", 
+                response = AuthorizationResponse.class)
+    })
+    @Path("response/comment/create")
+    @POST
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Secured
+    public Response createResponseComment(NewCommentRequest request, 
+                                    @HeaderParam("Authorization")String token) throws InternalApplicationException, InvalidRequestException {
+        return dareService.createResponseComment(request, token); 
+    }
+    
+    @ApiOperation(value = "Find a page of comments", 
+            produces = "application/json", 
+            notes = "Get a response comments page")
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "The operation ran successfuly", 
+                response = EntityRegistrationResponse.class), 
+        @ApiResponse(code = 401, message = "User is not authorized to access this resource", 
+                response = AuthorizationResponse.class)
+    })
+    @Path("response/comment/find")
+    @POST
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Secured
+    public Response createResponseComment(@DefaultValue("1") @QueryParam("pageNumber")int pageNumber, 
+                                        @QueryParam("responseId")String responseId) throws InternalApplicationException, InvalidRequestException {
+        return dareService.findResponseComments(pageNumber, responseId); 
     }
     
 }

@@ -1,12 +1,14 @@
 package com.dareu.web.core.service;
 
 import com.dareu.web.data.entity.Category;
+import com.dareu.web.data.entity.Comment;
 import com.dareu.web.data.entity.Dare;
 import com.dareu.web.data.entity.DareResponse;
 import com.dareu.web.data.entity.DareUser;
 import com.dareu.web.data.entity.FriendshipRequest;
 import com.dareu.web.dto.response.entity.ActiveDare;
 import com.dareu.web.dto.response.entity.CategoryDescription;
+import com.dareu.web.dto.response.entity.CommentDescription;
 import com.dareu.web.dto.response.entity.ConnectionDetails;
 import com.dareu.web.dto.response.entity.CreatedDare;
 import com.dareu.web.dto.response.entity.DareDescription;
@@ -140,5 +142,19 @@ public interface DareuAssembler {
      * @return 
      */
     public DareResponseDescription assembleDareResponseDescription(DareResponse resp);
+
+    /**
+     * Assembles a new comment description list
+     * @param comments
+     * @return 
+     */
+    public List<CommentDescription> assembleCommentDescriptions(List<Comment> comments);
+    
+    /**
+     * Assemble a new comment description
+     * @param comment
+     * @return 
+     */
+    public CommentDescription assembleCommentDescription(Comment comment);
     
 }

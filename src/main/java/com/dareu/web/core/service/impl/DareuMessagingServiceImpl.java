@@ -12,6 +12,7 @@ import com.dareu.web.data.entity.Friendship;
 import com.dareu.web.data.entity.FriendshipRequest;
 import com.dareu.web.dto.response.message.ConnectionAcceptedMessage;
 import com.dareu.web.dto.response.message.ConnectionRequestMessage;
+import com.dareu.web.dto.response.message.NewCommentMessage;
 import com.dareu.web.dto.response.message.NewDareMessage;
 import com.dareu.web.dto.response.message.UploadedResponseMessage;
 import com.github.roar109.syring.annotation.ApplicationProperty;
@@ -37,9 +38,6 @@ public class DareuMessagingServiceImpl implements DareuMessagingService {
     
     @Inject
     private FcmClient client; 
-    
-    
-    
     private static final FcmMessageOptions options = FcmMessageOptions.builder()
             .setTimeToLive(Duration.ofHours(12))
             .setDelayWhileIdle(true)
@@ -89,6 +87,16 @@ public class DareuMessagingServiceImpl implements DareuMessagingService {
         message.setMessage(response.getUser().getName() + " just uploaded a response to your dare");
         
         client.send(new DataUnicastMessage(options, userFcmToken, message));
+    }
+
+    @Override
+    public void sendNewCommentNotification(String fcmToken, String commentId, String responseId, String comment) {
+        NewCommentMessage newCommentMessage = new NewCommentMessage();
+        newCommentMessage.setComment(comment);
+        newCommentMessage.setCommentId(commentId);
+        newCommentMessage.setResponseId(responseId);
+        
+        client.send(new DataUnicastMessage(options, fcmToken, newCommentMessage));
     }
 
 }

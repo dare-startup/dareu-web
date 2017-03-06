@@ -34,4 +34,13 @@ public interface DareuMessagingService {
      * @param userFcmToken 
      */
     public void sendDareResponseUploaded(DareResponse response, String userFcmToken); 
+
+    /**
+     *  Send a new comment notification to the dare response creator
+     * @param videoCreatorId
+     * @param commentId
+     * @param responseId 
+     * @param comment 
+     */
+    public void sendNewCommentNotification(String videoCreatorId, String commentId, String responseId, String comment);
 }

@@ -6,10 +6,12 @@ import com.dareu.web.data.entity.Dare;
 import com.dareu.web.data.entity.DareUser;
 import com.dareu.web.core.service.DareuAssembler;
 import com.dareu.web.core.service.FileService;
+import com.dareu.web.data.entity.Comment;
 import com.dareu.web.data.entity.DareResponse;
 import com.dareu.web.data.entity.FriendshipRequest;
 import com.dareu.web.dto.response.entity.ActiveDare;
 import com.dareu.web.dto.response.entity.CategoryDescription;
+import com.dareu.web.dto.response.entity.CommentDescription;
 import com.dareu.web.dto.response.entity.ConnectionDetails;
 import com.dareu.web.dto.response.entity.CreatedDare;
 import com.dareu.web.dto.response.entity.DareDescription;
@@ -245,5 +247,24 @@ public class DareuAssemblerImpl implements DareuAssembler {
         desc.setUploadDate(resp.getResponseDate());
         
         return desc; 
+    }
+
+    @Override
+    public List<CommentDescription> assembleCommentDescriptions(List<Comment> comments) {
+        List<CommentDescription> list = new ArrayList();
+        for(Comment comment : comments)
+            list.add(assembleCommentDescription(comment));
+        return list;
+    }
+
+    @Override
+    public CommentDescription assembleCommentDescription(Comment comment) {
+        CommentDescription desc = new CommentDescription(); 
+        desc.setComment(comment.getComment());
+        desc.setCommentDate(comment.getCommentDate());
+        desc.setId(comment.getId());
+        desc.setLikes(comment.getLikes());
+        desc.setResponse(assembleDareResponseDescription(comment.getResponse()));
+        return desc;
     }
 }

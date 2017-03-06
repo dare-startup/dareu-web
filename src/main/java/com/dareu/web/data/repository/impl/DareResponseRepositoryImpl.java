@@ -6,14 +6,17 @@
 package com.dareu.web.data.repository.impl;
 
 import com.dareu.web.core.service.DareuAssembler;
+import com.dareu.web.data.entity.Comment;
 import com.dareu.web.data.entity.DareResponse;
 import com.dareu.web.data.exception.DataAccessException;
 import com.dareu.web.data.repository.DareResponseRepository;
+import com.dareu.web.dto.response.entity.CommentDescription;
 import com.dareu.web.dto.response.entity.DareResponseDescription;
 import com.dareu.web.dto.response.entity.Page;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
 /**
@@ -84,6 +87,50 @@ public class DareResponseRepositoryImpl extends AbstractRepository<DareResponse>
             return page; 
         }catch(Exception ex){
             throw new DataAccessException(ex.getMessage()); 
+        }
+    }
+
+    @Override
+    public void createResponseComment(Comment comment) throws DataAccessException {
+        try{
+            em.persist(comment);
+        }catch(Exception ex){
+            throw new DataAccessException(ex.getMessage());
+        }
+    }
+
+    @Override
+    public Page<CommentDescription> findResponseComments(int pageNumber, String responseId) throws DataAccessException {
+        try{
+            List<Comment> comments = em.createQuery("SELECT c FROM Comment c WHERE c.response.id = :responseId")
+                    .setParameter("responseId", responseId)
+                    .setMaxResults(DEFAULT_PAGE_NUMBER)
+                    .setFirstResult(getFirstResult(pageNumber))
+                    .getResultList();
+            Long count = (Long)em.createQuery("SELECT (c.id) FROM Comment c WHERE c.response.id = :responseId")
+                    .setParameter("responseId", responseId)
+                    .getSingleResult();
+            
+            List<CommentDescription> descs = assembler.assembleCommentDescriptions(comments);
+            Page<CommentDescription> page = new Page<CommentDescription>();
+            page.setItems(descs); 
+            page.setPageNumber(pageNumber);
+            page.setPageSize(DEFAULT_PAGE_NUMBER);
+            page.setPagesAvailable(getPagesAvailable(pageNumber, count.intValue()));
+            return page;
+        }catch(Exception ex){
+            throw new DataAccessException(ex.getMessage(), ex);
+        }
+    }
+
+    @Override
+    public Comment findComment(String commentId) throws DataAccessException {
+        try{
+            return em.find(Comment.class, commentId);
+        }catch(NoResultException ex){
+            return null;
+        }catch(Exception ex){
+            throw new DataAccessException(ex.getMessage(), ex);
         }
     }
 }

@@ -77,6 +77,17 @@ create table dare_response(
     last_update varchar(50) not null,
     foreign key(user_id) references dareu_user(id),
     foreign key(dare_id)references dare(id)); 
+
+create table response_comment(
+    id varchar(36) not null primary key, 
+    comment_date varchar(50) not null, 
+    comment varchar(100)not null,
+    likes int default 0,
+    response_id varchar(36) not null, 
+    user_id varchar(36)not null, 
+    foreign key(response_id) references dare_response(id), 
+    foreign key(user_id)references dareu_user(id)
+);
    
 -- FRIENDSHIP TABLE
 create table friendship(

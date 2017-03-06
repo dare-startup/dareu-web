@@ -6,6 +6,7 @@ import com.dareu.web.dto.request.CreateCategoryRequest;
 import com.dareu.web.dto.request.CreateDareRequest;
 import com.dareu.web.dto.request.DareConfirmationRequest;
 import com.dareu.web.dto.request.FlagDareRequest;
+import com.dareu.web.dto.request.NewCommentRequest;
 import com.dareu.web.exception.application.InternalApplicationException;
 import com.dareu.web.exception.application.InvalidRequestException;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
@@ -176,4 +177,24 @@ public interface DareService {
      * @throws InvalidRequestException 
      */
     public Response findResponseDescription(String responseId)throws InternalApplicationException, InvalidRequestException;
+
+    /**
+     * 
+     * @param request
+     * @param token
+     * @return
+     * @throws InternalApplicationException
+     * @throws InvalidRequestException 
+     */
+    public Response createResponseComment(NewCommentRequest request, String token) throws InternalApplicationException, InvalidRequestException;
+
+    /**
+     * Find a response comments page
+     * @param pageNumber
+     * @param responseId
+     * @return
+     * @throws InternalApplicationException 
+     * @throws com.dareu.web.exception.application.InvalidRequestException 
+     */
+    public Response findResponseComments(int pageNumber, String responseId) throws InternalApplicationException, InvalidRequestException;
 }

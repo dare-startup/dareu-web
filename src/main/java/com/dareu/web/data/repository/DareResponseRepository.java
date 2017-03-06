@@ -5,8 +5,10 @@
  */
 package com.dareu.web.data.repository;
 
+import com.dareu.web.data.entity.Comment;
 import com.dareu.web.data.entity.DareResponse;
 import com.dareu.web.data.exception.DataAccessException;
+import com.dareu.web.dto.response.entity.CommentDescription;
 import com.dareu.web.dto.response.entity.DareResponseDescription;
 import com.dareu.web.dto.response.entity.Page;
 
@@ -40,5 +42,27 @@ public interface DareResponseRepository extends BaseRepository<DareResponse>{
      */
     public Page<DareResponseDescription> getChannelPage(int pageNumber)throws DataAccessException;
     
+    /**
+     * Creates a new response comment
+     * @param comment
+     * @throws DataAccessException 
+     */
+    public void createResponseComment(Comment comment)throws DataAccessException;  
+
+    /**
+     * Returns a page of response comments
+     * @param pageNumber
+     * @param responseId
+     * @return
+     * @throws DataAccessException 
+     */
+    public Page<CommentDescription> findResponseComments(int pageNumber, String responseId) throws DataAccessException;
     
+    /**
+     * 
+     * @param commentId
+     * @return
+     * @throws DataAccessException 
+     */
+    public Comment findComment(String commentId)throws DataAccessException;
 }
