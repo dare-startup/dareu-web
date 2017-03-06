@@ -372,15 +372,12 @@ public class DareServiceImpl implements DareService {
             //create new Dare response 
             DareResponse dareResponse = new DareResponse();
             //save file 
-            fileService.saveFile(request.getStream(), FileService.FileType.DARE_VIDEO, dareResponse.getId().concat(".mp4"));
-            if (request.getThumb() == null) {
-                //create new thumb
-                thumbManager.createThumb(fileService.getFile(dareResponse.getId(), FileService.FileType.DARE_VIDEO), dareResponse.getId());
-            } else {
-                //save attached thumb file 
-                fileService.saveFile(request.getThumb(), FileService.FileType.VIDEO_THUMBNAIL, dareResponse.getId().concat(".jpg"));
-            }
+            String videoUrl = fileService.saveFile(request.getStream(), FileService.FileType.DARE_VIDEO, dareResponse.getId().concat(".mp4"));
+            String thumbUrl = fileService.saveFile(request.getThumb(), FileService.FileType.VIDEO_THUMBNAIL, dareResponse.getId().concat(".jpg"));
+            
             //populate response
+            dareResponse.setVideoUrl(videoUrl);
+            dareResponse.setThumbUrl(thumbUrl);
             dareResponse.setComment(request.getComment());
             dareResponse.setViewsCount(0);
             dareResponse.setUser(user);

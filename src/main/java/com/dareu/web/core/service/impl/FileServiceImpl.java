@@ -46,7 +46,8 @@ public class FileServiceImpl implements FileService {
     private AwsFileService awsFileService;
 
     //current hosting provider
-    private static final DareVideoHostingProvider currentHostingProvider = DareVideoHostingProvider.AMAZON;
+    private static final DareVideoHostingProvider currentHostingProvider = 
+            DareVideoHostingProvider.AMAZON;
 
     public FileServiceImpl() {
 

@@ -149,9 +149,10 @@ public interface DareUserRepository extends BaseRepository<DareUser> {
     /**
      * 
      * @param id
+     * @param url
      * @throws DataAccessException 
      */
-    public void updateImageUrl(String id) throws DataAccessException;
+    public void updateImageUrl(String id, String url) throws DataAccessException;
 
     /**
      * Returns an account profile from a user id

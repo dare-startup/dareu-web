@@ -487,9 +487,9 @@ public class AccountServiceImpl extends AbstractService implements AccountServic
             InputStream stream = multipartService.getImageProfile(input);
             //get user id 
             DareUser dareUser = dareUserRepository.findUserByToken(auth);
-            fileService.saveFile(stream, FileType.PROFILE_IMAGE, dareUser.getId() + ".jpg");
+            String url = fileService.saveFile(stream, FileType.PROFILE_IMAGE, dareUser.getId() + ".jpg");
             //update file path 
-            dareUserRepository.updateImageUrl(dareUser.getId());
+            dareUserRepository.updateImageUrl(dareUser.getId(), url);
 
             return Response.ok(new UpdatedEntityResponse("Image has been updated", true, "user"))
                     .build();

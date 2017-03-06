@@ -18,14 +18,6 @@ import javax.inject.Inject;
  * @author Alberto Rubalcaba <arubalcaba@24hourfit.com>
  */
 public class AwsFileServiceImpl implements AwsFileService{
-
-    @Inject
-    @ApplicationProperty(name = "amazon.access.key", type = ApplicationProperty.Types.SYSTEM)
-    private String accessKey;
-    
-    @Inject
-    @ApplicationProperty(name = "amazon.secret.key", type = ApplicationProperty.Types.SYSTEM)
-    private String secretKey;
     
     private static final String PROFILE_BUCKET = "dareu-profiles";
     private static final String THUMB_BUCKET = "dareu-thumbs";
@@ -33,7 +25,11 @@ public class AwsFileServiceImpl implements AwsFileService{
     private static final String BASE_URL = "https://s3.amazonaws.com/%s/%s";
     
     private AmazonS3 client;
-    public AwsFileServiceImpl(){
+    
+    @Inject
+    public AwsFileServiceImpl(
+            @ApplicationProperty(name = "amazon.access.key", type = ApplicationProperty.Types.SYSTEM)String accessKey, 
+            @ApplicationProperty(name = "amazon.secret.key", type = ApplicationProperty.Types.SYSTEM)String secretKey){
         client = new AmazonS3Client(new BasicAWSCredentials(accessKey, secretKey));
     }
     

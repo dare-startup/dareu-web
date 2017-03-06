@@ -272,10 +272,11 @@ public class DareUserRepositoryImpl extends AbstractRepository<DareUser> impleme
     }
 
     @Override
-    public void updateImageUrl(String id) throws DataAccessException {
+    public void updateImageUrl(String id, String url) throws DataAccessException {
         try {
-            Query q = em.createQuery("UPDATE User u SET u.imagePath = :id WHERE u.id = :id")
-                    .setParameter("id", id);
+            Query q = em.createQuery("UPDATE User u SET u.imageUrl = :url WHERE u.id = :id")
+                    .setParameter("id", id)
+                    .setParameter("url", url);
 
             q.executeUpdate();
         } catch (Exception ex) {
