@@ -226,6 +226,7 @@ public class DareuAssemblerImpl implements DareuAssembler {
             desc.setDare(assembleDareDescription(r.getDare()));
             desc.setUser(assembleUserDescription(r.getUser()));
             desc.setLastUpdate(r.getLastUpdate());
+            desc.setUploadDate(r.getResponseDate());
             descs.add(desc);
         }
         return descs;
