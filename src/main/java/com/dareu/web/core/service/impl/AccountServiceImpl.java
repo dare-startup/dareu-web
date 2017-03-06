@@ -327,7 +327,7 @@ public class AccountServiceImpl extends AbstractService implements AccountServic
         }
     }
 
-    @Override
+    /**@Override
     public Response getAccountImage(String userId, String auth) throws InvalidRequestException, InternalApplicationException {
         //get file 
         InputStream stream = null;
@@ -363,7 +363,7 @@ public class AccountServiceImpl extends AbstractService implements AccountServic
             log.info(ex.getMessage());
             throw new InternalApplicationException(ex.getMessage());
         }
-    }
+    }**/
 
     @Override
     public Response findUserById(String email) throws InvalidRequestException, InternalApplicationException {

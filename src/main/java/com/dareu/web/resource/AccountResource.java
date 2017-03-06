@@ -224,40 +224,6 @@ public class AccountResource {
         return accountService.updateProfileImage(input, auth);
     }
     
-    /**
-     *
-     * @param userId
-     * @param auth
-     * @return
-     * @throws com.dareu.web.exception.application.InvalidRequestException
-     * @throws com.dareu.web.exception.application.InternalApplicationException
-     * @Path ("me/profile")
-     * @Produces (MediaType.APPLICATION_JSON)
-     * @GET
-     * @Secured public Response getImage(@HeaderParam("Authorization")String
-     * auth)throws InternalApplicationException, InvalidRequestException{ return
-     * accountService.getAccountImage(auth); }
-     */
-    @ApiOperation(value = "Get a user profile image", produces = "image/jpeg",
-            authorizations = {
-                @Authorization(value = "MEMBER"),
-                @Authorization(value = "ADMIN"),
-                @Authorization(value = "SPONSOR")},
-            notes = "Get a user profile image, if there is no userId provided, will return the logged user image")
-    @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "The operation ran successfuly",
-                response = InputStream.class),
-        @ApiResponse(code = 401, message = "User is not authorized to access this resource",
-                response = AuthorizationResponse.class)
-    })
-    @Path("profile/image")
-    @Produces("image/jpeg")
-    @GET
-    @Secured
-    public Response getImage(
-            @ApiParam(name = "userId", required = false)@QueryParam("userId") String userId, @HeaderParam("Authorization") String auth) throws InvalidRequestException, InternalApplicationException {
-        return accountService.getAccountImage(userId, auth);
-    }
 
     @ApiOperation(value = "Discover users", produces = "application/json",
             authorizations = {

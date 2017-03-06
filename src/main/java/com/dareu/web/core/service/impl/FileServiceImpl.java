@@ -5,6 +5,7 @@
  */
 package com.dareu.web.core.service.impl;
 
+import com.dareu.web.core.aws.AwsFileService;
 import com.dareu.web.core.service.FileService;
 import com.github.roar109.syring.annotation.ApplicationProperty;
 import com.github.roar109.syring.annotation.ApplicationProperty.Types;
@@ -40,9 +41,12 @@ public class FileServiceImpl implements FileService {
 
     @Inject
     private Logger log;
+    
+    @Inject
+    private AwsFileService awsFileService;
 
     //current hosting provider
-    private static final DareVideoHostingProvider currentHostingProvider = DareVideoHostingProvider.LOCAL;
+    private static final DareVideoHostingProvider currentHostingProvider = DareVideoHostingProvider.AMAZON;
 
     public FileServiceImpl() {
 
@@ -55,8 +59,14 @@ public class FileServiceImpl implements FileService {
 
         switch (fileType) {
             case PROFILE_IMAGE:
-                outputDirectory = profileImagesDirectory + fileName;
-                writeLocalFile(outputDirectory, stream);
+                switch(currentHostingProvider){
+                    case AMAZON: 
+                        return awsFileService.saveFile(stream, FileType.PROFILE_IMAGE, fileName);
+                    case LOCAL:
+                        outputDirectory = profileImagesDirectory + fileName;
+                        writeLocalFile(outputDirectory, stream);
+                        break; 
+                }
                 break;
             case DARE_VIDEO:
                 outputDirectory = dareVideosDirectory + fileName;
@@ -65,8 +75,7 @@ public class FileServiceImpl implements FileService {
                         writeLocalFile(outputDirectory, stream); 
                         break;
                     case AMAZON:
-                        //TODO: change to bigger servers here
-                        break;
+                        return awsFileService.saveFile(stream, FileType.DARE_VIDEO, fileName);
                 }
                 break;
             case VIDEO_THUMBNAIL: 
@@ -76,8 +85,7 @@ public class FileServiceImpl implements FileService {
                         writeLocalFile(outputDirectory, stream); 
                         break; 
                     case AMAZON: 
-                        //TODO: save to amazon here
-                        break; 
+                        return awsFileService.saveFile(stream, FileType.VIDEO_THUMBNAIL, fileName);
                 }
                 break; 
             default:

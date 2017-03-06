@@ -95,15 +95,6 @@ public interface AccountService {
      */
     public Response updateRegId(String regId, String auth)throws InvalidRequestException, InternalApplicationException;
 
-    /**
-     * 
-     * @param userId
-     * @param auth
-     * @return
-     * @throws InvalidRequestException
-     * @throws InternalApplicationException 
-     */
-    public Response getAccountImage(String userId, String auth) throws InvalidRequestException, InternalApplicationException;
     
     /**
      * return a user using an email

@@ -255,18 +255,9 @@ public class DareServiceImpl implements DareService {
 
             if (dare != null) {
                 //created unaccepted dare 
-                unacceptedDare = new UnacceptedDare();
-                unacceptedDare.setId(dare.getId());
-                unacceptedDare.setName(dare.getName());
-                unacceptedDare.setDescription(dare.getDescription());
-                unacceptedDare.setCreationDate(DareUtils.DETAILS_DATE_FORMAT.format(dare.getCreationDate()));
+                unacceptedDare = assembler.getUnacceptedDare(dare);
                 challenger = dare.getChallengerUser();
-                challengerDescription = new UserDescription();
-                challengerDescription.setId(challenger.getId());
-                challengerDescription.setName(challenger.getName());
-                challengerDescription.setUserSinceDate(challenger.getUserSince());
-                challengerDescription.setProfileImageAvailable(fileService.fileExists(FileService.FileType.PROFILE_IMAGE, challenger.getId()));
-                unacceptedDare.setTimer(dare.getEstimatedDareTime());
+                challengerDescription = assembler.assembleUserDescription(challenger);
                 unacceptedDare.setChallenger(challengerDescription);
                 return Response.ok(unacceptedDare)
                         .build();
@@ -509,31 +500,6 @@ public class DareServiceImpl implements DareService {
             throw new InternalApplicationException(ex.getMessage());
         }
 
-    }
-
-    @Override
-    public Response getThumbImage(String responseId) throws InternalApplicationException, InvalidRequestException {
-        if(responseId == null && responseId.isEmpty())
-            throw new InvalidRequestException("No id provided");
-        
-        try{
-            DareResponse response = dareResponseRepository.find(responseId); 
-            if(response == null)
-                throw new InvalidRequestException("Invalid id");
-            
-            //get image 
-            InputStream stream = fileService.getFileStream(responseId, FileService.FileType.VIDEO_THUMBNAIL); 
-            /**BufferedImage image = ImageIO.read(stream);
-            ByteArrayOutputStream out = new ByteArrayOutputStream();
-
-            ImageIO.write(image, "jpg", out);**/
-            return Response.ok(stream)
-                    .build(); 
-        }catch(DataAccessException ex){
-            throw new InternalApplicationException(ex.getMessage()); 
-        }catch(IOException ex){
-            throw new InternalApplicationException(ex.getMessage()); 
-        }
     }
 
     @Override

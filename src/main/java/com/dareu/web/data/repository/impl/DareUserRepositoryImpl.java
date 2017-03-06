@@ -1,6 +1,7 @@
 package com.dareu.web.data.repository.impl;
 
 import com.dareu.web.core.security.DareuPrincipal;
+import com.dareu.web.core.service.DareuAssembler;
 import com.dareu.web.core.service.FileService;
 import java.util.List;
 import java.util.logging.Logger;
@@ -41,6 +42,9 @@ public class DareUserRepositoryImpl extends AbstractRepository<DareUser> impleme
     
     @Inject
     private DareResponseRepository dareResponseRepository; 
+    
+    @Inject
+    private DareuAssembler assembler;
     
     public DareUserRepositoryImpl() {
         super(DareUser.class);
@@ -287,19 +291,9 @@ public class DareUserRepositoryImpl extends AbstractRepository<DareUser> impleme
             Query q = em.createQuery("SELECT d FROM User d WHERE d.id = :id")
                     .setParameter("id", id);
             DareUser user = (DareUser)q.getSingleResult(); 
-            profile = new AccountProfile(); 
-            profile.setCoins(user.getCoins());
-            profile.setId(id);
-            profile.setName(user.getName());
-            profile.setUscore(user.getuScore());
-            profile.setUserSinceDate(user.getUserSince());
-            Page<CreatedDare> dares = dareRepository.findCreatedDares(id, 1); 
-            Page<DareResponseDescription> responses = dareResponseRepository.getResponses(id, 1); 
-            profile.setCreatedDares(dares);
-            profile.setCreatedResponses(responses);
-            profile.setEmail(user.getEmail());
-            profile.setProfileImageAvailable(fileService.fileExists(FileService.FileType.PROFILE_IMAGE, id));
-            return profile; 
+            Page<CreatedDare> dares = dareRepository.findCreatedDares(id, 1);
+            Page<DareResponseDescription> descs = dareResponseRepository.getResponses(id, 1);
+            return assembler.getAccountProfile(user, dares, descs);
         }catch(Exception ex){
             throw new DataAccessException(ex.getMessage()); 
         }

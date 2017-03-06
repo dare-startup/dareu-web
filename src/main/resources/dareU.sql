@@ -10,6 +10,7 @@ create table dareu_user(
     password varbinary(255)not null, 
     user_since_date varchar(10) not null,
     security_token varchar(40),
+    image_url varchar(300),
     gcm_reg_id varchar(200), 
     coins int not null default 1, 
     role int not null,
@@ -75,6 +76,8 @@ create table dare_response(
     dare_id varchar(36)not null, 
     user_id varchar(36) not null, 
     last_update varchar(50) not null,
+    thumb_url varchar(300)not null, 
+    video_url varchar(300) not null,
     foreign key(user_id) references dareu_user(id),
     foreign key(dare_id)references dare(id)); 
 

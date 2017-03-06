@@ -38,6 +38,12 @@ public class DareResponse extends BaseEntity {
     
     @Column(name = "last_update")
     private String lastUpdate; 
+    
+    @Column(name = "thumb_url")
+    private String thumbUrl;
+    
+    @Column(name = "video_url")
+    private String videoUrl;
 
     public DareResponse() {
     }
@@ -96,6 +102,22 @@ public class DareResponse extends BaseEntity {
 
     public void setLastUpdate(String lastUpdate) {
         this.lastUpdate = lastUpdate;
+    }
+
+    public String getThumbUrl() {
+        return thumbUrl;
+    }
+
+    public void setThumbUrl(String thumbUrl) {
+        this.thumbUrl = thumbUrl;
+    }
+
+    public String getVideoUrl() {
+        return videoUrl;
+    }
+
+    public void setVideoUrl(String videoUrl) {
+        this.videoUrl = videoUrl;
     }
 
     

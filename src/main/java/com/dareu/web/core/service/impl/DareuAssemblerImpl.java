@@ -9,6 +9,7 @@ import com.dareu.web.core.service.FileService;
 import com.dareu.web.data.entity.Comment;
 import com.dareu.web.data.entity.DareResponse;
 import com.dareu.web.data.entity.FriendshipRequest;
+import com.dareu.web.dto.response.entity.AccountProfile;
 import com.dareu.web.dto.response.entity.ActiveDare;
 import com.dareu.web.dto.response.entity.CategoryDescription;
 import com.dareu.web.dto.response.entity.CommentDescription;
@@ -19,6 +20,7 @@ import com.dareu.web.dto.response.entity.DareResponseDescription;
 import com.dareu.web.dto.response.entity.DiscoverUserAccount;
 import com.dareu.web.dto.response.entity.FriendSearchDescription;
 import com.dareu.web.dto.response.entity.Page;
+import com.dareu.web.dto.response.entity.UnacceptedDare;
 import com.dareu.web.dto.response.entity.UserAccount;
 import com.dareu.web.dto.response.entity.UserDescription;
 import java.util.ArrayList;
@@ -118,7 +120,7 @@ public class DareuAssemblerImpl implements DareuAssembler {
     public DiscoverUserAccount assembleDiscoverUserAccount(DareUser user) {
         DiscoverUserAccount acc = new DiscoverUserAccount(user.getId(), user.getName(),
                 user.getCoins(), user.getuScore());
-        acc.setProfileImageAvailable(fileService.fileExists(FileService.FileType.PROFILE_IMAGE, user.getId()));
+        acc.setImageUrl(user.getImageUrl());
         return acc;
     }
 
@@ -128,7 +130,7 @@ public class DareuAssemblerImpl implements DareuAssembler {
         FriendSearchDescription desc;
         for (DareUser user : users) {
             desc = new FriendSearchDescription(user.getId(), user.getName());
-            desc.setProfileImageAvailable(fileService.fileExists(FileService.FileType.PROFILE_IMAGE, user.getId()));
+            desc.setImageUrl(user.getImageUrl());
             list.add(desc);
         }
 
@@ -153,7 +155,7 @@ public class DareuAssemblerImpl implements DareuAssembler {
     @Override
     public UserDescription assembleUserDescription(DareUser user) {
         UserDescription desc = new UserDescription(user.getId(), user.getName(), user.getUserSince());
-        desc.setProfileImageAvailable(fileService.fileExists(FileService.FileType.PROFILE_IMAGE, user.getId()));
+        desc.setImageUrl(user.getImageUrl());
         return desc;
     }
 
@@ -201,15 +203,7 @@ public class DareuAssemblerImpl implements DareuAssembler {
         List<DareResponseDescription> list = new ArrayList();
         DareResponseDescription desc;
         for (DareResponse response : responses) {
-            desc = new DareResponseDescription();
-            desc.setDare(assembleDareDescription(response.getDare()));
-            desc.setId(response.getId());
-            desc.setThumbAvailable(fileService.fileExists(FileService.FileType.VIDEO_THUMBNAIL, response.getId()));
-            desc.setClaps(response.getLikes());
-            desc.setLastUpdate(response.getLastUpdate());
-            desc.setUploadDate(response.getResponseDate());
-            desc.setUser(assembleUserDescription(response.getUser()));
-            desc.setViews(response.getViewsCount());
+            desc = assembleDareResponseDescription(response);
             list.add(desc);
         }
         return list;
@@ -217,18 +211,10 @@ public class DareuAssemblerImpl implements DareuAssembler {
 
     @Override
     public List<DareResponseDescription> getResponseDescriptions(List<DareResponse> list) {
-        List<DareResponseDescription> descs = new ArrayList(); 
+        List<DareResponseDescription> descs = new ArrayList();
         DareResponseDescription desc;
-        for(DareResponse r : list){
-            desc = new DareResponseDescription();
-            desc.setId(r.getId());
-            desc.setClaps(r.getLikes());
-            desc.setThumbAvailable(fileService.fileExists(FileService.FileType.VIDEO_THUMBNAIL, r.getId()));
-            desc.setViews(r.getViewsCount());
-            desc.setDare(assembleDareDescription(r.getDare()));
-            desc.setUser(assembleUserDescription(r.getUser()));
-            desc.setLastUpdate(r.getLastUpdate());
-            desc.setUploadDate(r.getResponseDate());
+        for (DareResponse r : list) {
+            desc = assembleDareResponseDescription(r);
             descs.add(desc);
         }
         return descs;
@@ -236,35 +222,52 @@ public class DareuAssemblerImpl implements DareuAssembler {
 
     @Override
     public DareResponseDescription assembleDareResponseDescription(DareResponse resp) {
-        DareResponseDescription desc = new DareResponseDescription(); 
-        desc.setClaps(resp.getLikes());
-        desc.setDare(assembleDareDescription(resp.getDare()));
-        desc.setId(resp.getId());
-        desc.setLastUpdate(resp.getLastUpdate());
-        desc.setThumbAvailable(fileService.fileExists(FileService.FileType.VIDEO_THUMBNAIL, resp.getId()));
-        desc.setUser(assembleUserDescription(resp.getUser()));
-        desc.setViews(resp.getViewsCount());
-        desc.setUploadDate(resp.getResponseDate());
-        
-        return desc; 
+        return assembleDareResponseDescription(resp);
     }
 
     @Override
     public List<CommentDescription> assembleCommentDescriptions(List<Comment> comments) {
         List<CommentDescription> list = new ArrayList();
-        for(Comment comment : comments)
+        for (Comment comment : comments) {
             list.add(assembleCommentDescription(comment));
+        }
         return list;
     }
 
     @Override
     public CommentDescription assembleCommentDescription(Comment comment) {
-        CommentDescription desc = new CommentDescription(); 
+        CommentDescription desc = new CommentDescription();
         desc.setComment(comment.getComment());
         desc.setCommentDate(comment.getCommentDate());
         desc.setId(comment.getId());
         desc.setLikes(comment.getLikes());
         desc.setResponse(assembleDareResponseDescription(comment.getResponse()));
         return desc;
+    }
+
+    @Override
+    public AccountProfile getAccountProfile(DareUser user, Page<CreatedDare> createdDares, Page<DareResponseDescription> responses) {
+        AccountProfile profile = new AccountProfile();
+        profile.setCoins(user.getCoins());
+        profile.setId(user.getId());
+        profile.setName(user.getName());
+        profile.setUscore(user.getuScore());
+        profile.setUserSinceDate(user.getUserSince());
+        profile.setCreatedDares(createdDares);
+        profile.setCreatedResponses(responses);
+        profile.setEmail(user.getEmail());
+        profile.setImageUrl(user.getImageUrl());
+        return profile;
+    }
+
+    @Override
+    public UnacceptedDare getUnacceptedDare(Dare dare) {
+        UnacceptedDare unacceptedDare = new UnacceptedDare();
+        unacceptedDare.setId(dare.getId());
+        unacceptedDare.setName(dare.getName());
+        unacceptedDare.setDescription(dare.getDescription());
+        unacceptedDare.setCreationDate(DareUtils.DETAILS_DATE_FORMAT.format(dare.getCreationDate()));
+        unacceptedDare.setTimer(dare.getEstimatedDareTime());
+        return unacceptedDare;
     }
 }

@@ -161,15 +161,6 @@ public interface DareService {
     public Response channelResponses(int pageNumber) throws InternalApplicationException;
 
     /**
-     * Get a response thumb image
-     * @param responseId
-     * @return
-     * @throws InternalApplicationException
-     * @throws InvalidRequestException 
-     */
-    public Response getThumbImage(String responseId) throws InternalApplicationException, InvalidRequestException;
-
-    /**
      * 
      * @param responseId
      * @return

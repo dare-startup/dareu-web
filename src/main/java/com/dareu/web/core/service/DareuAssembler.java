@@ -6,6 +6,7 @@ import com.dareu.web.data.entity.Dare;
 import com.dareu.web.data.entity.DareResponse;
 import com.dareu.web.data.entity.DareUser;
 import com.dareu.web.data.entity.FriendshipRequest;
+import com.dareu.web.dto.response.entity.AccountProfile;
 import com.dareu.web.dto.response.entity.ActiveDare;
 import com.dareu.web.dto.response.entity.CategoryDescription;
 import com.dareu.web.dto.response.entity.CommentDescription;
@@ -16,6 +17,7 @@ import com.dareu.web.dto.response.entity.DareResponseDescription;
 import com.dareu.web.dto.response.entity.DiscoverUserAccount;
 import com.dareu.web.dto.response.entity.FriendSearchDescription;
 import com.dareu.web.dto.response.entity.Page;
+import com.dareu.web.dto.response.entity.UnacceptedDare;
 import com.dareu.web.dto.response.entity.UserAccount;
 import com.dareu.web.dto.response.entity.UserDescription;
 import java.util.List;
@@ -156,5 +158,21 @@ public interface DareuAssembler {
      * @return 
      */
     public CommentDescription assembleCommentDescription(Comment comment);
+    
+    /**
+     * Creates a new account profile
+     * @param user
+     * @param createdDares
+     * @param responses
+     * @return 
+     */
+    public AccountProfile getAccountProfile(DareUser user, Page<CreatedDare> createdDares, Page<DareResponseDescription> responses);
+    
+    /**
+     * Get an unaccepted dare
+     * @param dare
+     * @return 
+     */
+    public UnacceptedDare getUnacceptedDare(Dare dare);
     
 }

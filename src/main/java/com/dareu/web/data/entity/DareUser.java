@@ -60,6 +60,9 @@ public class DareUser extends BaseEntity {
     @Column(name = "security_token")
     private String securityToken;
     
+    @Column(name = "image_url")
+    private String imageUrl;
+    
     @Transient
     @OneToMany(mappedBy = "requestedUser", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<FriendshipRequest> receivedFriendshipRequests; 
@@ -190,6 +193,14 @@ public class DareUser extends BaseEntity {
 
     public void setSentFriendshipRequests(Set<FriendshipRequest> sentFriendshipRequests) {
         this.sentFriendshipRequests = sentFriendshipRequests;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
         
         
