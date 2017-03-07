@@ -222,7 +222,17 @@ public class DareuAssemblerImpl implements DareuAssembler {
 
     @Override
     public DareResponseDescription assembleDareResponseDescription(DareResponse resp) {
-        return assembleDareResponseDescription(resp);
+        DareResponseDescription desc = new DareResponseDescription();
+        desc.setClaps(resp.getLikes());
+        desc.setDare(assembleDareDescription(resp.getDare()));
+        desc.setId(resp.getId());
+        desc.setLastUpdate(resp.getLastUpdate());
+        desc.setThumbUrl(resp.getThumbUrl());
+        desc.setUploadDate(resp.getResponseDate());
+        desc.setUser(assembleUserDescription(resp.getUser()));
+        desc.setVideoUrl(resp.getVideoUrl());
+        desc.setViews(resp.getViewsCount());
+        return desc;
     }
 
     @Override
