@@ -487,7 +487,13 @@ public class AccountServiceImpl extends AbstractService implements AccountServic
             InputStream stream = multipartService.getImageProfile(input);
             //get user id 
             DareUser dareUser = dareUserRepository.findUserByToken(auth);
-            String url = fileService.saveFile(stream, FileType.PROFILE_IMAGE, dareUser.getId() + ".jpg");
+            
+            //save file to local tmp folder 
+            String filePath = fileService.saveTemporalfile(stream, dareUser.getId(), FileType.PROFILE_IMAGE); 
+            
+            //save file using path
+            String url = fileService.saveFile(filePath, FileType.PROFILE_IMAGE, dareUser.getId() + ".jpg");
+            
             //update file path 
             dareUserRepository.updateImageUrl(dareUser.getId(), url);
 

@@ -38,6 +38,10 @@ public class FileServiceImpl implements FileService {
     @Inject
     @ApplicationProperty(name = "com.dareu.web.video.thumb.directory", type = Types.SYSTEM)
     private String dareVideoThumbDirectory; 
+    
+    @Inject
+    @ApplicationProperty(name = "dareu.multipart.tmp.directory", type = Types.SYSTEM)
+    private String tmpDirectory; 
 
     @Inject
     private Logger log;
@@ -132,6 +136,7 @@ public class FileServiceImpl implements FileService {
         else throw new FileNotFoundException("No file " + file.getAbsolutePath() + " found"); 
     }
 
+    @Override
     public boolean fileExists(FileType fileType, String id) {
         InputStream stream = null; 
         try{
@@ -169,6 +174,74 @@ public class FileServiceImpl implements FileService {
     @Override
     public File getFile(String fileName, FileType fileType) throws FileNotFoundException {
         return getFile(fileType, fileName); 
+    }
+
+    public String saveTemporalfile(InputStream is, String name, FileType type) throws IOException {
+        String ext = ""; 
+        switch(type){
+            case DARE_VIDEO: 
+                ext = ".mp4"; 
+                break; 
+            case PROFILE_IMAGE:
+                ext = ".jpg";
+                break; 
+            case VIDEO_THUMBNAIL: 
+                ext = ".jpg";
+                break; 
+        }
+        File file = new File(tmpDirectory + name + ext); 
+        file.createNewFile(); 
+        
+        FileOutputStream out = new FileOutputStream(file); 
+        byte[] buff = new byte[1024];
+        
+        while((is.read(buff)) != -1)
+            out.write(buff);
+        
+        out.close();
+        return file.getAbsolutePath(); 
+    }
+
+    @Override
+    public String saveFile(String filePath, FileType fileType, String fileName) throws IOException {
+        //create output directory name 
+        String outputDirectory = "";
+
+        switch (fileType) {
+            case PROFILE_IMAGE:
+                switch(currentHostingProvider){
+                    case AMAZON: 
+                        return awsFileService.saveFile(new File(filePath), FileType.PROFILE_IMAGE);
+                    case LOCAL:
+                        outputDirectory = profileImagesDirectory + fileName;
+                        writeLocalFile(outputDirectory, new FileInputStream(new File(filePath)));
+                        break; 
+                }
+                break;
+            case DARE_VIDEO:
+                outputDirectory = dareVideosDirectory + fileName;
+                switch (currentHostingProvider) {
+                    case LOCAL:
+                        writeLocalFile(outputDirectory, new FileInputStream(new File(filePath))); 
+                        break;
+                    case AMAZON:
+                        return awsFileService.saveFile(new File(filePath), FileType.DARE_VIDEO);
+                }
+                break;
+            case VIDEO_THUMBNAIL: 
+                outputDirectory = dareVideoThumbDirectory + fileName; 
+                switch(currentHostingProvider){
+                    case LOCAL: 
+                        writeLocalFile(outputDirectory, new FileInputStream(new File(filePath))); 
+                        break; 
+                    case AMAZON: 
+                        return awsFileService.saveFile(new File(filePath), FileType.VIDEO_THUMBNAIL);
+                }
+                break; 
+            default:
+                throw new AssertionError();
+        }
+        return outputDirectory;
     }
 
     enum DareVideoHostingProvider {
