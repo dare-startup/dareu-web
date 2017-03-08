@@ -1,5 +1,6 @@
 package com.dareu.web.core.service.impl;
 
+import com.dareu.web.core.DareUtils;
 import java.util.logging.Logger;
 
 import javax.inject.Inject;
@@ -14,6 +15,7 @@ import com.dareu.web.dto.response.message.ConnectionAcceptedMessage;
 import com.dareu.web.dto.response.message.ConnectionRequestMessage;
 import com.dareu.web.dto.response.message.NewCommentMessage;
 import com.dareu.web.dto.response.message.NewDareMessage;
+import com.dareu.web.dto.response.message.QueuedDareMessage;
 import com.dareu.web.dto.response.message.UploadedResponseMessage;
 import com.github.roar109.syring.annotation.ApplicationProperty;
 import com.google.firebase.FirebaseApp;
@@ -31,6 +33,7 @@ import java.io.FileNotFoundException;
 import java.nio.charset.Charset;
 import java.nio.file.Paths;
 import java.time.Duration;
+import java.util.Date;
 
 public class DareuMessagingServiceImpl implements DareuMessagingService {
 
@@ -97,6 +100,15 @@ public class DareuMessagingServiceImpl implements DareuMessagingService {
         newCommentMessage.setResponseId(responseId);
         
         client.send(new DataUnicastMessage(options, fcmToken, newCommentMessage));
+    }
+
+    @Override
+    public void sendQueuedDareNotification(String dareId, String token, String currentDareStatus) {
+        QueuedDareMessage message = new QueuedDareMessage();
+        message.setDareId(dareId);
+        message.setCreationDate(DareUtils.DETAILS_DATE_FORMAT.format(new Date()));
+        message.setCurrentDareStatus(currentDareStatus);
+        client.send(new DataUnicastMessage(options, token, message)); 
     }
 
 }

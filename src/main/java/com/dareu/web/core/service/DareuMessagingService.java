@@ -43,4 +43,13 @@ public interface DareuMessagingService {
      * @param comment 
      */
     public void sendNewCommentNotification(String videoCreatorId, String commentId, String responseId, String comment);
+    
+    /**
+     * Sends a new queued dare notification
+     * @param dareId 
+     * @param token 
+     * @param currentDareStatus 
+     */
+    public void sendQueuedDareNotification(String dareId, String token, String currentDareStatus); 
+    
 }
