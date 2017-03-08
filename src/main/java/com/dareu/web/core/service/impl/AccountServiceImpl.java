@@ -491,7 +491,7 @@ public class AccountServiceImpl extends AbstractService implements AccountServic
             //update file path 
             dareUserRepository.updateImageUrl(dareUser.getId(), url);
 
-            return Response.ok(new UpdatedEntityResponse("Image has been updated", true, "user"))
+            return Response.ok(new UpdatedEntityResponse(url, true, "user"))
                     .build();
         } catch (IOException ex) {
             throw new InternalApplicationException(ex.getMessage());

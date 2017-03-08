@@ -6,10 +6,12 @@ import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.amazonaws.util.IOUtils;
 import com.dareu.web.core.aws.AwsFileService;
 import com.dareu.web.core.service.FileService;
 import com.github.roar109.syring.annotation.ApplicationProperty;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import javax.inject.Inject;
 
@@ -17,28 +19,28 @@ import javax.inject.Inject;
  *
  * @author Alberto Rubalcaba <arubalcaba@24hourfit.com>
  */
-public class AwsFileServiceImpl implements AwsFileService{
-    
+public class AwsFileServiceImpl implements AwsFileService {
+
     private static final String PROFILE_BUCKET = "dareu-profiles";
     private static final String THUMB_BUCKET = "dareu-thumbs";
     private static final String VIDEO_BUCKET = "dareu-uploads";
     private static final String BASE_URL = "https://s3.amazonaws.com/%s/%s";
-    
+
     private AmazonS3 client;
-    
+
     @Inject
     public AwsFileServiceImpl(
-            @ApplicationProperty(name = "amazon.access.key", type = ApplicationProperty.Types.SYSTEM)String accessKey, 
-            @ApplicationProperty(name = "amazon.secret.key", type = ApplicationProperty.Types.SYSTEM)String secretKey){
+            @ApplicationProperty(name = "amazon.access.key", type = ApplicationProperty.Types.SYSTEM) String accessKey,
+            @ApplicationProperty(name = "amazon.secret.key", type = ApplicationProperty.Types.SYSTEM) String secretKey) {
         client = new AmazonS3Client(new BasicAWSCredentials(accessKey, secretKey));
     }
-    
+
     @Override
     public String saveFile(File file, FileService.FileType fileType) {
         String url = "";
         PutObjectRequest request = null;
-        switch(fileType){
-            case PROFILE_IMAGE: 
+        switch (fileType) {
+            case PROFILE_IMAGE:
                 request = new PutObjectRequest(PROFILE_BUCKET, file.getName(), file);
                 request.setCannedAcl(CannedAccessControlList.PublicRead);
                 client.putObject(request);
@@ -51,7 +53,7 @@ public class AwsFileServiceImpl implements AwsFileService{
                 client.putObject(request);
                 url = String.format(BASE_URL, VIDEO_BUCKET, file.getName());
                 break;
-            case DARE_VIDEO: 
+            case DARE_VIDEO:
                 request = new PutObjectRequest(THUMB_BUCKET, file.getName(), file);
                 request.setCannedAcl(CannedAccessControlList.PublicRead);
                 client.putObject(request);
@@ -65,28 +67,36 @@ public class AwsFileServiceImpl implements AwsFileService{
     public String saveFile(InputStream stream, FileService.FileType fileType, String fileName) {
         String url = "";
         PutObjectRequest request = null;
-        switch(fileType){
-            case PROFILE_IMAGE: 
-                request = new PutObjectRequest(PROFILE_BUCKET, fileName, stream, new ObjectMetadata());
-                request.setCannedAcl(CannedAccessControlList.PublicRead);
-                client.putObject(request);
-                //generate url
-                url = String.format(BASE_URL, PROFILE_BUCKET, fileName);
-                break;
-            case VIDEO_THUMBNAIL:
-                request = new PutObjectRequest(THUMB_BUCKET, fileName, stream, new ObjectMetadata());
-                request.setCannedAcl(CannedAccessControlList.PublicRead);
-                client.putObject(request);
-                url = String.format(BASE_URL, THUMB_BUCKET, fileName);
-                break;
-            case DARE_VIDEO: 
-                request = new PutObjectRequest(VIDEO_BUCKET, fileName, stream, new ObjectMetadata());
-                request.setCannedAcl(CannedAccessControlList.PublicRead);
-                client.putObject(request);
-                url = String.format(BASE_URL, VIDEO_BUCKET, fileName);
-                break;
+        ObjectMetadata meta = new ObjectMetadata();
+        //get bytes 
+        try {
+            byte[] bytes = IOUtils.toByteArray(stream);
+            meta.setContentLength(bytes.length);
+            switch (fileType) {
+                case PROFILE_IMAGE:
+                    request = new PutObjectRequest(PROFILE_BUCKET, fileName, stream, meta);
+                    request.setCannedAcl(CannedAccessControlList.PublicRead);
+                    client.putObject(request);
+                    //generate url
+                    url = String.format(BASE_URL, PROFILE_BUCKET, fileName);
+                    break;
+                case VIDEO_THUMBNAIL:
+                    request = new PutObjectRequest(THUMB_BUCKET, fileName, stream, meta);
+                    request.setCannedAcl(CannedAccessControlList.PublicRead);
+                    client.putObject(request);
+                    url = String.format(BASE_URL, THUMB_BUCKET, fileName);
+                    break;
+                case DARE_VIDEO:
+                    request = new PutObjectRequest(VIDEO_BUCKET, fileName, stream, meta);
+                    request.setCannedAcl(CannedAccessControlList.PublicRead);
+                    client.putObject(request);
+                    url = String.format(BASE_URL, VIDEO_BUCKET, fileName);
+                    break;
+            }
+        } catch (IOException ex) {
+            
         }
         return url;
     }
-    
+
 }
