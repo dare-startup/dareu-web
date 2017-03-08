@@ -74,7 +74,7 @@ public class DareRepositoryImpl extends AbstractRepository<Dare> implements Dare
         Dare dare = null;
         List<Dare> list;
         try {
-            Query query = em.createQuery("SELECT d FROM Dare d WHERE d.challengedUser.id = :userId AND d.accepted = 0  AND d.declined = 0 ORDER BY d.creationDate ASC")
+            Query query = em.createQuery("SELECT d FROM Dare d WHERE d.challengedUser.id = :userId AND d.accepted = 0  AND d.declined = 0 AND ORDER BY d.creationDate ASC")
                     .setParameter("userId", userId);
 
             list = query.getResultList();

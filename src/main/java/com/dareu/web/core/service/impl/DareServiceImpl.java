@@ -154,8 +154,10 @@ public class DareServiceImpl implements DareService {
 
             String id = dareRepository.createDare(dare);
             String dareUserFcmToken = dareUserRepository.getUserFcmToken(challengedUser.getId());
+            ActiveDare activeDare = dareRepository.getCurrentActiveDare(challengedUser.getId()); 
+            Dare unacceptedDare = dareRepository.findUnacceptedDare(challengedUser.getId()); 
             //check if challenged user already has an active dare
-            if (dareRepository.getCurrentActiveDare(challengedUser.getId()) != null) {
+            if (activeDare != null) {
                 //user has an active dare
                 log.info("User has an active dare, sending queued notification");
                 //send a notification of another dare waiting for
@@ -163,7 +165,7 @@ public class DareServiceImpl implements DareService {
                     messagingService.sendQueuedDareNotification(dare.getId(), dareUserFcmToken,
                             QueuedDareMessage.ACTIVE);
                 }
-            } else if (dareRepository.findUnacceptedDare(challengedUser.getId()) != null) {
+            } else if (unacceptedDare != null && ! unacceptedDare.getId().equals(dare.getId())) {
                 //user has an unaccepted dare
                 log.info("User has an unaccepted dare, sending queued notification");
                 //send a notification for another dare waiting for
