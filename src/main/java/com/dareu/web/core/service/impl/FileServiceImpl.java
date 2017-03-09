@@ -61,7 +61,8 @@ public class FileServiceImpl implements FileService {
     public String saveFile(InputStream stream, FileType fileType, String fileName) throws IOException {
         //create output directory name 
         String outputDirectory = "";
-
+        log.info("Current hosting provider: " + currentHostingProvider); 
+        log.info("FileType " + fileType);
         switch (fileType) {
             case PROFILE_IMAGE:
                 switch(currentHostingProvider){
@@ -206,7 +207,7 @@ public class FileServiceImpl implements FileService {
     public String saveFile(String filePath, FileType fileType, String fileName) throws IOException {
         //create output directory name 
         String outputDirectory = "";
-
+        
         switch (fileType) {
             case PROFILE_IMAGE:
                 switch(currentHostingProvider){
