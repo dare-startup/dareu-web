@@ -39,7 +39,7 @@ public class AdminAccountResource {
      * Register a new sponsor user
      * @return 
      */
-    @ApiOperation(value = "Register a new sponsor user", produces = "application/json", 
+    /**@ApiOperation(value = "Register a new sponsor user", produces = "application/json", 
             authorizations = { @Authorization(value = "ALL")}, 
             notes = "Register a new sponsor user")
     @ApiResponses(value = {
@@ -54,7 +54,7 @@ public class AdminAccountResource {
     @Secured
     public Response registerSponsorUser(){
         return null; 
-    }
+    }**/
     
     @Path("findUserByEmail/{email}")
     @GET

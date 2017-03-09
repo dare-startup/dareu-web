@@ -283,7 +283,7 @@ public class DareServiceImpl implements DareService {
                         .build();
             } else //return an empty response
             {
-                return Response.ok()
+                return Response.status(Response.Status.NO_CONTENT)
                         .build();
             }
 
