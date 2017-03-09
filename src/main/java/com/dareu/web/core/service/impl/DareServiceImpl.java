@@ -404,7 +404,11 @@ public class DareServiceImpl implements DareService {
             
             
             String thumbUrl = fileService.saveFile(thumbPath, FileService.FileType.VIDEO_THUMBNAIL, dareResponse.getId().concat(".jpg"));
-
+            
+            //delete both file 
+            fileService.deleteTemporalFile(videoPath); 
+            fileService.deleteTemporalFile(thumbPath); 
+            
             //populate response
             dareResponse.setVideoUrl(videoUrl);
             dareResponse.setThumbUrl(thumbUrl);

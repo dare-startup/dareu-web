@@ -48,16 +48,16 @@ public class AwsFileServiceImpl implements AwsFileService {
                 url = String.format(BASE_URL, PROFILE_BUCKET, file.getName());
                 break;
             case VIDEO_THUMBNAIL:
-                request = new PutObjectRequest(VIDEO_BUCKET, file.getName(), file);
-                request.setCannedAcl(CannedAccessControlList.PublicRead);
-                client.putObject(request);
-                url = String.format(BASE_URL, VIDEO_BUCKET, file.getName());
-                break;
-            case DARE_VIDEO:
                 request = new PutObjectRequest(THUMB_BUCKET, file.getName(), file);
                 request.setCannedAcl(CannedAccessControlList.PublicRead);
                 client.putObject(request);
                 url = String.format(BASE_URL, THUMB_BUCKET, file.getName());
+                break;
+            case DARE_VIDEO:
+                request = new PutObjectRequest(VIDEO_BUCKET, file.getName(), file);
+                request.setCannedAcl(CannedAccessControlList.PublicRead);
+                client.putObject(request);
+                url = String.format(BASE_URL, VIDEO_BUCKET, file.getName());
                 break;
         }
         return url;

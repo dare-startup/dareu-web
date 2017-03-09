@@ -65,6 +65,8 @@ public interface FileService {
     
     
     public String saveTemporalfile(InputStream is, String name, FileType type)throws IOException; 
+
+    public void deleteTemporalFile(String videoPath) throws IOException;
     
     public enum FileType{
     	PROFILE_IMAGE, DARE_VIDEO, VIDEO_THUMBNAIL; 

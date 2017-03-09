@@ -177,6 +177,7 @@ public class FileServiceImpl implements FileService {
         return getFile(fileType, fileName); 
     }
 
+    @Override
     public String saveTemporalfile(InputStream is, String name, FileType type) throws IOException {
         String ext = ""; 
         switch(type){
@@ -243,6 +244,13 @@ public class FileServiceImpl implements FileService {
                 throw new AssertionError();
         }
         return outputDirectory;
+    }
+
+    @Override
+    public void deleteTemporalFile(String tmpFile) throws IOException {
+        File file = new File(tmpFile);
+        if(file.exists())
+            file.delete(); 
     }
 
     enum DareVideoHostingProvider {
