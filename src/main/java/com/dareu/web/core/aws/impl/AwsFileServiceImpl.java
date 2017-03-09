@@ -24,7 +24,7 @@ public class AwsFileServiceImpl implements AwsFileService {
     private static final String PROFILE_BUCKET = "dareu-profiles";
     private static final String THUMB_BUCKET = "dareu-thumbs";
     private static final String VIDEO_BUCKET = "dareu-uploads";
-    private static final String BASE_URL = "https://s3.amazonaws.com/%s/%s";
+    private static final String BASE_URL = "https://%s.s3.amazonaws.com/%s";
 
     private AmazonS3 client;
 
