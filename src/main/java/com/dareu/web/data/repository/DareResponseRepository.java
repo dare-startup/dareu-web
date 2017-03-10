@@ -65,4 +65,12 @@ public interface DareResponseRepository extends BaseRepository<DareResponse>{
      * @throws DataAccessException 
      */
     public Comment findComment(String commentId)throws DataAccessException;
+
+    /**
+     * Get the number of comments a response has
+     * @param responseId
+     * @return
+     * @throws DataAccessException 
+     */
+    public int getResponseCommentsCount(String responseId) throws DataAccessException;
 }

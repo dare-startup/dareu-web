@@ -351,7 +351,7 @@ public class DareResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @Secured
-    public Response createResponseComment(@DefaultValue("1") @QueryParam("pageNumber")int pageNumber, 
+    public Response findResponseComments(@DefaultValue("1") @QueryParam("pageNumber")int pageNumber, 
                                         @QueryParam("responseId")String responseId) throws InternalApplicationException, InvalidRequestException {
         return dareService.findResponseComments(pageNumber, responseId); 
     }

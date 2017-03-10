@@ -133,4 +133,16 @@ public class DareResponseRepositoryImpl extends AbstractRepository<DareResponse>
             throw new DataAccessException(ex.getMessage(), ex);
         }
     }
+
+    @Override
+    public int getResponseCommentsCount(String responseId) throws DataAccessException {
+        try{
+            Long count = (Long)em.createQuery("SELECT COUNT(c.id) FROM Comment c WHERE c.response.id = :id")
+                    .setParameter("id", responseId)
+                    .getSingleResult();
+            return count.intValue();
+        }catch(Exception ex){
+            throw new DataAccessException(ex.getMessage());
+        }
+    }
 }

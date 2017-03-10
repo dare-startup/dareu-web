@@ -154,8 +154,8 @@ public class DareServiceImpl implements DareService {
 
             String id = dareRepository.createDare(dare);
             String dareUserFcmToken = dareUserRepository.getUserFcmToken(challengedUser.getId());
-            ActiveDare activeDare = dareRepository.getCurrentActiveDare(challengedUser.getId()); 
-            Dare unacceptedDare = dareRepository.findUnacceptedDare(challengedUser.getId()); 
+            ActiveDare activeDare = dareRepository.getCurrentActiveDare(challengedUser.getId());
+            Dare unacceptedDare = dareRepository.findUnacceptedDare(challengedUser.getId());
             //check if challenged user already has an active dare
             if (activeDare != null) {
                 //user has an active dare
@@ -165,7 +165,7 @@ public class DareServiceImpl implements DareService {
                     messagingService.sendQueuedDareNotification(dare.getId(), dareUserFcmToken,
                             QueuedDareMessage.ACTIVE);
                 }
-            } else if (unacceptedDare != null && ! unacceptedDare.getId().equals(dare.getId())) {
+            } else if (unacceptedDare != null && !unacceptedDare.getId().equals(dare.getId())) {
                 //user has an unaccepted dare
                 log.info("User has an unaccepted dare, sending queued notification");
                 //send a notification for another dare waiting for
@@ -392,23 +392,22 @@ public class DareServiceImpl implements DareService {
             //create new Dare response 
             DareResponse dareResponse = new DareResponse();
             //save tmp file 
-            log.info("Saving temporal file " + dareResponse.getId() + ".mp4"); 
-            String videoPath = fileService.saveTemporalfile(request.getStream(), dareResponse.getId(), FileService.FileType.DARE_VIDEO); 
-            
+            log.info("Saving temporal file " + dareResponse.getId() + ".mp4");
+            String videoPath = fileService.saveTemporalfile(request.getStream(), dareResponse.getId(), FileService.FileType.DARE_VIDEO);
+
             //save video file to where it belongs
-            String videoUrl = fileService.saveFile(videoPath, FileService.FileType.DARE_VIDEO, dareResponse.getId() + ".mp4"); 
+            String videoUrl = fileService.saveFile(videoPath, FileService.FileType.DARE_VIDEO, dareResponse.getId() + ".mp4");
             //String videoUrl = fileService.saveFile(request.getStream(), FileService.FileType.DARE_VIDEO, dareResponse.getId().concat(".mp4"));
-            
+
             log.info("Saving temporal file " + dareResponse.getId() + ".jpg");
-            String thumbPath = fileService.saveTemporalfile(request.getThumb(), dareResponse.getId(), FileService.FileType.VIDEO_THUMBNAIL); 
-            
-            
+            String thumbPath = fileService.saveTemporalfile(request.getThumb(), dareResponse.getId(), FileService.FileType.VIDEO_THUMBNAIL);
+
             String thumbUrl = fileService.saveFile(thumbPath, FileService.FileType.VIDEO_THUMBNAIL, dareResponse.getId().concat(".jpg"));
-            
+
             //delete both file 
-            fileService.deleteTemporalFile(videoPath); 
-            fileService.deleteTemporalFile(thumbPath); 
-            
+            fileService.deleteTemporalFile(videoPath);
+            fileService.deleteTemporalFile(thumbPath);
+
             //populate response
             dareResponse.setVideoUrl(videoUrl);
             dareResponse.setThumbUrl(thumbUrl);
@@ -526,6 +525,9 @@ public class DareServiceImpl implements DareService {
     public Response channelResponses(int pageNumber) throws InternalApplicationException {
         try {
             Page<DareResponseDescription> page = dareResponseRepository.getChannelPage(pageNumber);
+            for (DareResponseDescription desc : page.getItems()) {
+                desc.setComments(dareResponseRepository.getResponseCommentsCount(desc.getId()));
+            }
             return Response.ok(page)
                     .build();
         } catch (DataAccessException ex) {
@@ -542,11 +544,12 @@ public class DareServiceImpl implements DareService {
 
         try {
             DareResponse resp = dareResponseRepository.find(responseId);
+            int commentsCount = dareResponseRepository.getResponseCommentsCount(responseId);
             if (resp == null) {
                 throw new InvalidRequestException("Invalid id");
             }
-
             DareResponseDescription desc = assembler.assembleDareResponseDescription(resp);
+            desc.setComments(commentsCount);
             return Response.ok(desc)
                     .build();
         } catch (Exception ex) {
@@ -588,24 +591,27 @@ public class DareServiceImpl implements DareService {
             //persist
             dareResponseRepository.createResponseComment(comment);
 
-            //send notification to response creator and dare creator 
-            String videoCreatorId = dareUserRepository
-                    .getUserFcmToken(dareResponse.getUser().getId());
-
-            String dareCreatorId = dareUserRepository
-                    .getUserFcmToken(dareResponse.getDare().getChallengerUser().getId());
-
-            //response creator 
-            if (videoCreatorId != null && !videoCreatorId.isEmpty()) {
-                messagingService.sendNewCommentNotification(videoCreatorId,
-                        comment.getId(), dareResponse.getId(), comment.getComment());
+            if(! comment.getUser().getId().equals(dareResponse.getDare().getChallengerUser().getId())){
+                //send notification to the dare creator
+                String dareCreatorId = dareUserRepository
+                        .getUserFcmToken(dareResponse.getDare().getChallengerUser().getId());
+                
+                if (dareCreatorId != null && !dareCreatorId.isEmpty()) {
+                    messagingService.sendNewCommentNotification(dareCreatorId, comment.getId(),
+                            dareResponse.getId(), comment.getComment());
+                }
             }
+            
+            if(! comment.getUser().getId().equals(dareResponse.getUser().getId())){
+                String videoCreatorId = dareUserRepository
+                        .getUserFcmToken(dareResponse.getUser().getId());
 
-            if (dareCreatorId != null && !dareCreatorId.isEmpty()) {
-                messagingService.sendNewCommentNotification(dareCreatorId, comment.getId(),
-                        dareResponse.getId(), comment.getComment());
+                //response creator 
+                if (videoCreatorId != null && !videoCreatorId.isEmpty()) {
+                    messagingService.sendNewCommentNotification(videoCreatorId,
+                            comment.getId(), dareResponse.getId(), comment.getComment());
+                }
             }
-
             return Response.ok(
                     new EntityRegistrationResponse("Success", RegistrationType.COMMENT,
                             DareUtils.DETAILS_DATE_FORMAT.format(new Date()), comment.getId()))
