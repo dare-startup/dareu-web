@@ -107,7 +107,7 @@ public class DareResponseRepositoryImpl extends AbstractRepository<DareResponse>
                     .setMaxResults(DEFAULT_PAGE_NUMBER)
                     .setFirstResult(getFirstResult(pageNumber))
                     .getResultList();
-            Long count = (Long)em.createQuery("SELECT (c.id) FROM Comment c WHERE c.response.id = :responseId")
+            Long count = (Long)em.createQuery("SELECT COUNT(c.id) FROM Comment c WHERE c.response.id = :responseId")
                     .setParameter("responseId", responseId)
                     .getSingleResult();
             
