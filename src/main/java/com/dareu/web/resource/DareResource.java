@@ -347,7 +347,7 @@ public class DareResource {
                 response = AuthorizationResponse.class)
     })
     @Path("response/comment/find")
-    @POST
+    @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @Secured
