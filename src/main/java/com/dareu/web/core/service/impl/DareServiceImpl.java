@@ -30,7 +30,9 @@ import com.dareu.web.core.service.MultipartService;
 import com.dareu.web.data.entity.Comment;
 import com.dareu.web.data.entity.DareFlag;
 import com.dareu.web.data.entity.DareResponse;
+import com.dareu.web.data.entity.ResponseClap;
 import com.dareu.web.data.repository.DareResponseRepository;
+import com.dareu.web.dto.request.ClapRequest;
 import com.dareu.web.dto.request.DareConfirmationRequest;
 import com.dareu.web.dto.request.DareUploadRequest;
 import com.dareu.web.dto.request.FlagDareRequest;
@@ -48,14 +50,8 @@ import com.dareu.web.dto.response.entity.UserDescription;
 import com.dareu.web.dto.response.message.QueuedDareMessage;
 import com.dareu.web.exception.application.InternalApplicationException;
 import com.dareu.web.exception.application.InvalidRequestException;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import javax.ejb.Asynchronous;
 import javax.enterprise.event.Event;
-import javax.enterprise.event.Observes;
-import javax.imageio.ImageIO;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 
 public class DareServiceImpl implements DareService {
@@ -422,7 +418,6 @@ public class DareServiceImpl implements DareService {
                 throw new InternalApplicationException("Dare id is not valid");
             }
             dareResponse.setDare(dare);
-            dareResponse.setLikes(0);
             dareResponseRepository.persist(dareResponse);
             //get fcm token from challenger user
             String challengerFcmToken = dareUserRepository.getUserFcmToken(dare.getChallengerUser().getId());
@@ -591,18 +586,18 @@ public class DareServiceImpl implements DareService {
             //persist
             dareResponseRepository.createResponseComment(comment);
 
-            if(! comment.getUser().getId().equals(dareResponse.getDare().getChallengerUser().getId())){
+            if (!comment.getUser().getId().equals(dareResponse.getDare().getChallengerUser().getId())) {
                 //send notification to the dare creator
                 String dareCreatorId = dareUserRepository
                         .getUserFcmToken(dareResponse.getDare().getChallengerUser().getId());
-                
+
                 if (dareCreatorId != null && !dareCreatorId.isEmpty()) {
                     messagingService.sendNewCommentNotification(dareCreatorId, comment.getId(),
                             dareResponse.getId(), comment.getComment());
                 }
             }
-            
-            if(! comment.getUser().getId().equals(dareResponse.getUser().getId())){
+
+            if (!comment.getUser().getId().equals(dareResponse.getUser().getId())) {
                 String videoCreatorId = dareUserRepository
                         .getUserFcmToken(dareResponse.getUser().getId());
 
@@ -638,6 +633,91 @@ public class DareServiceImpl implements DareService {
                     .build();
         } catch (DataAccessException ex) {
             throw new InternalApplicationException(ex.getMessage(), ex);
+        }
+    }
+
+    @Override
+    public Response viewedResponse(String responseId) throws InternalApplicationException, InvalidRequestException {
+        if (responseId == null || responseId.isEmpty()) {
+            throw new InvalidRequestException("No response id provided");
+        }
+
+        try {
+            DareResponse response = dareResponseRepository.find(responseId);
+            if (response == null) {
+                throw new InvalidRequestException("Invalid response id");
+            }
+
+            response.setViewsCount(response.getViewsCount() + 1);
+
+            return Response.ok(new UpdatedEntityResponse("Success", true, "dare_response"))
+                    .build();
+        } catch (DataAccessException ex) {
+            throw new InternalApplicationException(ex.getMessage(), ex);
+        }
+    }
+
+    public Response clapResponse(ClapRequest request, String token) throws InternalApplicationException, InvalidRequestException {
+        if (request == null) {
+            throw new InvalidRequestException("No clap request body provided");
+        }
+
+        if (request.getResponseId() == null || request.getResponseId().isEmpty()) {
+            throw new InvalidRequestException("No response id provided");
+        }
+
+        try {
+            DareResponse response = dareResponseRepository.find(request.getResponseId());
+            if (response == null) {
+                throw new InvalidRequestException("Response id not valid");
+            }
+
+            DareUser user = dareUserRepository.findUserByToken(token);
+
+            if (request.isClapped()) {
+                //creates a new clap entity
+                //create a new clap 
+                ResponseClap clap = new ResponseClap();
+                clap.setResponse(response);
+                clap.setUser(user);
+                //persists
+                dareResponseRepository.clapResponse(clap);
+                
+                String fcmToken = dareUserRepository.getUserFcmToken(user.getId()); 
+                if(fcmToken != null && ! fcmToken.isEmpty()){
+                    //send a notification to dare response creator 
+                    messagingService.sendClappedResponse(response.getId(), fcmToken);
+                }
+                return Response.ok(new UpdatedEntityResponse("Clap has been created", true, "dare_response_clap"))
+                        .build(); 
+            }else{
+                //delete current clap 
+                dareResponseRepository.unclapResponse(response.getId(), user.getId()); 
+                
+                return Response.ok(new UpdatedEntityResponse("Clap has been removed", true, "dare_response_clap"))
+                        .build(); 
+            }
+        }catch(DataAccessException ex){
+            throw new InternalApplicationException(ex.getMessage(), ex); 
+        }
+    }
+
+    @Override
+    public Response findResponseComment(String commentId) throws InternalApplicationException, InvalidRequestException {
+        if(commentId == null || commentId.isEmpty())
+            throw new InvalidRequestException("Comment is not provided"); 
+        
+        try{
+            Comment comment = dareResponseRepository.findComment(commentId); 
+            if(comment == null)
+                throw new InvalidRequestException("Invalid comment id");
+            
+            CommentDescription descr = assembler.assembleCommentDescription(comment); 
+            
+            return Response.ok(descr)
+                    .build(); 
+        }catch(DataAccessException ex){
+            throw new InternalApplicationException(ex.getMessage(), ex); 
         }
     }
 

@@ -7,6 +7,7 @@ package com.dareu.web.data.repository;
 
 import com.dareu.web.data.entity.Comment;
 import com.dareu.web.data.entity.DareResponse;
+import com.dareu.web.data.entity.ResponseClap;
 import com.dareu.web.data.exception.DataAccessException;
 import com.dareu.web.dto.response.entity.CommentDescription;
 import com.dareu.web.dto.response.entity.DareResponseDescription;
@@ -73,4 +74,19 @@ public interface DareResponseRepository extends BaseRepository<DareResponse>{
      * @throws DataAccessException 
      */
     public int getResponseCommentsCount(String responseId) throws DataAccessException;
+
+    /**
+     * Creates a clap response
+     * @param clap
+     * @throws DataAccessException 
+     */
+    public void clapResponse(ResponseClap clap) throws DataAccessException;
+
+    /**
+     * Un clap a dare response
+     * @param responseId
+     * @param userId
+     * @throws DataAccessException 
+     */
+    public void unclapResponse(String responseId, String userId)throws DataAccessException;
 }

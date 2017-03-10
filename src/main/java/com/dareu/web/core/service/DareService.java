@@ -1,5 +1,6 @@
 package com.dareu.web.core.service;
 
+import com.dareu.web.dto.request.ClapRequest;
 import javax.ws.rs.core.Response;
 
 import com.dareu.web.dto.request.CreateCategoryRequest;
@@ -188,4 +189,33 @@ public interface DareService {
      * @throws com.dareu.web.exception.application.InvalidRequestException 
      */
     public Response findResponseComments(int pageNumber, String responseId) throws InternalApplicationException, InvalidRequestException;
+
+    /**
+     * Increment the number of views by 1
+     * @param responseId
+     * @return 
+     * @throws com.dareu.web.exception.application.InternalApplicationException 
+     * @throws com.dareu.web.exception.application.InvalidRequestException 
+     */
+    public Response viewedResponse(String responseId)throws InternalApplicationException, InvalidRequestException;
+    
+
+    /**
+     * Clap or un-clap a response
+     * @param request
+     * @param token
+     * @return
+     * @throws InternalApplicationException
+     * @throws InvalidRequestException 
+     */
+    public Response clapResponse(ClapRequest request, String token) throws InternalApplicationException, InvalidRequestException;
+
+    /**
+     * Find a comment description 
+     * @param commentId
+     * @return
+     * @throws InternalApplicationException
+     * @throws InvalidRequestExceptio 
+     */
+    public Response findResponseComment(String commentId) throws InternalApplicationException, InvalidRequestException;
 }

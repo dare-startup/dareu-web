@@ -1,11 +1,13 @@
 package com.dareu.web.data.entity;
 
 import java.util.Date;
+import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -22,9 +24,6 @@ public class DareResponse extends BaseEntity {
     @Column(name = "views_count")
     private int viewsCount;
 
-    @Column(name = "likes")
-    private int likes;
-
     @Column(name = "comment")
     private String comment;
 
@@ -35,6 +34,10 @@ public class DareResponse extends BaseEntity {
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.REFRESH)
     @JoinColumn(name = "dare_id")
     private Dare dare;
+    
+    @OneToMany(cascade = CascadeType.REFRESH, 
+            fetch = FetchType.EAGER, mappedBy = "response")
+    private List<ResponseClap> claps; 
     
     @Column(name = "last_update")
     private String lastUpdate; 
@@ -62,14 +65,6 @@ public class DareResponse extends BaseEntity {
 
     public void setViewsCount(int viewsCount) {
         this.viewsCount = viewsCount;
-    }
-
-    public int getLikes() {
-        return likes;
-    }
-
-    public void setLikes(int likes) {
-        this.likes = likes;
     }
 
     public DareUser getUser() {
@@ -120,5 +115,14 @@ public class DareResponse extends BaseEntity {
         this.videoUrl = videoUrl;
     }
 
+    public List<ResponseClap> getClaps() {
+        return claps;
+    }
+
+    public void setClaps(List<ResponseClap> claps) {
+        this.claps = claps;
+    }
+
+    
     
 }

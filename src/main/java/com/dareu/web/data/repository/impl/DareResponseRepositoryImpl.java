@@ -8,6 +8,7 @@ package com.dareu.web.data.repository.impl;
 import com.dareu.web.core.service.DareuAssembler;
 import com.dareu.web.data.entity.Comment;
 import com.dareu.web.data.entity.DareResponse;
+import com.dareu.web.data.entity.ResponseClap;
 import com.dareu.web.data.exception.DataAccessException;
 import com.dareu.web.data.repository.DareResponseRepository;
 import com.dareu.web.dto.response.entity.CommentDescription;
@@ -143,6 +144,27 @@ public class DareResponseRepositoryImpl extends AbstractRepository<DareResponse>
             return count.intValue();
         }catch(Exception ex){
             throw new DataAccessException(ex.getMessage());
+        }
+    }
+
+    @Override
+    public void clapResponse(ResponseClap clap) throws DataAccessException {
+        try{
+            em.persist(clap);
+        }catch(Exception ex){
+            throw new DataAccessException(ex.getMessage(), ex); 
+        }
+    }
+
+    @Override
+    public void unclapResponse(String responseId, String userId) throws DataAccessException {
+        try{
+            em.createQuery("DELETE FROM ResponseClap c WHERE c.response.id = :responseId AND c.user.id = :userId")
+                    .setParameter("responseId", responseId)
+                    .setParameter("userId", userId)
+                    .executeUpdate(); 
+        }catch(Exception ex){
+            throw new DataAccessException(ex.getMessage(), ex); 
         }
     }
 }

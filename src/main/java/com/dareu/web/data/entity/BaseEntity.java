@@ -20,6 +20,10 @@ public abstract class BaseEntity implements Serializable {
     public BaseEntity() {
         this.id = UUID.randomUUID().toString();
     }
+    
+    public BaseEntity(String id){
+        this.id = id; 
+    }
 
     public void setId(String id) {
         this.id = id;

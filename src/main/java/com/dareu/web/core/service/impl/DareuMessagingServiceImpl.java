@@ -8,30 +8,18 @@ import javax.inject.Inject;
 import com.dareu.web.core.service.DareuMessagingService;
 import com.dareu.web.data.entity.Dare;
 import com.dareu.web.data.entity.DareResponse;
-import com.dareu.web.data.entity.DareUser;
-import com.dareu.web.data.entity.Friendship;
 import com.dareu.web.data.entity.FriendshipRequest;
+import com.dareu.web.dto.response.message.ClappedResponseMessage;
 import com.dareu.web.dto.response.message.ConnectionAcceptedMessage;
 import com.dareu.web.dto.response.message.ConnectionRequestMessage;
 import com.dareu.web.dto.response.message.NewCommentMessage;
 import com.dareu.web.dto.response.message.NewDareMessage;
 import com.dareu.web.dto.response.message.QueuedDareMessage;
 import com.dareu.web.dto.response.message.UploadedResponseMessage;
-import com.github.roar109.syring.annotation.ApplicationProperty;
-import com.google.firebase.FirebaseApp;
-import com.google.firebase.FirebaseOptions;
-import com.google.gson.Gson;
 import de.bytefish.fcmjava.client.FcmClient;
-import de.bytefish.fcmjava.client.settings.PropertiesBasedSettings;
 import de.bytefish.fcmjava.model.enums.PriorityEnum;
 import de.bytefish.fcmjava.model.options.FcmMessageOptions;
-import de.bytefish.fcmjava.model.topics.Topic;
 import de.bytefish.fcmjava.requests.data.DataUnicastMessage;
-import de.bytefish.fcmjava.requests.topic.TopicUnicastMessage;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.nio.charset.Charset;
-import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.Date;
 
@@ -109,6 +97,14 @@ public class DareuMessagingServiceImpl implements DareuMessagingService {
         message.setCreationDate(DareUtils.DETAILS_DATE_FORMAT.format(new Date()));
         message.setCurrentDareStatus(currentDareStatus);
         client.send(new DataUnicastMessage(options, token, message)); 
+    }
+
+    @Override
+    public void sendClappedResponse(String id, String fcmToken) {
+        ClappedResponseMessage message = new ClappedResponseMessage(); 
+        message.setResponseId(id);
+        
+        client.send(new DataUnicastMessage(options, fcmToken, message));
     }
 
 }

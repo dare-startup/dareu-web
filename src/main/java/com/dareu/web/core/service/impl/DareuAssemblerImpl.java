@@ -223,7 +223,7 @@ public class DareuAssemblerImpl implements DareuAssembler {
     @Override
     public DareResponseDescription assembleDareResponseDescription(DareResponse resp) {
         DareResponseDescription desc = new DareResponseDescription();
-        desc.setClaps(resp.getLikes());
+        desc.setClaps(resp.getClaps().size());
         desc.setDare(assembleDareDescription(resp.getDare()));
         desc.setId(resp.getId());
         desc.setLastUpdate(resp.getLastUpdate());

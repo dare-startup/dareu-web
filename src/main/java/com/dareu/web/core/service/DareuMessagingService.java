@@ -2,7 +2,6 @@ package com.dareu.web.core.service;
 
 import com.dareu.web.data.entity.Dare;
 import com.dareu.web.data.entity.DareResponse;
-import com.dareu.web.data.entity.Friendship;
 import com.dareu.web.data.entity.FriendshipRequest;
 
 public interface DareuMessagingService {
@@ -51,5 +50,12 @@ public interface DareuMessagingService {
      * @param currentDareStatus 
      */
     public void sendQueuedDareNotification(String dareId, String token, String currentDareStatus); 
+
+    /**
+     * Sends a clapped response notification 
+     * @param id
+     * @param fcmToken 
+     */
+    public void sendClappedResponse(String id, String fcmToken);
     
 }

@@ -72,7 +72,6 @@ create table dare_response(
     comment varchar(100)not null,
     response_date varchar(50) not null, 
     views_count int not null default 0, 
-    likes int not null default 0, 
     dare_id varchar(36)not null, 
     user_id varchar(36) not null, 
     last_update varchar(50) not null,
@@ -92,6 +91,14 @@ create table response_comment(
     foreign key(user_id)references dareu_user(id)
 );
    
+create table response_clap(
+    id varchar(36)not null primary key, 
+    response_id varchar(36)not null, 
+    user_id varchar(36) not null, 
+    foreign key(response_id) references dare_response(id), 
+    foreign key(user_id)references dareu_user(id)
+);
+
 -- FRIENDSHIP TABLE
 create table friendship(
 	id varchar(36)not null primary key, 

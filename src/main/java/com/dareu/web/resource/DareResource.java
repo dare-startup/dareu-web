@@ -16,6 +16,7 @@ import com.dareu.web.core.annotation.Secured;
 import com.dareu.web.dto.security.SecurityRole;
 import com.dareu.web.core.service.AccountService;
 import com.dareu.web.core.service.DareService;
+import com.dareu.web.dto.request.ClapRequest;
 import com.dareu.web.dto.request.CreateCategoryRequest;
 import com.dareu.web.dto.request.CreateDareRequest;
 import com.dareu.web.dto.request.DareConfirmationRequest;
@@ -346,7 +347,7 @@ public class DareResource {
         @ApiResponse(code = 401, message = "User is not authorized to access this resource", 
                 response = AuthorizationResponse.class)
     })
-    @Path("response/comment/find")
+    @Path("response/comment/")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
@@ -356,4 +357,59 @@ public class DareResource {
         return dareService.findResponseComments(pageNumber, responseId); 
     }
     
+    @ApiOperation(value = "Find a comment", 
+            produces = "application/json", 
+            notes = "Get a comment")
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "The operation ran successfuly", 
+                response = EntityRegistrationResponse.class), 
+        @ApiResponse(code = 401, message = "User is not authorized to access this resource", 
+                response = AuthorizationResponse.class)
+    })
+    @Path("response/comment/find")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Secured
+    public Response findCommentDescription(@QueryParam("commentId")String commentId) throws InternalApplicationException, InvalidRequestException {
+        return dareService.findResponseComment(commentId); 
+    }
+    
+    
+    @ApiOperation(value = "set a new view to a dare response", 
+            produces = "application/json", 
+            notes = "After a video is viewed, the counter goes up +1")
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "The operation ran successfuly", 
+                response = EntityRegistrationResponse.class), 
+        @ApiResponse(code = 401, message = "User is not authorized to access this resource", 
+                response = AuthorizationResponse.class)
+    })
+    @Path("response/view")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Secured
+    public Response findResponseComments(@QueryParam("responseId")String responseId) throws InternalApplicationException, InvalidRequestException {
+        return dareService.viewedResponse(responseId); 
+    }
+    
+    
+    @ApiOperation(value = "Clap or un-clap a dare response", 
+            produces = "application/json", 
+            notes = "Clap a response")
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "The operation ran successfuly", 
+                response = EntityRegistrationResponse.class), 
+        @ApiResponse(code = 401, message = "User is not authorized to access this resource", 
+                response = AuthorizationResponse.class)
+    })
+    @Path("response/clap")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Secured
+    public Response findResponseComments(ClapRequest request, 
+                                         @HeaderParam("Authorization")String token) 
+                                throws InternalApplicationException, InvalidRequestException {
+        return dareService.clapResponse(request, token); 
+    }
 }
