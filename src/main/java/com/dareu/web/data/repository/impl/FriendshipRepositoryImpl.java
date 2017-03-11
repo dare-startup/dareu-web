@@ -225,7 +225,7 @@ public class FriendshipRepositoryImpl extends AbstractRepository<FriendshipReque
     @Override
     public Page<ConnectionRequest> getSentPendingRequests(int pageNumber, String id) throws DataAccessException {
         try{
-            List<FriendshipRequest> list = em.createQuery("SELECT f FROM Friendship f WHERE f.user = :id AND f.accepted = 0")
+            List<FriendshipRequest> list = em.createQuery("SELECT f FROM Friendship f WHERE f.user.id = :id AND f.accepted = 0")
                     .setParameter("id", id)
                     .setMaxResults(DEFAULT_PAGE_NUMBER)
                     .setFirstResult(getFirstResult(pageNumber))

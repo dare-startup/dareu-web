@@ -290,10 +290,14 @@ public class DareuAssemblerImpl implements DareuAssembler {
         for(FriendshipRequest req : list){
             conn = new ConnectionRequest();
             conn.setConnectionId(req.getId());
-            if(sent)
+            if(sent){
+                conn.setType(ConnectionRequest.ConnectioRequestType.SENT);
                 conn.setUser(assembleUserDescription(req.getRequestedUser()));
-            else
+            }
+            else{
                 conn.setUser(assembleUserDescription(req.getUser())); 
+                conn.setType(ConnectionRequest.ConnectioRequestType.RECEIVED);
+            }
             conns.add(conn);
         }
         return conns; 
