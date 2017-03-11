@@ -164,7 +164,18 @@ public interface AccountService {
      * @param message
      * @return
      * @throws InternalApplicationException 
+     * @throws com.dareu.web.exception.application.InvalidRequestException 
      */
     public Response contactMessage(ContactRequest message)throws InternalApplicationException, InvalidRequestException;
+
+    /**
+     * Get pending requests
+     * @param pageNumber
+     * @param token
+     * @return
+     * @throws InternalApplicationException
+     * @throws InvalidRequestException 
+     */
+    public Response getPendingRequests(int pageNumber, String token)throws InternalApplicationException, InvalidRequestException;
     
 }

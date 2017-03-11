@@ -11,6 +11,7 @@ import com.dareu.web.dto.response.entity.ActiveDare;
 import com.dareu.web.dto.response.entity.CategoryDescription;
 import com.dareu.web.dto.response.entity.CommentDescription;
 import com.dareu.web.dto.response.entity.ConnectionDetails;
+import com.dareu.web.dto.response.entity.ConnectionRequest;
 import com.dareu.web.dto.response.entity.CreatedDare;
 import com.dareu.web.dto.response.entity.DareDescription;
 import com.dareu.web.dto.response.entity.DareResponseDescription;
@@ -174,5 +175,13 @@ public interface DareuAssembler {
      * @return 
      */
     public UnacceptedDare getUnacceptedDare(Dare dare);
+
+    /**
+     * assemble a list of connection requests
+     * @param list
+     * @param sent
+     * @return 
+     */
+    public List<ConnectionRequest> assembleConnectionRequests(List<FriendshipRequest> list, boolean sent);
     
 }

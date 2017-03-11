@@ -11,6 +11,7 @@ import javax.persistence.Query;
 import com.dareu.web.data.entity.FriendshipRequest;
 import com.dareu.web.data.repository.FriendshipRepository;
 import com.dareu.web.data.exception.DataAccessException;
+import com.dareu.web.dto.response.entity.ConnectionRequest;
 import com.dareu.web.dto.response.entity.FriendSearchDescription;
 import com.dareu.web.dto.response.entity.Page;
 import java.math.BigInteger;
@@ -194,6 +195,56 @@ public class FriendshipRepositoryImpl extends AbstractRepository<FriendshipReque
             throw new DataAccessException(String.format("%s: %s", ex.getClass().getName(), ex.getMessage()));
         }
 
+    }
+
+    @Override
+    public Page<ConnectionRequest> getReceivedPendingRequests(int pageNumber, String id) throws DataAccessException {
+        try{
+            List<FriendshipRequest> list = em.createQuery("SELECT f FROM Friendship f WHERE f.requestedUser.id = :id AND f.accepted = 0")
+                    .setParameter("id", id)
+                    .setMaxResults(DEFAULT_PAGE_NUMBER)
+                    .setFirstResult(getFirstResult(pageNumber))
+                    .getResultList();
+            
+            Long count = (Long)em.createQuery("SELECT COUNT(f.id) FROM Friendship f WHERE f.requestedUser.id = :id AND f.accepted = 0")
+                    .setParameter("id", id)
+                    .getSingleResult(); 
+            
+            List<ConnectionRequest> requests = assembler.assembleConnectionRequests(list, false);
+            Page<ConnectionRequest> page = new Page<ConnectionRequest>(); 
+            page.setItems(requests);
+            page.setPageNumber(pageNumber);
+            page.setPageSize(DEFAULT_PAGE_NUMBER);
+            page.setPagesAvailable(getPagesAvailable(pageNumber, count.intValue()));
+            return page; 
+        }catch(Exception ex){
+            throw new DataAccessException(ex.getMessage(), ex); 
+        }
+    }
+    
+    @Override
+    public Page<ConnectionRequest> getSentPendingRequests(int pageNumber, String id) throws DataAccessException {
+        try{
+            List<FriendshipRequest> list = em.createQuery("SELECT f FROM Friendship f WHERE f.user = :id AND f.accepted = 0")
+                    .setParameter("id", id)
+                    .setMaxResults(DEFAULT_PAGE_NUMBER)
+                    .setFirstResult(getFirstResult(pageNumber))
+                    .getResultList();
+            
+            Long count = (Long)em.createQuery("SELECT COUNT(f.id) FROM Friendship f WHERE f.user.id = :id AND f.accepted = 0")
+                    .setParameter("id", id)
+                    .getSingleResult(); 
+            
+            List<ConnectionRequest> requests = assembler.assembleConnectionRequests(list, true);
+            Page<ConnectionRequest> page = new Page<ConnectionRequest>(); 
+            page.setItems(requests);
+            page.setPageNumber(pageNumber);
+            page.setPageSize(DEFAULT_PAGE_NUMBER);
+            page.setPagesAvailable(getPagesAvailable(pageNumber, count.intValue()));
+            return page; 
+        }catch(Exception ex){
+            throw new DataAccessException(ex.getMessage(), ex); 
+        }
     }
 
 }

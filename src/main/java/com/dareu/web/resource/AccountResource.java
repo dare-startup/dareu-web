@@ -98,6 +98,28 @@ public class AccountResource {
     public Response requestFriendship(@PathParam(value = "requestedUserId") String requestedUserId) throws InvalidRequestException, InternalApplicationException {
         return accountService.requestFriendship(requestedUserId);
     }
+    
+    
+    @ApiOperation(value = "Requests a new friendship", produces = "application/json",
+            authorizations = {
+                @Authorization(value = "MEMBER"),
+                @Authorization(value = "ADMIN"),
+                @Authorization(value = "SPONSOR")},
+            notes = "Request a new friendship to another user")
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "The operation ran successfuly",
+                response = EntityRegistrationResponse.class),
+        @ApiResponse(code = 401, message = "User is not authorized to access this resource",
+                response = AuthorizationResponse.class)
+    })
+    @Path("friendship/")
+    @Produces(MediaType.APPLICATION_JSON)
+    @GET
+    @Secured
+    public Response getPendingRequests(@QueryParam("pageNumber") int pageNumber, 
+                                          @HeaderParam(value = "Authorization")String token) throws InvalidRequestException, InternalApplicationException {
+        return accountService.getPendingRequests(pageNumber, token);
+    }
 
     /**
      *

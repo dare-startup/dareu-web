@@ -14,6 +14,7 @@ import com.dareu.web.dto.response.entity.ActiveDare;
 import com.dareu.web.dto.response.entity.CategoryDescription;
 import com.dareu.web.dto.response.entity.CommentDescription;
 import com.dareu.web.dto.response.entity.ConnectionDetails;
+import com.dareu.web.dto.response.entity.ConnectionRequest;
 import com.dareu.web.dto.response.entity.CreatedDare;
 import com.dareu.web.dto.response.entity.DareDescription;
 import com.dareu.web.dto.response.entity.DareResponseDescription;
@@ -281,4 +282,21 @@ public class DareuAssemblerImpl implements DareuAssembler {
         unacceptedDare.setTimer(dare.getEstimatedDareTime());
         return unacceptedDare;
     }
+
+    @Override
+    public List<ConnectionRequest> assembleConnectionRequests(List<FriendshipRequest> list, boolean sent) {
+        List<ConnectionRequest> conns = new ArrayList();
+        ConnectionRequest conn; 
+        for(FriendshipRequest req : list){
+            conn = new ConnectionRequest();
+            conn.setConnectionId(req.getId());
+            if(sent)
+                conn.setUser(assembleUserDescription(req.getRequestedUser()));
+            else
+                conn.setUser(assembleUserDescription(req.getUser())); 
+            conns.add(conn);
+        }
+        return conns; 
+    }
+
 }

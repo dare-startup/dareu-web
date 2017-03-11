@@ -41,9 +41,11 @@ import com.dareu.web.dto.response.BadRequestResponse;
 import com.dareu.web.dto.response.UpdatedEntityResponse;
 import com.dareu.web.dto.response.entity.AccountProfile;
 import com.dareu.web.dto.response.entity.ConnectionDetails;
+import com.dareu.web.dto.response.entity.ConnectionRequest;
 import com.dareu.web.dto.response.entity.DiscoverUserAccount;
 import com.dareu.web.dto.response.entity.FriendSearchDescription;
 import com.dareu.web.dto.response.entity.Page;
+import com.dareu.web.dto.response.entity.PendingFriendshipRequests;
 import com.dareu.web.dto.response.entity.UserAccount;
 import com.dareu.web.exception.EntityRegistrationException;
 import com.dareu.web.exception.application.InternalApplicationException;
@@ -562,6 +564,24 @@ public class AccountServiceImpl extends AbstractService implements AccountServic
                         RegistrationType.CONTACT_MESSAGE, DareUtils.DETAILS_DATE_FORMAT.format(new Date()), 
                         entity.getId()))
                     .build(); 
+        }catch(DataAccessException ex){
+            throw new InternalApplicationException(ex.getMessage(), ex); 
+        }
+    }
+
+    @Override
+    public Response getPendingRequests(int pageNumber, String token) throws InternalApplicationException, InvalidRequestException {
+        try{
+            DareUser user = dareUserRepository.findUserByToken(token);
+            //get received pending request 
+            Page<ConnectionRequest> receivedRequests = friendshipRepository.getReceivedPendingRequests(pageNumber, user.getId()); 
+            Page<ConnectionRequest> sentRequests = friendshipRepository.getSentPendingRequests(pageNumber, user.getId()); 
+            
+            PendingFriendshipRequests response = new PendingFriendshipRequests(); 
+            response.setReceivedRequests(receivedRequests);
+            response.setSentRequests(sentRequests);
+            return Response.ok(response)
+                    .build();
         }catch(DataAccessException ex){
             throw new InternalApplicationException(ex.getMessage(), ex); 
         }

@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.dareu.web.data.entity.FriendshipRequest;
 import com.dareu.web.data.exception.DataAccessException;
+import com.dareu.web.dto.response.entity.ConnectionRequest;
 import com.dareu.web.dto.response.entity.FriendSearchDescription;
 import com.dareu.web.dto.response.entity.Page;
 
@@ -82,4 +83,23 @@ public interface FriendshipRepository extends BaseRepository<FriendshipRequest>{
      * @throws DataAccessException 
      */
     public boolean isRequestReceived(String userId, String requestedUserId) throws DataAccessException; 
+
+    /**
+     * Get received notifications
+     * @param pageNumber
+     * @param id
+     * @return
+     * @throws DataAccessException 
+     */
+    public Page<ConnectionRequest> getReceivedPendingRequests(int pageNumber, String id)throws DataAccessException;
+    
+    
+    /**
+     * get sent requests
+     * @param pageNumber
+     * @param id
+     * @return
+     * @throws DataAccessException 
+     */
+    public Page<ConnectionRequest> getSentPendingRequests(int pageNumber, String id) throws DataAccessException; 
 }
