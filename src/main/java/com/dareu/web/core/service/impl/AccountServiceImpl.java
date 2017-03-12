@@ -45,17 +45,12 @@ import com.dareu.web.dto.response.entity.ConnectionRequest;
 import com.dareu.web.dto.response.entity.DiscoverUserAccount;
 import com.dareu.web.dto.response.entity.FriendSearchDescription;
 import com.dareu.web.dto.response.entity.Page;
-import com.dareu.web.dto.response.entity.PendingFriendshipRequests;
 import com.dareu.web.dto.response.entity.UserAccount;
 import com.dareu.web.exception.EntityRegistrationException;
 import com.dareu.web.exception.application.InternalApplicationException;
 import com.dareu.web.exception.application.InvalidRequestException;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
-import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import javax.imageio.ImageIO;
 import javax.inject.Inject;
 import javax.ws.rs.core.Response;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
@@ -570,17 +565,27 @@ public class AccountServiceImpl extends AbstractService implements AccountServic
     }
 
     @Override
-    public Response getPendingRequests(int pageNumber, String token) throws InternalApplicationException, InvalidRequestException {
+    public Response getPendingSentRequests(int pageNumber, String token) throws InternalApplicationException, InvalidRequestException {
+        try{
+            DareUser user = dareUserRepository.findUserByToken(token);
+            //get received pending request 
+            Page<ConnectionRequest> sentRequests = friendshipRepository.getSentPendingRequests(pageNumber, user.getId()); 
+            
+            return Response.ok(sentRequests)
+                    .build();
+        }catch(DataAccessException ex){
+            throw new InternalApplicationException(ex.getMessage(), ex); 
+        }
+    }
+    
+    @Override
+    public Response getPendingReceivedRequests(int pageNumber, String token) throws InternalApplicationException, InvalidRequestException {
         try{
             DareUser user = dareUserRepository.findUserByToken(token);
             //get received pending request 
             Page<ConnectionRequest> receivedRequests = friendshipRepository.getReceivedPendingRequests(pageNumber, user.getId()); 
-            Page<ConnectionRequest> sentRequests = friendshipRepository.getSentPendingRequests(pageNumber, user.getId()); 
             
-            PendingFriendshipRequests response = new PendingFriendshipRequests(); 
-            response.setReceivedRequests(receivedRequests);
-            response.setSentRequests(sentRequests);
-            return Response.ok(response)
+            return Response.ok(receivedRequests)
                     .build();
         }catch(DataAccessException ex){
             throw new InternalApplicationException(ex.getMessage(), ex); 

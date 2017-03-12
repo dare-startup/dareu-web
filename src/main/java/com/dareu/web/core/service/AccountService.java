@@ -169,13 +169,22 @@ public interface AccountService {
     public Response contactMessage(ContactRequest message)throws InternalApplicationException, InvalidRequestException;
 
     /**
-     * Get pending requests
+     * Get pending sent requests
      * @param pageNumber
      * @param token
      * @return
      * @throws InternalApplicationException
      * @throws InvalidRequestException 
      */
-    public Response getPendingRequests(int pageNumber, String token)throws InternalApplicationException, InvalidRequestException;
+    public Response getPendingSentRequests(int pageNumber, String token)throws InternalApplicationException, InvalidRequestException;
     
+    /**
+     * Get pending received requests
+     * @param pageNumber
+     * @param token
+     * @return
+     * @throws InternalApplicationException
+     * @throws InvalidRequestException 
+     */
+    public Response getPendingReceivedRequests(int pageNumber, String token)throws InternalApplicationException, InvalidRequestException;
 }

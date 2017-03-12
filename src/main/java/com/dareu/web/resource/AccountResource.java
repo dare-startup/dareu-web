@@ -112,13 +112,34 @@ public class AccountResource {
         @ApiResponse(code = 401, message = "User is not authorized to access this resource",
                 response = AuthorizationResponse.class)
     })
-    @Path("friendship/")
+    @Path("friendship/sent")
     @Produces(MediaType.APPLICATION_JSON)
     @GET
     @Secured
-    public Response getPendingRequests(@QueryParam("pageNumber") int pageNumber, 
+    public Response getPendingSentRequests(@QueryParam("pageNumber") int pageNumber, 
                                           @HeaderParam(value = "Authorization")String token) throws InvalidRequestException, InternalApplicationException {
-        return accountService.getPendingRequests(pageNumber, token);
+        return accountService.getPendingSentRequests(pageNumber, token);
+    }
+    
+    @ApiOperation(value = "Requests a new friendship", produces = "application/json",
+            authorizations = {
+                @Authorization(value = "MEMBER"),
+                @Authorization(value = "ADMIN"),
+                @Authorization(value = "SPONSOR")},
+            notes = "Request a new friendship to another user")
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "The operation ran successfuly",
+                response = EntityRegistrationResponse.class),
+        @ApiResponse(code = 401, message = "User is not authorized to access this resource",
+                response = AuthorizationResponse.class)
+    })
+    @Path("friendship/received")
+    @Produces(MediaType.APPLICATION_JSON)
+    @GET
+    @Secured
+    public Response getPendingReceivedRequests(@QueryParam("pageNumber") int pageNumber, 
+                                          @HeaderParam(value = "Authorization")String token) throws InvalidRequestException, InternalApplicationException {
+        return accountService.getPendingReceivedRequests(pageNumber, token);
     }
 
     /**
