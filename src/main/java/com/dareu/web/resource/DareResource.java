@@ -14,10 +14,8 @@ import javax.ws.rs.core.Response;
 
 import com.dareu.web.core.annotation.Secured;
 import com.dareu.web.dto.security.SecurityRole;
-import com.dareu.web.core.service.AccountService;
 import com.dareu.web.core.service.DareService;
 import com.dareu.web.dto.request.ClapRequest;
-import com.dareu.web.dto.request.CreateCategoryRequest;
 import com.dareu.web.dto.request.CreateDareRequest;
 import com.dareu.web.dto.request.DareConfirmationRequest;
 import com.dareu.web.dto.request.FlagDareRequest;

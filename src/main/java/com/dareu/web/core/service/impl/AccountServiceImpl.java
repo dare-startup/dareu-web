@@ -122,6 +122,7 @@ public class AccountServiceImpl extends AbstractService implements AccountServic
         user.setCoins(0);
         user.setRole(SecurityRole.USER);
         user.setuScore(0);
+        user.setImageUrl(DareUtils.DEFAULT_IMAGE_PROFILE);
         user.setBirthday(request.getBirthday());
         //save the entity 
         try {
@@ -323,44 +324,6 @@ public class AccountServiceImpl extends AbstractService implements AccountServic
             throw new InternalApplicationException("Could not update FCM: " + ex.getMessage());
         }
     }
-
-    /**@Override
-    public Response getAccountImage(String userId, String auth) throws InvalidRequestException, InternalApplicationException {
-        //get file 
-        InputStream stream = null;
-        String id;
-        DareUser user;
-
-        try {
-            if (userId == null || userId.isEmpty()) {
-                log.info("Searching user by token");
-                //get image from token
-                user = dareUserRepository.findUserByToken(auth);
-            } else {
-                log.info("Searching user by userId");
-                user = dareUserRepository.find(userId);
-            }
-            stream = fileService.getFileStream(user.getId(), FileType.PROFILE_IMAGE);
-            log.info("Image is null: " + (stream == null));
-            BufferedImage image = ImageIO.read(stream);
-            ByteArrayOutputStream out = new ByteArrayOutputStream();
-
-            ImageIO.write(image, "jpg", out);
-
-            return Response.ok(out.toByteArray())
-                    .build();
-        } catch (FileNotFoundException ex) {
-            log.info(ex.getMessage());
-            return Response.ok(null)
-                    .build();
-        } catch (IOException ex) {
-            log.info(ex.getMessage());
-            throw new InternalApplicationException("Could not get account profile image: " + ex.getMessage());
-        } catch (DataAccessException ex) {
-            log.info(ex.getMessage());
-            throw new InternalApplicationException(ex.getMessage());
-        }
-    }**/
 
     @Override
     public Response findUserById(String email) throws InvalidRequestException, InternalApplicationException {

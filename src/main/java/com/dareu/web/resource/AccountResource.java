@@ -11,7 +11,6 @@ import com.dareu.web.core.annotation.Secured;
 import com.dareu.web.dto.security.SecurityRole;
 import com.dareu.web.core.service.AccountService;
 import com.dareu.web.core.service.MultipartService;
-import com.dareu.web.data.exception.AuthenticationException;
 import com.dareu.web.dto.request.ChangeEmailAddressRequest;
 import com.dareu.web.dto.response.AuthorizationResponse;
 import com.dareu.web.dto.response.entity.Page;
@@ -23,7 +22,6 @@ import com.dareu.web.exception.application.InternalApplicationException;
 import com.dareu.web.exception.application.InvalidRequestException;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.Authorization;
-import java.io.InputStream;
 
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
