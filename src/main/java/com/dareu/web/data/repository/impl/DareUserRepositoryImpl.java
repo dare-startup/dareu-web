@@ -223,8 +223,8 @@ public class DareUserRepositoryImpl extends AbstractRepository<DareUser> impleme
         try {
             //list
             Query q = em.createNativeQuery("select * from dareu_user "
-                    + "where id not in (select (case ?1 when user_id then requested_user_id else user_id end) id from friendship) AND id <> ?4", 
-                    DareUser.class)
+                    + "where id not in (select (case ?1 when user_id then requested_user_id else user_id end) id from friendship "
+                    + "where user_id = ?2 or requested_user_id = ?3) AND id <> ?4", DareUser.class)
                     .setParameter(1, userId)
                     .setParameter(2, userId)
                     .setParameter(3, userId)
