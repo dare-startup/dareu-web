@@ -1,6 +1,5 @@
 package com.dareu.web.data.repository.impl;
 
-import com.dareu.web.core.security.DareuPrincipal;
 import com.dareu.web.core.service.DareuAssembler;
 import com.dareu.web.core.service.FileService;
 import java.util.List;
@@ -14,7 +13,6 @@ import com.dareu.web.data.repository.DareRepository;
 import com.dareu.web.data.repository.DareResponseRepository;
 import com.dareu.web.dto.response.entity.AccountProfile;
 import com.dareu.web.dto.response.entity.CreatedDare;
-import com.dareu.web.dto.response.entity.DareDescription;
 import com.dareu.web.dto.response.entity.DareResponseDescription;
 import com.dareu.web.dto.response.entity.Page;
 import java.math.BigInteger;
@@ -225,9 +223,8 @@ public class DareUserRepositoryImpl extends AbstractRepository<DareUser> impleme
         try {
             //list
             Query q = em.createNativeQuery("select * from dareu_user "
-                    + "where id not in (select (case ?1 when user_id then requested_user_id else user_id end) id from friendship "
-                    + "where user_id = ?2 or requested_user_id = ?3 "
-                    + "and accepted = 0) AND id <> ?4", DareUser.class)
+                    + "where id not in (select (case ?1 when user_id then requested_user_id else user_id end) id from friendship) AND id <> ?4", 
+                    DareUser.class)
                     .setParameter(1, userId)
                     .setParameter(2, userId)
                     .setParameter(3, userId)
@@ -238,8 +235,7 @@ public class DareUserRepositoryImpl extends AbstractRepository<DareUser> impleme
             //count
             q = em.createNativeQuery("select count(*) from dareu_user "
                     + "where id not in (select (case ?1 when user_id then requested_user_id else user_id end) id from friendship "
-                    + "where user_id = ?2 or requested_user_id = ?3 "
-                    + "and accepted = 0) AND id <> ?4")
+                    + "where user_id = ?2 or requested_user_id = ?3) AND id <> ?4")
                     .setParameter(1, userId)
                     .setParameter(2, userId)
                     .setParameter(3, userId)
