@@ -228,7 +228,9 @@ public class DareResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Secured
-    public Response findResponses(@HeaderParam("Authorization")String auth, @DefaultValue("1") @QueryParam("pageNumber")int pageNumber)throws InternalApplicationException, InvalidRequestException{
+    public Response findResponses(@HeaderParam("Authorization")String auth, 
+                @DefaultValue("1") @QueryParam("pageNumber")int pageNumber)
+                            throws InternalApplicationException, InvalidRequestException{
         return dareService.findResponses(pageNumber, auth);
     }
 

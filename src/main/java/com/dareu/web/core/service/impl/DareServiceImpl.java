@@ -481,7 +481,14 @@ public class DareServiceImpl implements DareService {
 
     @Override
     public Response findResponses(int pageNumber, String auth) throws InternalApplicationException, InvalidRequestException {
-        return null;
+        try{
+            DareUser user = dareUserRepository.findUserByToken(auth);
+            Page<DareResponseDescription> page = dareResponseRepository.getResponses(user.getId(), pageNumber);
+            return Response.ok(page)
+                    .build();
+        }catch(DataAccessException ex){
+            throw new InternalApplicationException(ex.getMessage(), ex);
+        }
     }
 
     @Override
