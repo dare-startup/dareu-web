@@ -187,4 +187,14 @@ public interface AccountService {
      * @throws InvalidRequestException 
      */
     public Response getPendingReceivedRequests(int pageNumber, String token)throws InternalApplicationException, InvalidRequestException;
+
+    /**
+     * Cancels a friendship requests
+     * @param connId
+     * @param token
+     * @return
+     * @throws InternalApplicationException
+     * @throws InvalidRequestException 
+     */
+    public Response cancelFriendshipRequest(String connId, String token)throws InternalApplicationException, InvalidRequestException;
 }

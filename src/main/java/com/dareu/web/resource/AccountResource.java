@@ -27,6 +27,7 @@ import java.io.InputStream;
 
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
@@ -97,6 +98,29 @@ public class AccountResource {
     @Secured
     public Response requestFriendship(@PathParam(value = "requestedUserId") String requestedUserId) throws InvalidRequestException, InternalApplicationException {
         return accountService.requestFriendship(requestedUserId);
+    }
+    
+    
+    @ApiOperation(value = "Cancel a friendship request", produces = "application/json",
+            consumes = "application/json",
+            authorizations = {
+                @Authorization(value = "MEMBER"),
+                @Authorization(value = "ADMIN"),
+                @Authorization(value = "SPONSOR")},
+            notes = "Cancels a friendship request")
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "The operation ran successfuly",
+                response = EntityRegistrationResponse.class),
+        @ApiResponse(code = 401, message = "User is not authorized to access this resource",
+                response = AuthorizationResponse.class)
+    })
+    @Path("friendship/")
+    @DELETE
+    @Produces(MediaType.APPLICATION_JSON)
+    @Secured
+    public Response cancelFriendshipRequest(@QueryParam("connectionId")String connId, 
+                        @HeaderParam("Authrorization")String token)throws InternalApplicationException, InvalidRequestException{
+        return accountService.cancelFriendshipRequest(connId, token);
     }
     
     

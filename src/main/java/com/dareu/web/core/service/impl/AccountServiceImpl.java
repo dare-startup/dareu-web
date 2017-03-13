@@ -591,4 +591,20 @@ public class AccountServiceImpl extends AbstractService implements AccountServic
             throw new InternalApplicationException(ex.getMessage(), ex); 
         }
     }
+
+    @Override
+    public Response cancelFriendshipRequest(String connId, String token) throws InternalApplicationException, InvalidRequestException {
+        if(connId == null || connId.isEmpty())
+            throw new InvalidRequestException("Invalid connection id"); 
+        try{
+            FriendshipRequest request = friendshipRepository.find(connId); 
+            //delete it 
+            friendshipRepository.remove(request);
+            
+            return Response.ok(new UpdatedEntityResponse("Success", true, "friendship_request"))
+                    .build(); 
+        }catch(DataAccessException ex){
+            throw new InternalApplicationException(ex.getMessage(), ex); 
+        }
+    }
 }
