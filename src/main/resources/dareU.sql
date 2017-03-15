@@ -109,6 +109,15 @@ create table friendship(
 	foreign key(user_id)references dareu_user(id), 
 	foreign key(requested_user_id)references dareu_user(id)
 );
+
+create table response_anchor(
+    id varchar(36)not null primary key, 
+    user_id varchar(36)not null, 
+    response_id varchar(36)not null, 
+    creation_date varchar(50)not null, 
+foreign key(user_id) references dare_response(id), 
+foreign key(response_id)references dareu_user(id)
+);
     
 -- DARE REQUEST TABLE
 create table dare_request(

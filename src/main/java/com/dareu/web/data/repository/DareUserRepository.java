@@ -21,14 +21,6 @@ import com.dareu.web.dto.response.entity.Page;
 public interface DareUserRepository extends BaseRepository<DareUser> {
 
     /**
-     * Check if a nickname is available
-     *
-     * @param nickname
-     * @return
-     */
-    public boolean isNicknameAvailable(String nickname);
-
-    /**
      * Update a security token
      *
      * @param token

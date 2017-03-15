@@ -5,10 +5,13 @@
  */
 package com.dareu.web.data.repository;
 
+import com.dareu.web.data.entity.AnchoredContent;
 import com.dareu.web.data.entity.Comment;
 import com.dareu.web.data.entity.DareResponse;
+import com.dareu.web.data.entity.DareUser;
 import com.dareu.web.data.entity.ResponseClap;
 import com.dareu.web.data.exception.DataAccessException;
+import com.dareu.web.dto.response.entity.AnchoredDescription;
 import com.dareu.web.dto.response.entity.CommentDescription;
 import com.dareu.web.dto.response.entity.DareResponseDescription;
 import com.dareu.web.dto.response.entity.Page;
@@ -89,4 +92,38 @@ public interface DareResponseRepository extends BaseRepository<DareResponse>{
      * @throws DataAccessException 
      */
     public void unclapResponse(String responseId, String userId)throws DataAccessException;
+    
+    
+    /**
+     * anchor a dare response to a user 
+     * @param content
+     * @throws DataAccessException 
+     */
+    public void anchorContent(AnchoredContent content) throws DataAccessException; 
+    
+    /**
+     * Get a user anchored content
+     * @param pageNumber
+     * @param token
+     * @return
+     * @throws DataAccessException 
+     */
+    public Page<AnchoredDescription> getAnchoredContent(int pageNumber, String token) throws DataAccessException;
+
+    /**
+     * 
+     * @param responseId
+     * @param token
+     * @return
+     * @throws DataAccessException 
+     */
+    public AnchoredContent findAnchoredContent(String responseId, String token) throws DataAccessException;
+
+    /**
+     * unpin anchored content
+     * @param responseId
+     * @param token
+     * @throws DataAccessException 
+     */
+    public void unpinContent(String responseId, String token) throws DataAccessException;
 }

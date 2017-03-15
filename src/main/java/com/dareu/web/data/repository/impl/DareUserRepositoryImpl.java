@@ -48,32 +48,16 @@ public class DareUserRepositoryImpl extends AbstractRepository<DareUser> impleme
         super(DareUser.class);
     }
 
-    @Override
-    public boolean isNicknameAvailable(String nickname) {
-        //get a list of users where the nickname is the same 
-        Query q = em.createQuery("SELECT u.nickname FROM User u WHERE u.nickname = :nickname")
-                .setParameter("nickname", nickname);
-
-        List<String> nicknames = q.getResultList();
-        if (nicknames.isEmpty()) //the nickname is available 
-        {
-            return true;
-        } else {
-            return false;
-        }
-    }
 
     @Override
     public boolean isEmailAvailable(String email) {
-        Query q = em.createQuery("SELECT u.email FROM User u WHERE u.email = :email")
+        Query q = em.createQuery("SELECT COUNT(u.email) FROM User u WHERE u.email = :email")
                 .setParameter("email", email);
 
-        List<String> emails = q.getResultList();
-        if (emails.isEmpty()) {
-            return true;
-        } else {
+        Long count = (Long)q.getSingleResult();
+        if(count.intValue() > 0)
             return false;
-        }
+        return true;
     }
 
     @Override

@@ -27,11 +27,13 @@ import com.dareu.web.core.service.DareuAssembler;
 import com.dareu.web.core.service.DareuMessagingService;
 import com.dareu.web.core.service.FileService;
 import com.dareu.web.core.service.MultipartService;
+import com.dareu.web.data.entity.AnchoredContent;
 import com.dareu.web.data.entity.Comment;
 import com.dareu.web.data.entity.DareFlag;
 import com.dareu.web.data.entity.DareResponse;
 import com.dareu.web.data.entity.ResponseClap;
 import com.dareu.web.data.repository.DareResponseRepository;
+import com.dareu.web.dto.request.AnchorContentRequest;
 import com.dareu.web.dto.request.ClapRequest;
 import com.dareu.web.dto.request.DareConfirmationRequest;
 import com.dareu.web.dto.request.DareUploadRequest;
@@ -39,6 +41,7 @@ import com.dareu.web.dto.request.FlagDareRequest;
 import com.dareu.web.dto.request.NewCommentRequest;
 import com.dareu.web.dto.response.UpdatedEntityResponse;
 import com.dareu.web.dto.response.entity.ActiveDare;
+import com.dareu.web.dto.response.entity.AnchoredDescription;
 import com.dareu.web.dto.response.entity.CategoryDescription;
 import com.dareu.web.dto.response.entity.CommentDescription;
 import com.dareu.web.dto.response.entity.CreatedDare;
@@ -481,12 +484,12 @@ public class DareServiceImpl implements DareService {
 
     @Override
     public Response findResponses(int pageNumber, String auth) throws InternalApplicationException, InvalidRequestException {
-        try{
+        try {
             DareUser user = dareUserRepository.findUserByToken(auth);
             Page<DareResponseDescription> page = dareResponseRepository.getResponses(user.getId(), pageNumber);
             return Response.ok(page)
                     .build();
-        }catch(DataAccessException ex){
+        } catch (DataAccessException ex) {
             throw new InternalApplicationException(ex.getMessage(), ex);
         }
     }
@@ -689,42 +692,99 @@ public class DareServiceImpl implements DareService {
                 clap.setUser(user);
                 //persists
                 dareResponseRepository.clapResponse(clap);
-                
-                String fcmToken = dareUserRepository.getUserFcmToken(user.getId()); 
-                if(fcmToken != null && ! fcmToken.isEmpty()){
+
+                String fcmToken = dareUserRepository.getUserFcmToken(user.getId());
+                if (fcmToken != null && !fcmToken.isEmpty()) {
                     //send a notification to dare response creator 
                     messagingService.sendClappedResponse(response.getId(), fcmToken);
                 }
                 return Response.ok(new UpdatedEntityResponse("Clap has been created", true, "dare_response_clap"))
-                        .build(); 
-            }else{
+                        .build();
+            } else {
                 //delete current clap 
-                dareResponseRepository.unclapResponse(response.getId(), user.getId()); 
-                
+                dareResponseRepository.unclapResponse(response.getId(), user.getId());
+
                 return Response.ok(new UpdatedEntityResponse("Clap has been removed", true, "dare_response_clap"))
-                        .build(); 
+                        .build();
             }
-        }catch(DataAccessException ex){
-            throw new InternalApplicationException(ex.getMessage(), ex); 
+        } catch (DataAccessException ex) {
+            throw new InternalApplicationException(ex.getMessage(), ex);
         }
     }
 
     @Override
     public Response findResponseComment(String commentId) throws InternalApplicationException, InvalidRequestException {
-        if(commentId == null || commentId.isEmpty())
-            throw new InvalidRequestException("Comment is not provided"); 
-        
-        try{
-            Comment comment = dareResponseRepository.findComment(commentId); 
-            if(comment == null)
+        if (commentId == null || commentId.isEmpty()) {
+            throw new InvalidRequestException("Comment is not provided");
+        }
+
+        try {
+            Comment comment = dareResponseRepository.findComment(commentId);
+            if (comment == null) {
                 throw new InvalidRequestException("Invalid comment id");
-            
-            CommentDescription descr = assembler.assembleCommentDescription(comment); 
-            
+            }
+
+            CommentDescription descr = assembler.assembleCommentDescription(comment);
+
             return Response.ok(descr)
-                    .build(); 
+                    .build();
+        } catch (DataAccessException ex) {
+            throw new InternalApplicationException(ex.getMessage(), ex);
+        }
+    }
+
+    @Override
+    public Response anchorContent(String responseId, String token) throws InternalApplicationException, InvalidRequestException {
+        if (responseId == null || responseId.isEmpty()) {
+            throw new InvalidRequestException("No response id provided");
+        }
+
+        try {
+            if(dareResponseRepository.find(responseId) == null)
+                throw new InvalidRequestException("Invalid");
+            if(dareResponseRepository.findAnchoredContent(responseId, token) != null)
+                throw new InvalidRequestException("This response has already been anchored");
+            AnchoredContent content;
+            //anchor 
+            content = new AnchoredContent();
+            content.setCreationDate(DareUtils.DETAILS_DATE_FORMAT.format(new Date()));
+            content.setResponse(dareResponseRepository.find(responseId));
+            content.setUser(dareUserRepository.findUserByToken(token));
+            dareResponseRepository.anchorContent(content);
+            return Response.ok(new EntityRegistrationResponse("Anchored",
+                    RegistrationType.ANCHOR, content.getCreationDate(), content.getId()))
+                    .build();
+        } catch (DataAccessException ex) {
+            throw new InternalApplicationException(ex.getMessage(), ex);
+        }
+    }
+
+    @Override
+    public Response getAnchoredContent(int pageNumber, String token) throws InternalApplicationException, InvalidRequestException {
+        try {
+            Page<AnchoredDescription> page = dareResponseRepository.getAnchoredContent(pageNumber, token);
+            return Response.ok(page)
+                    .build();
+        } catch (DataAccessException ex) {
+            throw new InternalApplicationException(ex.getMessage(), ex);
+        }
+    }
+
+    @Override
+    public Response unpinAnchoredContent(String responseId, String token) throws InternalApplicationException, InvalidRequestException {
+        try{
+            //search anchored content
+            AnchoredContent content = dareResponseRepository.findAnchoredContent(responseId, token);
+            if(content == null)
+                throw new InvalidRequestException("Anchored content not valid");
+
+            //delete anchored content
+            dareResponseRepository.unpinContent(responseId, token);
+
+            return Response.ok(new UpdatedEntityResponse("Success", true, "anchoredContent"))
+                    .build();
         }catch(DataAccessException ex){
-            throw new InternalApplicationException(ex.getMessage(), ex); 
+            throw new InternalApplicationException(ex.getMessage(), ex);
         }
     }
 

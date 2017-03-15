@@ -66,132 +66,10 @@ public class AccountResource {
         @ApiResponse(code = 401, message = "Unauthorized to access this operation")})
     @Secured
     public Response me() throws InternalApplicationException{
-        return accountService.me() ;
+        return accountService.me();
     }
 
-    /**
-     * Request a friendship to another dareu user
-     *
-     * @param requestedUserId
-     * @param request
-     * @return
-     * @throws InternalApplicationException
-     * @throws InvalidRequestException
-     */
-    @ApiOperation(value = "Requests a new friendship", produces = "application/json",
-            authorizations = {
-                @Authorization(value = "MEMBER"),
-                @Authorization(value = "ADMIN"),
-                @Authorization(value = "SPONSOR")},
-            notes = "Request a new friendship to another user")
-    @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "The operation ran successfuly",
-                response = EntityRegistrationResponse.class),
-        @ApiResponse(code = 401, message = "User is not authorized to access this resource",
-                response = AuthorizationResponse.class)
-    })
-    @Path("friendship/{requestedUserId}/create")
-    @Produces(MediaType.APPLICATION_JSON)
-    @POST
-    @Secured
-    public Response requestFriendship(@PathParam(value = "requestedUserId") String requestedUserId) throws InvalidRequestException, InternalApplicationException {
-        return accountService.requestFriendship(requestedUserId);
-    }
     
-    
-    @ApiOperation(value = "Cancel a friendship request", produces = "application/json",
-            consumes = "application/json",
-            authorizations = {
-                @Authorization(value = "MEMBER"),
-                @Authorization(value = "ADMIN"),
-                @Authorization(value = "SPONSOR")},
-            notes = "Cancels a friendship request")
-    @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "The operation ran successfuly",
-                response = EntityRegistrationResponse.class),
-        @ApiResponse(code = 401, message = "User is not authorized to access this resource",
-                response = AuthorizationResponse.class)
-    })
-    @Path("friendship/")
-    @DELETE
-    @Produces(MediaType.APPLICATION_JSON)
-    @Secured
-    public Response cancelFriendshipRequest(@QueryParam("connectionId")String connId, 
-                        @HeaderParam("Authrorization")String token)throws InternalApplicationException, InvalidRequestException{
-        return accountService.cancelFriendshipRequest(connId, token);
-    }
-    
-    
-    @ApiOperation(value = "Requests a new friendship", produces = "application/json",
-            authorizations = {
-                @Authorization(value = "MEMBER"),
-                @Authorization(value = "ADMIN"),
-                @Authorization(value = "SPONSOR")},
-            notes = "Request a new friendship to another user")
-    @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "The operation ran successfuly",
-                response = EntityRegistrationResponse.class),
-        @ApiResponse(code = 401, message = "User is not authorized to access this resource",
-                response = AuthorizationResponse.class)
-    })
-    @Path("friendship/sent")
-    @Produces(MediaType.APPLICATION_JSON)
-    @GET
-    @Secured
-    public Response getPendingSentRequests(@QueryParam("pageNumber") int pageNumber, 
-                                          @HeaderParam(value = "Authorization")String token) throws InvalidRequestException, InternalApplicationException {
-        return accountService.getPendingSentRequests(pageNumber, token);
-    }
-    
-    @ApiOperation(value = "Requests a new friendship", produces = "application/json",
-            authorizations = {
-                @Authorization(value = "MEMBER"),
-                @Authorization(value = "ADMIN"),
-                @Authorization(value = "SPONSOR")},
-            notes = "Request a new friendship to another user")
-    @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "The operation ran successfuly",
-                response = EntityRegistrationResponse.class),
-        @ApiResponse(code = 401, message = "User is not authorized to access this resource",
-                response = AuthorizationResponse.class)
-    })
-    @Path("friendship/received")
-    @Produces(MediaType.APPLICATION_JSON)
-    @GET
-    @Secured
-    public Response getPendingReceivedRequests(@QueryParam("pageNumber") int pageNumber, 
-                                          @HeaderParam(value = "Authorization")String token) throws InvalidRequestException, InternalApplicationException {
-        return accountService.getPendingReceivedRequests(pageNumber, token);
-    }
-
-    /**
-     *
-     * @param pageNumber
-     * @param query
-     * @return
-     * @throws com.dareu.web.exception.application.InternalApplicationException
-     */
-    @ApiOperation(value = "Find frinds using a search query and pagination", produces = "application/json",
-            authorizations = {
-                @Authorization(value = "MEMBER"),
-                @Authorization(value = "ADMIN"),
-                @Authorization(value = "SPONSOR")},
-            notes = "Find friends")
-    @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "The operation ran successfuly",
-                response = Page.class),
-        @ApiResponse(code = 401, message = "User is not authorized to access this resource",
-                response = AuthorizationResponse.class)
-    })
-    @GET
-    @Path("friends/find")
-    @Produces(MediaType.APPLICATION_JSON)
-    @Secured
-    public Response friends(
-            @ApiParam(name = "pageNumber", defaultValue = "1") @QueryParam("pageNumber") int pageNumber, 
-            @ApiParam(name = "q", required = false)@QueryParam("q") String query) throws InternalApplicationException {
-        return accountService.findFriends(pageNumber, query);
-    }
 
     /**
      * Update a registration id from Google Cloud Messaging
@@ -224,47 +102,9 @@ public class AccountResource {
         return accountService.updateRegId(regId, auth);
     }
 
-    @ApiOperation(value = "Confirms a friendship request", produces = "application/json",
-            authorizations = {
-                @Authorization(value = "MEMBER"),
-                @Authorization(value = "ADMIN"),
-                @Authorization(value = "SPONSOR")},
-            notes = "Accepts or decline a friendship request")
-    @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "The operation ran successfuly",
-                response = EntityRegistrationResponse.class),
-        @ApiResponse(code = 401, message = "User is not authorized to access this resource",
-                response = AuthorizationResponse.class)
-    })
-    @Path("friendship/{userId}/update")
-    @POST
-    @Produces(MediaType.APPLICATION_JSON)
-    @Secured
-    public Response responseFriendship(@PathParam(value = "userId") String userId, 
-            @ApiParam(name = "accepted", required = true) @QueryParam(value = "accepted") Boolean accepted) throws InvalidRequestException, InternalApplicationException {
-        return accountService.friendshipResponse(userId, accepted);
-    }
+    
 
-    @ApiOperation(value = "Get details about a friendship", produces = "application/json",
-            authorizations = {
-                @Authorization(value = "MEMBER"),
-                @Authorization(value = "ADMIN"),
-                @Authorization(value = "SPONSOR")},
-            notes = "get details about a friendship between two users")
-    @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "The operation ran successfuly",
-                response = ConnectionDetails.class),
-        @ApiResponse(code = 401, message = "User is not authorized to access this resource",
-                response = AuthorizationResponse.class)
-    })
-    @Path("friendship/find")
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    @Secured
-    public Response findFriendshipDetails(
-            @ApiParam(name = "friendshipId", required = true) @QueryParam("friendshipId") String friendshipId, @HeaderParam("Authorization") String auth) throws InternalApplicationException, InvalidRequestException {
-        return accountService.findFriendshipDetails(friendshipId, auth);
-    }
+    
 
     @ApiOperation(value = "Update a logged user profile image", produces = "application/json",
             consumes = "multipart/form-data",

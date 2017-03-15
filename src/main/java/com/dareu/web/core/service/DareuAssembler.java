@@ -1,13 +1,17 @@
 package com.dareu.web.core.service;
 
+import com.dareu.web.data.entity.AnchoredContent;
 import com.dareu.web.data.entity.Category;
 import com.dareu.web.data.entity.Comment;
 import com.dareu.web.data.entity.Dare;
 import com.dareu.web.data.entity.DareResponse;
 import com.dareu.web.data.entity.DareUser;
 import com.dareu.web.data.entity.FriendshipRequest;
+import com.dareu.web.dto.request.GoogleSignupRequest;
+import com.dareu.web.dto.request.SignupRequest;
 import com.dareu.web.dto.response.entity.AccountProfile;
 import com.dareu.web.dto.response.entity.ActiveDare;
+import com.dareu.web.dto.response.entity.AnchoredDescription;
 import com.dareu.web.dto.response.entity.CategoryDescription;
 import com.dareu.web.dto.response.entity.CommentDescription;
 import com.dareu.web.dto.response.entity.ConnectionDetails;
@@ -184,4 +188,17 @@ public interface DareuAssembler {
      */
     public List<ConnectionRequest> assembleConnectionRequests(List<FriendshipRequest> list, boolean sent);
     
+    /**
+     * Assembles a list of anchored content description
+     * @param list
+     * @return 
+     */
+    public List<AnchoredDescription> assembleAnchoredContent(List<AnchoredContent> list);
+
+    /**
+     * Creates a new dare user from a google sign up request
+     * @param request
+     * @return
+     */
+    public DareUser getDareUser(GoogleSignupRequest request);
 }

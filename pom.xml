@@ -20,8 +20,6 @@
             <version>1.2</version>
             <scope>provided</scope>
         </dependency>
-        
-
 
         <!-- Syring to inject properties from file, jndi,... -->
         <dependency>
@@ -107,29 +105,33 @@
             <artifactId>swagger-annotations</artifactId>
             <version>1.5.10</version>
         </dependency>
-        
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient</artifactId>
-            <version>4.5.2</version>
-        </dependency>
-        
+
+        <!-- application data transfer objects -->
         <dependency>
             <groupId>com.dareu.web.dto</groupId>
             <artifactId>dareu-dto</artifactId>
             <version>1.0</version>
         </dependency>
-        
+
+        <!-- testing only... -->
         <dependency>
             <groupId>org.bytedeco</groupId>
             <artifactId>javacv</artifactId>
             <version>1.3</version>
         </dependency>
-        
+
+        <!-- amazon S3 -->
         <dependency>
             <groupId>com.amazonaws</groupId>
             <artifactId>aws-java-sdk-s3</artifactId>
             <version>1.11.98</version>
+        </dependency>
+
+        <!-- apache commons -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.0</version>
         </dependency>
 
     </dependencies>

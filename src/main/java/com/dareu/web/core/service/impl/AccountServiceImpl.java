@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import com.dareu.web.core.DareUtils;
+import com.dareu.web.dto.request.*;
 import com.dareu.web.dto.security.SecurityRole;
 import com.dareu.web.core.service.AccountService;
 import com.dareu.web.core.service.FileService;
@@ -19,8 +20,6 @@ import com.dareu.web.data.entity.DareUser;
 import com.dareu.web.data.entity.FriendshipRequest;
 import com.dareu.web.data.repository.DareUserRepository;
 import com.dareu.web.data.repository.FriendshipRepository;
-import com.dareu.web.dto.request.SigninRequest;
-import com.dareu.web.dto.request.SignupRequest;
 import com.dareu.web.dto.response.AuthenticationResponse;
 import com.dareu.web.dto.response.EntityRegistrationResponse;
 import com.dareu.web.dto.response.EntityRegistrationResponse.RegistrationType;
@@ -34,8 +33,6 @@ import com.dareu.web.data.entity.ContactMessage;
 import com.dareu.web.data.repository.ContactMessageRepository;
 import com.dareu.web.data.repository.DareRepository;
 import com.dareu.web.data.repository.DareResponseRepository;
-import com.dareu.web.dto.request.ChangeEmailAddressRequest;
-import com.dareu.web.dto.request.ContactRequest;
 import com.dareu.web.dto.security.PasswordEncryptor;
 import com.dareu.web.dto.response.BadRequestResponse;
 import com.dareu.web.dto.response.UpdatedEntityResponse;
@@ -53,6 +50,8 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import javax.inject.Inject;
 import javax.ws.rs.core.Response;
+
+import org.apache.commons.lang3.StringUtils;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 
 /**
@@ -108,7 +107,7 @@ public class AccountServiceImpl extends AbstractService implements AccountServic
         }
 
         //validate email for duplicates 
-        if (!dareUserRepository.isEmailAvailable(request.getEmail())) {
+        if (! dareUserRepository.isEmailAvailable(request.getEmail())) {
             throw new EntityRegistrationException("An account with the email " + request.getEmail() + " already exists");
         }
 
@@ -122,6 +121,8 @@ public class AccountServiceImpl extends AbstractService implements AccountServic
         user.setCoins(0);
         user.setRole(SecurityRole.USER);
         user.setuScore(0);
+        user.setAccountType(DareUser.AccountType.LOCAL);
+        user.setGCM(request.getFcm());
         user.setImageUrl(DareUtils.DEFAULT_IMAGE_PROFILE);
         user.setBirthday(request.getBirthday());
         //save the entity 
@@ -180,18 +181,6 @@ public class AccountServiceImpl extends AbstractService implements AccountServic
                     .build();
         } else {
             return Response.ok(new ResourceAvailableResponse(false, "The email " + email + " is not available", DareUtils.DATE_FORMAT.format(new Date())))
-                    .build();
-        }
-    }
-
-    @Override
-    public Response isNicknameAvailable(String nickname)
-            throws InternalApplicationException {
-        if (dareUserRepository.isNicknameAvailable(nickname)) {
-            return Response.ok(new ResourceAvailableResponse(true, "The nickname " + nickname + " is available", DareUtils.DATE_FORMAT.format(new Date())))
-                    .build();
-        } else {
-            return Response.ok(new ResourceAvailableResponse(false, "The nickname " + nickname + " is not available", DareUtils.DATE_FORMAT.format(new Date())))
                     .build();
         }
     }
@@ -570,4 +559,40 @@ public class AccountServiceImpl extends AbstractService implements AccountServic
             throw new InternalApplicationException(ex.getMessage(), ex); 
         }
     }
+
+    @Override
+    public Response signupGoogle(GoogleSignupRequest request) throws InternalApplicationException, InvalidRequestException {
+        if(request == null)
+            throw new InvalidRequestException("Request body not provided");
+        if(StringUtils.isEmpty(request.getName()))
+            throw new InvalidRequestException("Name must be provided");
+        if(StringUtils.isEmpty(request.getBirthdate()))
+            throw new InvalidRequestException("Birth date must be provided");
+        if(StringUtils.isEmpty(request.getEmail()))
+            throw new InvalidRequestException("Email must be provided");
+        if(StringUtils.isEmpty(request.getGoogleId()))
+            throw new InvalidRequestException("No google ID provided");
+        if(StringUtils.isEmpty(request.getImageUrl()))
+            throw new InvalidRequestException("Image URL must be provided");
+
+        try{
+            DareUser user = assembler.getDareUser(request);
+            dareUserRepository.persist(user);
+
+            //generate a new token for this user
+            String token = utils.getNextSessionToken();
+
+            dareUserRepository.updateSecurityToken(token, user.getId());
+
+            //TODO: add coins and send notification?
+            return Response.ok(new AuthenticationResponse(token, DareUtils.DETAILS_DATE_FORMAT.format(new Date()), "Welcome"))
+                    .build();
+        }catch(DataAccessException ex){
+            throw new InternalApplicationException(ex.getMessage(), ex);
+        }
+
+    }
+
+
+
 }

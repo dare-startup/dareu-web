@@ -50,6 +50,13 @@ public class DareUser extends BaseEntity {
     @Column(name = "verified")
     private boolean verified;
 
+    @Column(name = "g_id")
+	private String googleId;
+
+    @Enumerated
+    @Column(name = "account_type")
+    private AccountType accountType;
+
     @Column(name = "role")
     @Enumerated(EnumType.ORDINAL)
     private SecurityRole role;
@@ -202,6 +209,24 @@ public class DareUser extends BaseEntity {
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
     }
-        
-        
+
+    public String getGoogleId() {
+        return googleId;
+    }
+
+    public void setGoogleId(String googleId) {
+        this.googleId = googleId;
+    }
+
+    public AccountType getAccountType() {
+        return accountType;
+    }
+
+    public void setAccountType(AccountType accountType) {
+        this.accountType = accountType;
+    }
+
+    public enum AccountType{
+        LOCAL, G_PLUS
+    }
 }

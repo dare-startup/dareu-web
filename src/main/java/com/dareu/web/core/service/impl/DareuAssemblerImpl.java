@@ -6,11 +6,14 @@ import com.dareu.web.data.entity.Dare;
 import com.dareu.web.data.entity.DareUser;
 import com.dareu.web.core.service.DareuAssembler;
 import com.dareu.web.core.service.FileService;
+import com.dareu.web.data.entity.AnchoredContent;
 import com.dareu.web.data.entity.Comment;
 import com.dareu.web.data.entity.DareResponse;
 import com.dareu.web.data.entity.FriendshipRequest;
+import com.dareu.web.dto.request.GoogleSignupRequest;
 import com.dareu.web.dto.response.entity.AccountProfile;
 import com.dareu.web.dto.response.entity.ActiveDare;
+import com.dareu.web.dto.response.entity.AnchoredDescription;
 import com.dareu.web.dto.response.entity.CategoryDescription;
 import com.dareu.web.dto.response.entity.CommentDescription;
 import com.dareu.web.dto.response.entity.ConnectionDetails;
@@ -24,10 +27,9 @@ import com.dareu.web.dto.response.entity.Page;
 import com.dareu.web.dto.response.entity.UnacceptedDare;
 import com.dareu.web.dto.response.entity.UserAccount;
 import com.dareu.web.dto.response.entity.UserDescription;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.dareu.web.dto.security.SecurityRole;
+
+import java.util.*;
 import javax.inject.Inject;
 
 /**
@@ -301,6 +303,33 @@ public class DareuAssemblerImpl implements DareuAssembler {
             conns.add(conn);
         }
         return conns; 
+    }
+
+    @Override
+    public List<AnchoredDescription> assembleAnchoredContent(List<AnchoredContent> list) {
+        List<AnchoredDescription> descs = new ArrayList();
+        for(AnchoredContent c : list)
+            descs.add(new AnchoredDescription(c.getCreationDate(), assembleDareResponseDescription(c.getResponse())));
+        return descs;
+    }
+
+    @Override
+    public DareUser getDareUser(GoogleSignupRequest request) {
+        DareUser user = new DareUser();
+        user.setAccountType(DareUser.AccountType.G_PLUS);
+        user.setBirthday(request.getBirthdate());
+        user.setCoins(0);
+        user.setEmail(request.getEmail());
+        user.setGCM(request.getFcm());
+        user.setGoogleId(request.getGoogleId());
+        user.setImageUrl(request.getImageUrl());
+        user.setName(request.getName());
+        user.setPassword("N/A");
+        user.setRole(SecurityRole.USER);
+        user.setuScore(0);
+        user.setVerified(false);
+        user.setUserSince(DareUtils.DETAILS_DATE_FORMAT.format(new Date()));
+        return user;
     }
 
 }

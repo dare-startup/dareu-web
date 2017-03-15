@@ -2,6 +2,7 @@ package com.dareu.web.resource.open;
 
 import com.dareu.web.core.service.AccountService;
 import com.dareu.web.dto.request.ContactRequest;
+import com.dareu.web.dto.request.GoogleSignupRequest;
 import com.dareu.web.dto.request.SignupRequest;
 import com.dareu.web.dto.response.AuthenticationResponse;
 import com.dareu.web.dto.response.AuthorizationResponse;
@@ -35,26 +36,7 @@ public class OpenResource {
     
     @Inject
     private AccountService accountService; 
-    
-    
-    /**
-     * check if a nickname is available
-     * @return 
-     */
-    @ApiOperation(value = "Check if a nickname is available", produces = "application/json", 
-            authorizations = { @Authorization(value = "ALL")}, 
-            notes = "Check if a nickname is available")
-    @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "The operation ran successfuly", 
-                response = ResourceAvailableResponse.class), 
-        
-    })
-    @Path("nicknameAvailable/{nickname}")
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response nicknameAvailable(@PathParam("nickname")String nickname)throws InternalApplicationException{
-        return accountService.isNicknameAvailable(nickname); 
-    }
+
     
     /**
      * check if a nickname is available
@@ -66,7 +48,7 @@ public class OpenResource {
             authorizations = { @Authorization(value = "ALL")}, 
             notes = "Check if a email is available")
     @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "The operation ran successfuly", 
+        @ApiResponse(code = 200, message = "The operation ran successfully",
                 response = ResourceAvailableResponse.class), 
         
     })
@@ -87,7 +69,7 @@ public class OpenResource {
             authorizations = { @Authorization(value = "ALL")}, 
             notes = "Register a new user")
     @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "The operation ran successfuly", 
+        @ApiResponse(code = 200, message = "The operation ran successfully",
                 response = AuthenticationResponse.class), 
         
     })
@@ -99,13 +81,14 @@ public class OpenResource {
     	//SignupRequest request = multipartService.getSignupRequest(input); 
         return  accountService.registerDareUser(input); 
     }
-    
+
+
     
     @ApiOperation(value = "Creates a new contact message to be shown on admin console", produces = "application/json", 
             authorizations = { @Authorization(value = "ALL")}, 
             notes = "Send a new contact message")
     @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "The operation ran successfuly", 
+        @ApiResponse(code = 200, message = "The operation ran successfully",
                 response = EntityRegistrationResponse.class)
     })
     @Path("contact")
@@ -115,5 +98,20 @@ public class OpenResource {
     public Response contactMessage(ContactRequest message)throws InternalApplicationException, InvalidRequestException{
     	//SignupRequest request = multipartService.getSignupRequest(input); 
         return  accountService.contactMessage(message); 
+    }
+
+    @ApiOperation(value = "Sign up a user using a google id ", produces = "application/json",
+            authorizations = { @Authorization(value = "ALL")},
+            notes = "Creates a new user using a google id")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "The operation ran successfully",
+                    response = EntityRegistrationResponse.class)
+    })
+    @Path("registerUserGoogle")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @POST
+    public Response signupGoogle(GoogleSignupRequest request)throws InternalApplicationException, InvalidRequestException{
+        return  accountService.signupGoogle(request);
     }
 }

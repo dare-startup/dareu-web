@@ -1,5 +1,6 @@
 package com.dareu.web.core.service;
 
+import com.dareu.web.dto.request.AnchorContentRequest;
 import com.dareu.web.dto.request.ClapRequest;
 import javax.ws.rs.core.Response;
 
@@ -215,7 +216,39 @@ public interface DareService {
      * @param commentId
      * @return
      * @throws InternalApplicationException
-     * @throws InvalidRequestExceptio 
+     * @throws InvalidRequestException 
      */
     public Response findResponseComment(String commentId) throws InternalApplicationException, InvalidRequestException;
+
+    /**
+     * Anchor a dare response to a user
+     * @param request
+     * @param token
+     * @return 
+     * @throws com.dareu.web.exception.application.InternalApplicationException 
+     * @throws com.dareu.web.exception.application.InvalidRequestException 
+     */
+    public Response anchorContent(String responseId, String token) throws InternalApplicationException, InvalidRequestException;
+
+    /**
+     * Unpin an anchored response
+     * @param responseId
+     * @param token
+     * @return
+     * @throws InternalApplicationException
+     * @throws InvalidRequestException 
+     */
+    public Response unpinAnchoredContent(String responseId, String token)throws InternalApplicationException, InvalidRequestException;
+    
+    /**
+     * Get a user anchored content
+     * @param pageNumber
+     * @param token
+     * @return
+     * @throws InternalApplicationException
+     * @throws InvalidRequestException 
+     */
+    public Response getAnchoredContent(int pageNumber, String token)throws InternalApplicationException, 
+                                                            InvalidRequestException;
+
 }
