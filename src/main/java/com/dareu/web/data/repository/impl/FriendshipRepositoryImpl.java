@@ -35,16 +35,16 @@ public class FriendshipRepositoryImpl extends AbstractRepository<FriendshipReque
     @Override
     public FriendshipRequest findFriendship(String userId, String requestedUserId)
             throws DataAccessException {
-        Query q = em.createQuery("SELECT f FROM Friendship f WHERE f.user.id = :userId AND f.requestedUser.id = :requestedUserId")
-                .setParameter("requestedUserId", requestedUserId)
-                .setParameter("userId", userId);
-
-        FriendshipRequest f = null;
         try {
-            f = (FriendshipRequest) q.getSingleResult();
-            return f;
+            Query q = em.createQuery("SELECT f FROM Friendship f WHERE f.user.id = :userId AND f.requestedUser.id = :requestedUserId")
+                    .setParameter("requestedUserId", requestedUserId)
+                    .setParameter("userId", userId);
+            return (FriendshipRequest) q.getSingleResult();
         } catch (NoResultException ex) {
+            log.info("No friendship request found");
             return null;
+        } catch(Exception ex){
+            throw new DataAccessException(ex.getMessage(), ex);
         }
     }
 

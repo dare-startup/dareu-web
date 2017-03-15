@@ -299,7 +299,7 @@ public class AccountServiceImpl extends AbstractService implements AccountServic
             log.info(user.getName() + " is " + value + " friendship request");
             log.info("UserID " + userId);
             log.info("RequestedUserID " + user.getId());
-            f = friendshipRepository.findFriendship(userId, user.getId());
+            f = friendshipRepository.find(userId);
 
             if (f == null) {
                 log.info("Friendship request is null");
