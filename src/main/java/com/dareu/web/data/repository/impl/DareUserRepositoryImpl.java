@@ -51,10 +51,12 @@ public class DareUserRepositoryImpl extends AbstractRepository<DareUser> impleme
 
     @Override
     public boolean isEmailAvailable(String email) {
+        log.info("Checking email existence");
         Query q = em.createQuery("SELECT COUNT(u.id) FROM User u WHERE u.email = :email")
                 .setParameter("email", email);
 
         Long count = (Long)q.getSingleResult();
+        log.info(email + " already registered: " + count.intValue());
         if(count.intValue() == 0)
             return true;
         return false;
