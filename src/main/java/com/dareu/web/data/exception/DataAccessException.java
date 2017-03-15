@@ -10,7 +10,6 @@ package com.dareu.web.data.exception;
  * @author MACARENA
  */
 public class DataAccessException extends Exception{
-
     public DataAccessException() {
     }
 

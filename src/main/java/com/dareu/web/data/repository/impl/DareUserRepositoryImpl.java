@@ -294,4 +294,19 @@ public class DareUserRepositoryImpl extends AbstractRepository<DareUser> impleme
         }
     }
 
+    @Override
+    public DareUser loginGoogle(String googleId, String user) throws DataAccessException {
+        try{
+            DareUser u = (DareUser) em.createQuery("SELECT u FROM User u WHERE u.email = :email AND u.googleId = :gid")
+                    .setParameter("email", user)
+                    .setParameter("gid", googleId)
+                    .getSingleResult();
+            return u;
+        }catch(NoResultException ex){
+            return null;
+        }catch(Exception ex){
+            throw new DataAccessException(ex.getMessage(), ex);
+        }
+    }
+
 }

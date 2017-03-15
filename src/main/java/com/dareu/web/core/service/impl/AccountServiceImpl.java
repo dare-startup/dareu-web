@@ -156,20 +156,40 @@ public class AccountServiceImpl extends AbstractService implements AccountServic
         if (request == null) {
             throw new AuthenticationException("No signin body provided");
         }
-        //try to authenticate
-        DareUser user = dareUserRepository.login(request.getUser(),
-                encryptor.encryptPassword(request.getPassword()));
-        if (user == null) {
-            throw new AuthenticationException("Username and/or password are incorrect");
-        } else {
-            //generate a new token 
-            String token = utils.getNextSessionToken();
-            
-            //update token 
-            dareUserRepository.updateSecurityToken(token, user.getId());
-            return Response.ok(new AuthenticationResponse(token, DareUtils.DATE_FORMAT.format(new Date()), "Welcome"))
-                    .build();
+        DareUser user;
+        //generate a new token
+        String token = utils.getNextSessionToken();
+        Response resp = null;
+        switch(request.getCurrentSigninType()){
+            case LOCAL:
+                log.info("Authenticating local user ");
+                //try to authenticate
+                user = dareUserRepository.login(request.getUser(),
+                        encryptor.encryptPassword(request.getPassword()));
+                if (user == null)
+                    throw new AuthenticationException("Username and/or password are incorrect");
+
+                //update token
+                dareUserRepository.updateSecurityToken(token, user.getId());
+                return Response.ok(new AuthenticationResponse(token, DareUtils.DATE_FORMAT.format(new Date()), "Welcome"))
+                        .build();
+
+            case GOOGLE:
+                log.info("Authenticating Google user");
+                try{
+                    user = dareUserRepository.loginGoogle(request.getGoogleId(), request.getUser());
+                    if(user == null)
+                        throw new AuthenticationException("Username and/or password are incorrect");
+                    dareUserRepository.updateSecurityToken(token, user.getId());
+
+                    return Response.ok(new AuthenticationResponse(token, DareUtils.DATE_FORMAT.format(new Date()), "Welcome"))
+                            .build();
+                }catch(DataAccessException ex){
+
+                }
+                break;
         }
+        return resp;
     }
 
     @Override

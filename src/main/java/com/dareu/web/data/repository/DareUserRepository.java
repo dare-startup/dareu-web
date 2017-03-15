@@ -161,4 +161,12 @@ public interface DareUserRepository extends BaseRepository<DareUser> {
      * @throws DataAccessException 
      */
     public void changeEmailAddress(String newEmail, String token) throws DataAccessException;
+
+    /**
+     *
+     * @param googleId
+     * @param user
+     * @return
+     */
+    public DareUser loginGoogle(String googleId, String user)throws DataAccessException;
 }
