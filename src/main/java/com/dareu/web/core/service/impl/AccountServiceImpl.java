@@ -176,11 +176,18 @@ public class AccountServiceImpl extends AbstractService implements AccountServic
     public Response isEmailAvailable(String email)
             throws InternalApplicationException {
 
+        ResourceAvailableResponse response = new ResourceAvailableResponse();
         if (dareUserRepository.isEmailAvailable(email)) {
-            return Response.ok(new ResourceAvailableResponse(true, "The email " + email + " is available", DareUtils.DATE_FORMAT.format(new Date())))
+            response.setAvailable(true);
+            response.setDate(DareUtils.DATE_FORMAT.format(new Date()));
+            response.setMessage("The email " + email + " is available");
+            return Response.ok(response)
                     .build();
         } else {
-            return Response.ok(new ResourceAvailableResponse(false, "The email " + email + " is not available", DareUtils.DATE_FORMAT.format(new Date())))
+            response.setAvailable(false);
+            response.setDate(DareUtils.DATE_FORMAT.format(new Date()));
+            response.setMessage("The email " + email + " is not available");
+            return Response.ok(response)
                     .build();
         }
     }

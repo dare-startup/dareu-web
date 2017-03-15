@@ -8,6 +8,7 @@
 .settings/
 .tern-project
 bin/
+.idea/
 
 # NetBeans IDE
 nbbuild/
