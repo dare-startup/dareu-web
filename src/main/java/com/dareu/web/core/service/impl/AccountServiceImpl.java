@@ -252,7 +252,7 @@ public class AccountServiceImpl extends AbstractService implements AccountServic
                 }
             }
             requestedUser = dareUserRepository.find(requestedUserId);
-            user = dareUserRepository.find(getPrincipal().getId());
+            //user = dareUserRepository.find(getPrincipal().getId());
 
             if (requestedUser != null && user != null) {
                 //set users 
