@@ -178,12 +178,14 @@ public class AccountServiceImpl extends AbstractService implements AccountServic
 
         ResourceAvailableResponse response = new ResourceAvailableResponse();
         if (dareUserRepository.isEmailAvailable(email)) {
+            log.info("Returning email availability true");
             response.setAvailable(true);
             response.setDate(DareUtils.DATE_FORMAT.format(new Date()));
             response.setMessage("The email " + email + " is available");
             return Response.ok(response)
                     .build();
         } else {
+            log.info("Returning email availability false");
             response.setAvailable(false);
             response.setDate(DareUtils.DATE_FORMAT.format(new Date()));
             response.setMessage("The email " + email + " is not available");

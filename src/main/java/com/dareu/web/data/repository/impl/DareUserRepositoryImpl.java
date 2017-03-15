@@ -56,7 +56,6 @@ public class DareUserRepositoryImpl extends AbstractRepository<DareUser> impleme
                 .setParameter("email", email);
 
         Long count = (Long)q.getSingleResult();
-        log.info(email + " already registered: " + count.intValue());
         if(count.intValue() == 0)
             return true;
         return false;
