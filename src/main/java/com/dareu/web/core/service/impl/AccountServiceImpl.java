@@ -283,7 +283,7 @@ public class AccountServiceImpl extends AbstractService implements AccountServic
     }
 
     @Override
-    public Response friendshipResponse(String userId, Boolean accepted)
+    public Response friendshipResponse(String userId, Boolean accepted, String token)
             throws InvalidRequestException, InternalApplicationException {
         if (userId == null) {
             throw new InvalidRequestException("Invalid friendship response body");
@@ -294,9 +294,10 @@ public class AccountServiceImpl extends AbstractService implements AccountServic
         //get the friendhip 
         FriendshipRequest f = null;
         try {
+            DareUser user = dareUserRepository.findUserByToken(token);
             String value = accepted ? "Accepting " : " Declining";
             log.info(value + "friendship request " + userId);
-            f = friendshipRepository.findFriendship(userId, getPrincipal().getId());
+            f = friendshipRepository.findFriendship(userId, user.getId());
 
             if (f == null) {
                 log.info("Friendship request is null");

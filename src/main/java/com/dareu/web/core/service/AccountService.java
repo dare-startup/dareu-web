@@ -72,7 +72,7 @@ public interface AccountService {
      * @throws InvalidRequestException
      * @throws InternalApplicationException
      */
-    public Response friendshipResponse(String userId, Boolean accepted)throws InvalidRequestException, InternalApplicationException;
+    public Response friendshipResponse(String userId, Boolean accepted, String token)throws InvalidRequestException, InternalApplicationException;
     
     
     /**

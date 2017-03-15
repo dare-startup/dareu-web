@@ -175,8 +175,9 @@ public class FriendshipResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Secured
     public Response responseFriendship(@PathParam(value = "userId") String userId, 
-            @ApiParam(name = "accepted", required = true) @QueryParam(value = "accepted") Boolean accepted) throws InvalidRequestException, InternalApplicationException {
-        return accountService.friendshipResponse(userId, accepted);
+            @ApiParam(name = "accepted", required = true) @QueryParam(value = "accepted") Boolean accepted,
+                                       @HeaderParam("Authorization")String token) throws InvalidRequestException, InternalApplicationException {
+        return accountService.friendshipResponse(userId, accepted, token);
     }
     
     
