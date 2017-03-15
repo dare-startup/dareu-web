@@ -296,7 +296,9 @@ public class AccountServiceImpl extends AbstractService implements AccountServic
         try {
             DareUser user = dareUserRepository.findUserByToken(token);
             String value = accepted ? "Accepting " : " Declining";
-            log.info(value + "friendship request " + userId);
+            log.info(user.getName() + " is " + value + " friendship request");
+            log.info("UserID " + userId);
+            log.info("RequestedUserID " + user.getId());
             f = friendshipRepository.findFriendship(userId, user.getId());
 
             if (f == null) {
