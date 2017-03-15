@@ -328,7 +328,7 @@ public class DareuAssemblerImpl implements DareuAssembler {
         user.setRole(SecurityRole.USER);
         user.setuScore(0);
         user.setVerified(false);
-        user.setUserSince(DareUtils.DETAILS_DATE_FORMAT.format(new Date()));
+        user.setUserSince(DareUtils.DATE_FORMAT.format(new Date()));
         return user;
     }
 
