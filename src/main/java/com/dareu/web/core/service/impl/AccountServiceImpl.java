@@ -274,7 +274,7 @@ public class AccountServiceImpl extends AbstractService implements AccountServic
                         .build();
             } else //return bad response
             {
-                throw new InvalidRequestException("Users identificators are not valid, try again");
+                throw new InvalidRequestException("User id are not valid, try again");
             }
 
         } catch (DataAccessException ex) {
@@ -283,9 +283,9 @@ public class AccountServiceImpl extends AbstractService implements AccountServic
     }
 
     @Override
-    public Response friendshipResponse(String userId, Boolean accepted, String token)
+    public Response friendshipResponse(String connectionId, Boolean accepted, String token)
             throws InvalidRequestException, InternalApplicationException {
-        if (userId == null) {
+        if (connectionId == null) {
             throw new InvalidRequestException("Invalid friendship response body");
         } else if (accepted == null) {
             throw new InvalidRequestException("Invalid friendship id provided");
@@ -295,11 +295,7 @@ public class AccountServiceImpl extends AbstractService implements AccountServic
         FriendshipRequest f = null;
         try {
             DareUser user = dareUserRepository.findUserByToken(token);
-            String value = accepted ? "Accepting " : " Declining";
-            log.info(user.getName() + " is " + value + " friendship request");
-            log.info("UserID " + userId);
-            log.info("RequestedUserID " + user.getId());
-            f = friendshipRepository.find(userId);
+            f = friendshipRepository.find(connectionId);
 
             if (f == null) {
                 log.info("Friendship request is null");
@@ -325,7 +321,7 @@ public class AccountServiceImpl extends AbstractService implements AccountServic
                                     f.getId()))
                     .build();
         } catch (DataAccessException ex) {
-            throw new InternalApplicationException("Could process friendhip: " + ex.getMessage());
+            throw new InternalApplicationException("Could process friendship: " + ex.getMessage());
         }
     }
 
@@ -427,13 +423,14 @@ public class AccountServiceImpl extends AbstractService implements AccountServic
     }
 
     @Override
-    public Response findFriends(int pageNumber, String query) throws InternalApplicationException {
+    public Response findFriends(int pageNumber, String query, String token) throws InternalApplicationException {
         Page<FriendSearchDescription> page = null;
         try {
+            DareUser user = dareUserRepository.findUserByToken(token);
             if (query == null || query.isEmpty()) {
-                page = friendshipRepository.findFriendDescriptions(getPrincipal().getId(), pageNumber);
+                page = friendshipRepository.findFriendDescriptions(user.getId(), pageNumber);
             } else {
-                page = friendshipRepository.findFriendDescriptions(getPrincipal().getId(), pageNumber, query);
+                page = friendshipRepository.findFriendDescriptions(user.getId(), pageNumber, query);
             }
             return Response.ok(page)
                     .build();

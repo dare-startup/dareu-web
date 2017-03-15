@@ -66,13 +66,12 @@ public interface AccountService {
     
     /**
      * Process a friendhip request response between two users
-     * @param userId
      * @param accepted
      * @return
      * @throws InvalidRequestException
      * @throws InternalApplicationException
      */
-    public Response friendshipResponse(String userId, Boolean accepted, String token)throws InvalidRequestException, InternalApplicationException;
+    public Response friendshipResponse(String connectionId, Boolean accepted, String token)throws InvalidRequestException, InternalApplicationException;
     
     
     /**
@@ -118,7 +117,7 @@ public interface AccountService {
      * @return
      * @throws InternalApplicationException 
      */
-    public Response findFriends(int pageNumber, String query) throws InternalApplicationException;
+    public Response findFriends(int pageNumber, String query, String token) throws InternalApplicationException;
 
     /**
      * Returns details about a registered connection

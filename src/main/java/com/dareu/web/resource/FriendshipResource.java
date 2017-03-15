@@ -131,8 +131,9 @@ public class FriendshipResource {
     @Secured
     public Response friends(
             @ApiParam(name = "pageNumber", defaultValue = "1") @QueryParam("pageNumber") int pageNumber, 
-            @ApiParam(name = "q", required = false)@QueryParam("q") String query) throws InternalApplicationException {
-        return accountService.findFriends(pageNumber, query);
+            @ApiParam(name = "q", required = false)@QueryParam("q") String query,
+            @HeaderParam("Authorization")String token) throws InternalApplicationException {
+        return accountService.findFriends(pageNumber, query, token);
     }
     
     
@@ -170,14 +171,14 @@ public class FriendshipResource {
         @ApiResponse(code = 401, message = "User is not authorized to access this resource",
                 response = AuthorizationResponse.class)
     })
-    @Path("{userId}/update")
+    @Path("{connectionId}/update")
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Secured
-    public Response responseFriendship(@PathParam(value = "userId") String userId, 
+    public Response responseFriendship(@PathParam(value = "connectionId") String connectionId,
             @ApiParam(name = "accepted", required = true) @QueryParam(value = "accepted") Boolean accepted,
                                        @HeaderParam("Authorization")String token) throws InvalidRequestException, InternalApplicationException {
-        return accountService.friendshipResponse(userId, accepted, token);
+        return accountService.friendshipResponse(connectionId, accepted, token);
     }
     
     
