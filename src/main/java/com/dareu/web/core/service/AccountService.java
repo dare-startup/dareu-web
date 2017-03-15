@@ -61,7 +61,7 @@ public interface AccountService {
      * @throws InvalidRequestException
      * @throws InternalApplicationException
      */
-    public Response requestFriendship(String requestedUserId)throws InvalidRequestException, InternalApplicationException;
+    public Response requestFriendship(String requestedUserId, String token)throws InvalidRequestException, InternalApplicationException;
     
     
     /**

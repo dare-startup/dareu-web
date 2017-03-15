@@ -215,7 +215,7 @@ public class AccountServiceImpl extends AbstractService implements AccountServic
     }
 
     @Override
-    public Response requestFriendship(String requestedUserId)
+    public Response requestFriendship(String requestedUserId, String token)
             throws InvalidRequestException, InternalApplicationException {
         //validate 
         if (requestedUserId == null || requestedUserId.isEmpty()) {
@@ -230,9 +230,11 @@ public class AccountServiceImpl extends AbstractService implements AccountServic
 
         //get requested user 
         DareUser requestedUser = null, user = null;
+
         try {
+            user = dareUserRepository.findUserByToken(token);
             //check if a friendship with this ids exists 
-            FriendshipRequest request = friendshipRepository.findFriendship(getPrincipal().getId(), requestedUserId);
+            FriendshipRequest request = friendshipRepository.findFriendship(user.getId(), requestedUserId);
             if (request != null) {
                 //the friendship already exists 
                 if (request.isAccepted()) {

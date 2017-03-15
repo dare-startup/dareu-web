@@ -40,7 +40,6 @@ public class FriendshipResource {
      * Request a friendship to another dareu user
      *
      * @param requestedUserId
-     * @param request
      * @return
      * @throws InternalApplicationException
      * @throws InvalidRequestException
@@ -61,8 +60,9 @@ public class FriendshipResource {
     @Produces(MediaType.APPLICATION_JSON)
     @POST
     @Secured
-    public Response requestFriendship(@PathParam(value = "requestedUserId") String requestedUserId) throws InvalidRequestException, InternalApplicationException {
-        return accountService.requestFriendship(requestedUserId);
+    public Response requestFriendship(@PathParam(value = "requestedUserId") String requestedUserId,
+                                      @HeaderParam("Authorization")String token) throws InvalidRequestException, InternalApplicationException {
+        return accountService.requestFriendship(requestedUserId, token);
     }
     
     @ApiOperation(value = "Requests a new friendship", produces = "application/json",
