@@ -169,6 +169,14 @@ public class AccountServiceImpl extends AbstractService implements AccountServic
                 if (user == null)
                     throw new AuthenticationException("Username and/or password are incorrect");
 
+                //update fcm id
+                if(request.getFcmToken() != null && ! request.getFcmToken().isEmpty()){
+                    try{
+                        dareUserRepository.updateFcmRegId(request.getFcmToken(), token);
+                    }catch(DataAccessException ex){
+                        log.severe("Could not update firebase registration token: " + ex.getMessage());
+                    }
+                }
                 //update token
                 dareUserRepository.updateSecurityToken(token, user.getId());
                 return Response.ok(new AuthenticationResponse(token, DareUtils.DATE_FORMAT.format(new Date()), "Welcome"))
