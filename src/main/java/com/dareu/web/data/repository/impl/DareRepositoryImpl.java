@@ -18,6 +18,7 @@ import com.dareu.web.dto.response.entity.DareResponseDescription;
 import com.dareu.web.dto.response.entity.Page;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Logger;
 import javax.ejb.NoSuchEntityException;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -33,6 +34,9 @@ public class DareRepositoryImpl extends AbstractRepository<Dare> implements Dare
 
     @Inject
     private DareuAssembler assembler;
+
+    @Inject
+    private Logger log;
 
     public DareRepositoryImpl() {
         super(Dare.class);
@@ -172,8 +176,11 @@ public class DareRepositoryImpl extends AbstractRepository<Dare> implements Dare
         try{
             Query q = em.createQuery("SELECT d FROM Dare d WHERE d.accepted = true AND d.completed = false AND d.expired = false AND d.challengedUser.id = :userId")
                     .setParameter("userId", userId);
-            List<Dare> dares = q.getResultList(); 
-            if(dares.isEmpty())return null; 
+            List<Dare> dares = q.getResultList();
+            if(dares.isEmpty()){
+                log.info("No active dare found");
+                return null;
+            }
             return assembler.assembleActiveDare(dares.get(0));
         }catch(Exception ex){
             throw new DataAccessException("Could not get current active dare: " + ex.getMessage());

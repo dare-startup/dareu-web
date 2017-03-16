@@ -368,7 +368,13 @@ public class DareServiceImpl implements DareService {
             DareUser user = dareUserRepository.findUserByToken(auth);
             String id = user.getId();
 
+            log.info("Getting current active dare for " + user.getEmail());
             ActiveDare description = dareRepository.getCurrentActiveDare(id);
+            if(description == null){
+                log.info("No active dare found");
+                return Response.status(Response.Status.NO_CONTENT)
+                        .build();
+            }
             return Response.ok(description)
                     .build();
         } catch (DataAccessException ex) {
