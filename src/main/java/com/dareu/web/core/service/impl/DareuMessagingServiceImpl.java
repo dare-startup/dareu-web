@@ -45,11 +45,11 @@ public class DareuMessagingServiceImpl implements DareuMessagingService {
     
     @Override
     public void sendConnectionRequestedNotification(FriendshipRequest friendship, String fcmToken){
-        ConnectionRequestMessage message = new ConnectionRequestMessage(); 
+        ConnectionRequestMessage message = new ConnectionRequestMessage();
         message.setFriendshipId(friendship.getId());
         message.setRequestUserId(friendship.getUser().getId());
         message.setUserName(friendship.getUser().getName());
-        
+        log.info("Sending connection request notification to " + friendship.getRequestedUser().getEmail());
         client.send(new DataUnicastMessage(options, fcmToken, message));
     }
 
@@ -62,6 +62,8 @@ public class DareuMessagingServiceImpl implements DareuMessagingService {
         message.setDareId(dare.getId());
         message.setDareName(dare.getName());
         message.setTimer(dare.getEstimatedDareTime());
+
+        log.info("Sending new dare notification to " + dare.getChallengedUser().getEmail());
         client.send(new DataUnicastMessage(options, fcmToken, message)); 
     }
 
@@ -69,7 +71,8 @@ public class DareuMessagingServiceImpl implements DareuMessagingService {
     public void sendConnectionAcceptedNotification(String userFcmToken, FriendshipRequest f) {
         ConnectionAcceptedMessage message = new ConnectionAcceptedMessage();
         message.setFriendshipId(f.getId());
-        
+
+        log.info("Sending connection accepted notification to " + f.getUser().getEmail());
         client.send(new DataUnicastMessage(options, userFcmToken, message));
     }
 
@@ -78,7 +81,8 @@ public class DareuMessagingServiceImpl implements DareuMessagingService {
         UploadedResponseMessage message = new UploadedResponseMessage(); 
         message.setDareResponseId(response.getId());
         message.setMessage(response.getUser().getName() + " just uploaded a response to your dare");
-        
+
+        log.info("Sending dare response uploaded notification to " + response.getDare().getChallengerUser().getEmail());
         client.send(new DataUnicastMessage(options, userFcmToken, message));
     }
 
@@ -88,7 +92,8 @@ public class DareuMessagingServiceImpl implements DareuMessagingService {
         newCommentMessage.setComment(comment);
         newCommentMessage.setCommentId(commentId);
         newCommentMessage.setResponseId(responseId);
-        
+
+        log.info("Sending new comment notification");
         client.send(new DataUnicastMessage(options, fcmToken, newCommentMessage));
     }
 
@@ -98,6 +103,8 @@ public class DareuMessagingServiceImpl implements DareuMessagingService {
         message.setDareId(dareId);
         message.setCreationDate(DareUtils.DETAILS_DATE_FORMAT.format(new Date()));
         message.setCurrentDareStatus(currentDareStatus);
+
+        log.info("Sending queued dare notification");
         client.send(new DataUnicastMessage(options, token, message)); 
     }
 
@@ -105,7 +112,8 @@ public class DareuMessagingServiceImpl implements DareuMessagingService {
     public void sendClappedResponse(String id, String fcmToken) {
         ClappedResponseMessage message = new ClappedResponseMessage(); 
         message.setResponseId(id);
-        
+
+        log.info("Sending clapped response notification");
         client.send(new DataUnicastMessage(options, fcmToken, message));
     }
 
