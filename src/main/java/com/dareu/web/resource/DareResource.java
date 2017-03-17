@@ -1,7 +1,6 @@
 package com.dareu.web.resource;
 
 import com.dareu.web.core.annotation.AllowedUsers;
-import java.util.logging.Logger;
 
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -48,9 +47,6 @@ public class DareResource {
 
     @Inject
     private DareService dareService;
-
-    @Inject
-    private Logger log;
 
     @ApiOperation(value = "Get created dares", produces = "application/json",
             notes = "Get created dares from logged user")

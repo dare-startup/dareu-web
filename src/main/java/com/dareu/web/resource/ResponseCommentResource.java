@@ -12,7 +12,6 @@ import com.dareu.web.exception.application.InvalidRequestException;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import java.util.logging.Logger;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
@@ -36,8 +35,6 @@ public class ResponseCommentResource {
     @Inject
     private DareService dareService;
 
-    @Inject
-    private Logger log;
     
     @ApiOperation(value = "Creates a new response comment", 
             consumes = "application/json", produces = "application/json", 

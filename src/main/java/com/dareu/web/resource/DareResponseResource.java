@@ -14,7 +14,6 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import java.util.logging.Logger;
 import javax.inject.Inject;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
@@ -37,9 +36,6 @@ public class DareResponseResource {
     
     @Inject
     private DareService dareService;
-
-    @Inject
-    private Logger log;
     
     
     @ApiOperation(value = "Creates a dare response", produces = "application/json",

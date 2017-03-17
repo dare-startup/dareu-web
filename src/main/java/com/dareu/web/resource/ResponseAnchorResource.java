@@ -7,6 +7,8 @@ import com.dareu.web.dto.request.AnchorContentRequest;
 import com.dareu.web.dto.security.SecurityRole;
 import com.dareu.web.exception.application.InternalApplicationException;
 import com.dareu.web.exception.application.InvalidRequestException;
+
+import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
@@ -24,7 +26,8 @@ import javax.ws.rs.core.Response;
 @Path("dare/response/anchor")
 @AllowedUsers(securityRoles = {SecurityRole.SPONSOR, SecurityRole.USER, SecurityRole.ADMIN})
 public class ResponseAnchorResource {
-    
+
+    @Inject
     private DareService dareService;
     
     @Path("create")
