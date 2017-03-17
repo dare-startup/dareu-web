@@ -1,15 +1,9 @@
 package com.dareu.web.core.service.impl;
 
 import com.dareu.web.core.DareUtils;
-import com.dareu.web.data.entity.Category;
-import com.dareu.web.data.entity.Dare;
-import com.dareu.web.data.entity.DareUser;
+import com.dareu.web.data.entity.*;
 import com.dareu.web.core.service.DareuAssembler;
 import com.dareu.web.core.service.FileService;
-import com.dareu.web.data.entity.AnchoredContent;
-import com.dareu.web.data.entity.Comment;
-import com.dareu.web.data.entity.DareResponse;
-import com.dareu.web.data.entity.FriendshipRequest;
 import com.dareu.web.dto.request.GoogleSignupRequest;
 import com.dareu.web.dto.response.entity.AccountProfile;
 import com.dareu.web.dto.response.entity.ActiveDare;
@@ -202,29 +196,30 @@ public class DareuAssemblerImpl implements DareuAssembler {
     }
 
     @Override
-    public List<DareResponseDescription> assembleDareResponseDescriptions(List<DareResponse> responses) {
+    public List<DareResponseDescription> assembleDareResponseDescriptions(List<DareResponse> responses, String userId) {
         List<DareResponseDescription> list = new ArrayList();
         DareResponseDescription desc;
         for (DareResponse response : responses) {
-            desc = assembleDareResponseDescription(response);
+            desc = assembleDareResponseDescription(response, userId);
+
             list.add(desc);
         }
         return list;
     }
 
     @Override
-    public List<DareResponseDescription> getResponseDescriptions(List<DareResponse> list) {
+    public List<DareResponseDescription> getResponseDescriptions(List<DareResponse> list, String userId) {
         List<DareResponseDescription> descs = new ArrayList();
         DareResponseDescription desc;
         for (DareResponse r : list) {
-            desc = assembleDareResponseDescription(r);
+            desc = assembleDareResponseDescription(r, userId);
             descs.add(desc);
         }
         return descs;
     }
 
     @Override
-    public DareResponseDescription assembleDareResponseDescription(DareResponse resp) {
+    public DareResponseDescription assembleDareResponseDescription(DareResponse resp, String userId) {
         DareResponseDescription desc = new DareResponseDescription();
         desc.setClaps(resp.getClaps().size());
         desc.setDare(assembleDareDescription(resp.getDare()));
@@ -235,26 +230,41 @@ public class DareuAssemblerImpl implements DareuAssembler {
         desc.setUser(assembleUserDescription(resp.getUser()));
         desc.setVideoUrl(resp.getVideoUrl());
         desc.setViews(resp.getViewsCount());
+        //check if current user has already clapped this response
+        for(ResponseClap clap : resp.getClaps()){
+            if(clap.getUser().getId().equals(userId)){
+                desc.setClapped(true);
+                break;
+            }
+        }
+
+        //check is user anchored response
+        for(AnchoredContent content : resp.getAnchoredContent()){
+            if(content.getUser().getId().equals(userId)){
+                desc.setAnchored(true);
+                break;
+            }
+        }
         return desc;
     }
 
     @Override
-    public List<CommentDescription> assembleCommentDescriptions(List<Comment> comments) {
+    public List<CommentDescription> assembleCommentDescriptions(List<Comment> comments, String userId) {
         List<CommentDescription> list = new ArrayList();
         for (Comment comment : comments) {
-            list.add(assembleCommentDescription(comment));
+            list.add(assembleCommentDescription(comment, userId));
         }
         return list;
     }
 
     @Override
-    public CommentDescription assembleCommentDescription(Comment comment) {
+    public CommentDescription assembleCommentDescription(Comment comment, String userId) {
         CommentDescription desc = new CommentDescription();
         desc.setComment(comment.getComment());
         desc.setCommentDate(comment.getCommentDate());
         desc.setId(comment.getId());
         desc.setLikes(comment.getLikes());
-        desc.setResponse(assembleDareResponseDescription(comment.getResponse()));
+        desc.setResponse(assembleDareResponseDescription(comment.getResponse(), userId));
         desc.setUser(assembleUserDescription(comment.getUser()));
         return desc;
     }
@@ -306,10 +316,10 @@ public class DareuAssemblerImpl implements DareuAssembler {
     }
 
     @Override
-    public List<AnchoredDescription> assembleAnchoredContent(List<AnchoredContent> list) {
+    public List<AnchoredDescription> assembleAnchoredContent(List<AnchoredContent> list, String userId) {
         List<AnchoredDescription> descs = new ArrayList();
         for(AnchoredContent c : list)
-            descs.add(new AnchoredDescription(c.getCreationDate(), assembleDareResponseDescription(c.getResponse())));
+            descs.add(new AnchoredDescription(c.getCreationDate(), assembleDareResponseDescription(c.getResponse(), userId)));
         return descs;
     }
 

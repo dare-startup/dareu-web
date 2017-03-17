@@ -549,9 +549,10 @@ public class DareServiceImpl implements DareService {
     }
 
     @Override
-    public Response channelResponses(int pageNumber) throws InternalApplicationException {
+    public Response channelResponses(int pageNumber, String token) throws InternalApplicationException {
         try {
-            Page<DareResponseDescription> page = dareResponseRepository.getChannelPage(pageNumber);
+            DareUser user = dareUserRepository.findUserByToken(token);
+            Page<DareResponseDescription> page = dareResponseRepository.getChannelPage(pageNumber, user.getId());
             for (DareResponseDescription desc : page.getItems()) {
                 desc.setComments(dareResponseRepository.getResponseCommentsCount(desc.getId()));
             }
@@ -564,18 +565,19 @@ public class DareServiceImpl implements DareService {
     }
 
     @Override
-    public Response findResponseDescription(String responseId) throws InternalApplicationException, InvalidRequestException {
+    public Response findResponseDescription(String responseId, String token) throws InternalApplicationException, InvalidRequestException {
         if (responseId == null || responseId.isEmpty()) {
             throw new InvalidRequestException("No response id provided");
         }
 
         try {
+            DareUser user = dareUserRepository.findUserByToken(token);
             DareResponse resp = dareResponseRepository.find(responseId);
             int commentsCount = dareResponseRepository.getResponseCommentsCount(responseId);
             if (resp == null) {
                 throw new InvalidRequestException("Invalid id");
             }
-            DareResponseDescription desc = assembler.assembleDareResponseDescription(resp);
+            DareResponseDescription desc = assembler.assembleDareResponseDescription(resp, user.getId());
             desc.setComments(commentsCount);
             return Response.ok(desc)
                     .build();
@@ -649,16 +651,17 @@ public class DareServiceImpl implements DareService {
     }
 
     @Override
-    public Response findResponseComments(int pageNumber, String responseId) throws InternalApplicationException, InvalidRequestException {
+    public Response findResponseComments(int pageNumber, String responseId, String token) throws InternalApplicationException, InvalidRequestException {
         if (responseId == null || responseId.isEmpty()) {
             throw new InvalidRequestException("No response id provided");
         }
         try {
+            DareUser user = dareUserRepository.findUserByToken(token);
             DareResponse response = dareResponseRepository.find(responseId);
             if (response == null) {
                 throw new InvalidRequestException("Invalid response id");
             }
-            Page<CommentDescription> page = dareResponseRepository.findResponseComments(pageNumber, responseId);
+            Page<CommentDescription> page = dareResponseRepository.findResponseComments(pageNumber, responseId, user.getId());
 
             //return response
             return Response.ok(page)
@@ -735,18 +738,19 @@ public class DareServiceImpl implements DareService {
     }
 
     @Override
-    public Response findResponseComment(String commentId) throws InternalApplicationException, InvalidRequestException {
+    public Response findResponseComment(String commentId, String token) throws InternalApplicationException, InvalidRequestException {
         if (commentId == null || commentId.isEmpty()) {
             throw new InvalidRequestException("Comment is not provided");
         }
 
         try {
+            DareUser user = dareUserRepository.findUserByToken(token);
             Comment comment = dareResponseRepository.findComment(commentId);
             if (comment == null) {
                 throw new InvalidRequestException("Invalid comment id");
             }
 
-            CommentDescription descr = assembler.assembleCommentDescription(comment);
+            CommentDescription descr = assembler.assembleCommentDescription(comment, user.getId());
 
             return Response.ok(descr)
                     .build();

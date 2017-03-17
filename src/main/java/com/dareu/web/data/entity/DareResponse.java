@@ -48,6 +48,9 @@ public class DareResponse extends BaseEntity {
     @Column(name = "video_url")
     private String videoUrl;
 
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "response")
+    private List<AnchoredContent> anchoredContent;
+
     public DareResponse() {
     }
 
@@ -123,6 +126,11 @@ public class DareResponse extends BaseEntity {
         this.claps = claps;
     }
 
-    
-    
+    public List<AnchoredContent> getAnchoredContent() {
+        return anchoredContent;
+    }
+
+    public void setAnchoredContent(List<AnchoredContent> anchoredContent) {
+        this.anchoredContent = anchoredContent;
+    }
 }

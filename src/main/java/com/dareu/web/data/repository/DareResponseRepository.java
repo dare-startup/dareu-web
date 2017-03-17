@@ -44,7 +44,7 @@ public interface DareResponseRepository extends BaseRepository<DareResponse>{
      * @return
      * @throws DataAccessException 
      */
-    public Page<DareResponseDescription> getChannelPage(int pageNumber)throws DataAccessException;
+    public Page<DareResponseDescription> getChannelPage(int pageNumber, String userId)throws DataAccessException;
     
     /**
      * Creates a new response comment
@@ -60,7 +60,7 @@ public interface DareResponseRepository extends BaseRepository<DareResponse>{
      * @return
      * @throws DataAccessException 
      */
-    public Page<CommentDescription> findResponseComments(int pageNumber, String responseId) throws DataAccessException;
+    public Page<CommentDescription> findResponseComments(int pageNumber, String responseId, String userId) throws DataAccessException;
     
     /**
      * 

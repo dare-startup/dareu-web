@@ -1,11 +1,6 @@
 package com.dareu.web.data.entity;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 /**
  *
@@ -14,6 +9,9 @@ import javax.persistence.Table;
 @Entity(name = "ResponseClap")
 @Table(name = "response_clap")
 public class ResponseClap extends BaseEntity{
+
+    @Column(name = "clap_date")
+    private String clapDate;
     
     @OneToOne(fetch = FetchType.EAGER,  cascade = CascadeType.REFRESH)
     @JoinColumn(name = "response_id")
@@ -42,6 +40,12 @@ public class ResponseClap extends BaseEntity{
     public void setUser(DareUser user) {
         this.user = user;
     }
-    
-    
+
+    public String getClapDate() {
+        return clapDate;
+    }
+
+    public void setClapDate(String clapDate) {
+        this.clapDate = clapDate;
+    }
 }

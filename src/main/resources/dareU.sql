@@ -80,6 +80,7 @@ create table dare_response(
     foreign key(user_id) references dareu_user(id),
     foreign key(dare_id)references dare(id)); 
 
+-- RESPONSE COMMENT
 create table response_comment(
     id varchar(36) not null primary key, 
     comment_date varchar(50) not null, 
@@ -90,9 +91,11 @@ create table response_comment(
     foreign key(response_id) references dare_response(id), 
     foreign key(user_id)references dareu_user(id)
 );
-   
+
+-- RESPONSE CLAP
 create table response_clap(
-    id varchar(36)not null primary key, 
+    id varchar(36)not null primary key,
+    clap_date varchar(50)not null,
     response_id varchar(36)not null, 
     user_id varchar(36) not null, 
     foreign key(response_id) references dare_response(id), 

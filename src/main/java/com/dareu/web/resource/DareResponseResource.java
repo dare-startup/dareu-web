@@ -102,8 +102,9 @@ public class DareResponseResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Secured
-    public Response channelResponses(@DefaultValue("1") @QueryParam("pageNumber")int pageNumber)throws InternalApplicationException{
-        return dareService.channelResponses(pageNumber); 
+    public Response channelResponses(@DefaultValue("1") @QueryParam("pageNumber")int pageNumber,
+                                     @HeaderParam("Authorization")String token)throws InternalApplicationException{
+        return dareService.channelResponses(pageNumber, token);
     }
     
     @ApiOperation(value = "Get a response description", produces = "application/json", 
@@ -118,8 +119,9 @@ public class DareResponseResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Secured
-    public Response findResponseDescription(@QueryParam("id")String responseId) throws InternalApplicationException, InvalidRequestException {
-        return dareService.findResponseDescription(responseId); 
+    public Response findResponseDescription(@QueryParam("id")String responseId,
+                                            @HeaderParam("Authorization")String token) throws InternalApplicationException, InvalidRequestException {
+        return dareService.findResponseDescription(responseId, token);
     }
     
     @ApiOperation(value = "set a new view to a dare response", 
@@ -149,7 +151,7 @@ public class DareResponseResource {
                 response = AuthorizationResponse.class)
     })
     @Path("clap")
-    @GET
+    @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Secured
     public Response findResponseComments(ClapRequest request, 

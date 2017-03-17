@@ -1,10 +1,6 @@
 package com.dareu.web.data.entity;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 /**
  *
@@ -17,10 +13,12 @@ public class AnchoredContent extends BaseEntity {
     @Column(name = "creation_date")
     private String creationDate; 
     
-    @ManyToOne()
+    @ManyToOne
+    @JoinColumn(name = "id")
     private DareUser user; 
     
-    @ManyToOne()
+    @ManyToOne
+    @JoinColumn(name = "id")
     private DareResponse response; 
 
     public AnchoredContent() {

@@ -134,35 +134,35 @@ public interface DareuAssembler {
      * @param responses
      * @return 
      */
-    public List<DareResponseDescription> assembleDareResponseDescriptions(List<DareResponse> responses);
+    public List<DareResponseDescription> assembleDareResponseDescriptions(List<DareResponse> responses, String userId);
 
     /**
      * Get a list of dare response descriptions
      * @param list
      * @return 
      */
-    public List<DareResponseDescription> getResponseDescriptions(List<DareResponse> list);
+    public List<DareResponseDescription> getResponseDescriptions(List<DareResponse> list, String userId);
 
     /**
      * assembles a new response description
      * @param resp
      * @return 
      */
-    public DareResponseDescription assembleDareResponseDescription(DareResponse resp);
+    public DareResponseDescription assembleDareResponseDescription(DareResponse resp, String userId);
 
     /**
      * Assembles a new comment description list
      * @param comments
      * @return 
      */
-    public List<CommentDescription> assembleCommentDescriptions(List<Comment> comments);
+    public List<CommentDescription> assembleCommentDescriptions(List<Comment> comments, String userId);
     
     /**
      * Assemble a new comment description
      * @param comment
      * @return 
      */
-    public CommentDescription assembleCommentDescription(Comment comment);
+    public CommentDescription assembleCommentDescription(Comment comment, String userId);
     
     /**
      * Creates a new account profile
@@ -193,7 +193,7 @@ public interface DareuAssembler {
      * @param list
      * @return 
      */
-    public List<AnchoredDescription> assembleAnchoredContent(List<AnchoredContent> list);
+    public List<AnchoredDescription> assembleAnchoredContent(List<AnchoredContent> list, String userId);
 
     /**
      * Creates a new dare user from a google sign up request

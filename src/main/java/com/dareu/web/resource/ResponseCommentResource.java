@@ -70,8 +70,9 @@ public class ResponseCommentResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Secured
     public Response findResponseComments(@DefaultValue("1") @QueryParam("pageNumber")int pageNumber, 
-                                        @QueryParam("responseId")String responseId) throws InternalApplicationException, InvalidRequestException {
-        return dareService.findResponseComments(pageNumber, responseId); 
+                                        @QueryParam("responseId")String responseId,
+                                         @HeaderParam("Authorization") String token) throws InternalApplicationException, InvalidRequestException {
+        return dareService.findResponseComments(pageNumber, responseId, token);
     }
     
      @ApiOperation(value = "Find a comment", 
@@ -88,8 +89,9 @@ public class ResponseCommentResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @Secured
-    public Response findCommentDescription(@QueryParam("commentId")String commentId) throws InternalApplicationException, InvalidRequestException {
-        return dareService.findResponseComment(commentId); 
+    public Response findCommentDescription(@QueryParam("commentId")String commentId,
+                                           @HeaderParam("Authorization")String token) throws InternalApplicationException, InvalidRequestException {
+        return dareService.findResponseComment(commentId, token);
     }
     
 }

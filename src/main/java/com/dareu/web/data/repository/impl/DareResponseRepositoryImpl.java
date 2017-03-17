@@ -60,7 +60,7 @@ public class DareResponseRepositoryImpl extends AbstractRepository<DareResponse>
             //get count 
             int count = responsesCount(userId);
             Page<DareResponseDescription> page = new Page<DareResponseDescription>();
-            List<DareResponseDescription> descriptions = assembler.assembleDareResponseDescriptions(responses);
+            List<DareResponseDescription> descriptions = assembler.assembleDareResponseDescriptions(responses, userId);
             page.setItems(descriptions);
             page.setPageNumber(pageNumber);
             page.setPageSize(DEFAULT_PAGE_NUMBER);
@@ -72,7 +72,7 @@ public class DareResponseRepositoryImpl extends AbstractRepository<DareResponse>
     }
 
     @Override
-    public Page<DareResponseDescription> getChannelPage(int pageNumber) throws DataAccessException {
+    public Page<DareResponseDescription> getChannelPage(int pageNumber, String userId) throws DataAccessException {
         try {
             Query query = em.createQuery("SELECT r FROM DareResponse r ORDER BY r.lastUpdate DESC")
                     .setMaxResults(DEFAULT_PAGE_NUMBER)
@@ -81,7 +81,7 @@ public class DareResponseRepositoryImpl extends AbstractRepository<DareResponse>
 
             Long count = (Long) em.createQuery("SELECT COUNT(r.id) FROM DareResponse r ORDER BY r.lastUpdate DESC")
                     .getSingleResult();
-            List<DareResponseDescription> descs = assembler.getResponseDescriptions(list);
+            List<DareResponseDescription> descs = assembler.getResponseDescriptions(list, userId);
             Page<DareResponseDescription> page = new Page<DareResponseDescription>();
             page.setItems(descs);
             page.setPageNumber(pageNumber);
@@ -103,7 +103,7 @@ public class DareResponseRepositoryImpl extends AbstractRepository<DareResponse>
     }
 
     @Override
-    public Page<CommentDescription> findResponseComments(int pageNumber, String responseId) throws DataAccessException {
+    public Page<CommentDescription> findResponseComments(int pageNumber, String responseId, String userId) throws DataAccessException {
         try {
             List<Comment> comments = em.createQuery("SELECT c FROM Comment c WHERE c.response.id = :responseId")
                     .setParameter("responseId", responseId)
@@ -114,7 +114,7 @@ public class DareResponseRepositoryImpl extends AbstractRepository<DareResponse>
                     .setParameter("responseId", responseId)
                     .getSingleResult();
 
-            List<CommentDescription> descs = assembler.assembleCommentDescriptions(comments);
+            List<CommentDescription> descs = assembler.assembleCommentDescriptions(comments, userId);
             Page<CommentDescription> page = new Page<CommentDescription>();
             page.setItems(descs);
             page.setPageNumber(pageNumber);
@@ -180,18 +180,18 @@ public class DareResponseRepositoryImpl extends AbstractRepository<DareResponse>
     }
 
     @Override
-    public Page<AnchoredDescription> getAnchoredContent(int pageNumber, String token) throws DataAccessException {
+    public Page<AnchoredDescription> getAnchoredContent(int pageNumber, String userId) throws DataAccessException {
         try{
             List<AnchoredContent> list = 
-                    em.createQuery("SELECT a FROM AnchoredContent a WHERE a.user.securityToken = :token")
-                    .setParameter("token", token)
+                    em.createQuery("SELECT a FROM AnchoredContent a WHERE a.user.id = :userId")
+                    .setParameter("userId", userId)
                     .setMaxResults(DEFAULT_PAGE_NUMBER)
                     .setFirstResult(getFirstResult(pageNumber))
                     .getResultList();
-            Long count = (Long)em.createQuery("SELECT a FROM AnchoredContent a WHERE a.user.securityToken = :token")
-                    .setParameter("token", token)
+            Long count = (Long)em.createQuery("SELECT a FROM AnchoredContent a WHERE a.user.id = :userId")
+                    .setParameter("userId", userId)
                     .getSingleResult();
-            List<AnchoredDescription> descs = assembler.assembleAnchoredContent(list);
+            List<AnchoredDescription> descs = assembler.assembleAnchoredContent(list, userId);
             Page<AnchoredDescription> page = new Page<AnchoredDescription>();
             page.setItems(descs);
             page.setPageNumber(pageNumber);

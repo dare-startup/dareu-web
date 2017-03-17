@@ -160,7 +160,7 @@ public interface DareService {
      * @return
      * @throws InternalApplicationException 
      */
-    public Response channelResponses(int pageNumber) throws InternalApplicationException;
+    public Response channelResponses(int pageNumber, String token) throws InternalApplicationException;
 
     /**
      * 
@@ -169,7 +169,7 @@ public interface DareService {
      * @throws InternalApplicationException
      * @throws InvalidRequestException 
      */
-    public Response findResponseDescription(String responseId)throws InternalApplicationException, InvalidRequestException;
+    public Response findResponseDescription(String responseId, String token)throws InternalApplicationException, InvalidRequestException;
 
     /**
      * 
@@ -189,7 +189,7 @@ public interface DareService {
      * @throws InternalApplicationException 
      * @throws com.dareu.web.exception.application.InvalidRequestException 
      */
-    public Response findResponseComments(int pageNumber, String responseId) throws InternalApplicationException, InvalidRequestException;
+    public Response findResponseComments(int pageNumber, String responseId, String token) throws InternalApplicationException, InvalidRequestException;
 
     /**
      * Increment the number of views by 1
@@ -218,11 +218,10 @@ public interface DareService {
      * @throws InternalApplicationException
      * @throws InvalidRequestException 
      */
-    public Response findResponseComment(String commentId) throws InternalApplicationException, InvalidRequestException;
+    public Response findResponseComment(String commentId, String token) throws InternalApplicationException, InvalidRequestException;
 
     /**
      * Anchor a dare response to a user
-     * @param request
      * @param token
      * @return 
      * @throws com.dareu.web.exception.application.InternalApplicationException 
