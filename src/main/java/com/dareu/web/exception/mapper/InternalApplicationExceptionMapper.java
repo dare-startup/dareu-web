@@ -2,7 +2,6 @@ package com.dareu.web.exception.mapper;
 
 import com.dareu.web.core.DareUtils;
 import java.util.Date;
-import java.util.logging.Logger;
 
 import javax.inject.Inject;
 import javax.ws.rs.core.Response;
@@ -12,12 +11,13 @@ import javax.ws.rs.ext.Provider;
 import com.dareu.web.dto.response.ApplicationErrorResponse;
 import com.dareu.web.exception.application.ErrorCode;
 import com.dareu.web.exception.application.InternalApplicationException;
+import org.apache.log4j.Logger;
 
 @Provider
 public class InternalApplicationExceptionMapper implements ExceptionMapper<InternalApplicationException>{
 
 	@Inject
-	private Logger log; 
+	private Logger log;
 	
 	@Override
 	public Response toResponse(InternalApplicationException ex) {

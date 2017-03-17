@@ -3,7 +3,6 @@ package com.dareu.web.data.repository.impl;
 import com.dareu.web.core.service.DareuAssembler;
 import com.dareu.web.core.service.FileService;
 import java.util.List;
-import java.util.logging.Logger;
 
 import com.dareu.web.data.entity.DareUser;
 import com.dareu.web.data.repository.DareUserRepository;
@@ -15,6 +14,8 @@ import com.dareu.web.dto.response.entity.AccountProfile;
 import com.dareu.web.dto.response.entity.CreatedDare;
 import com.dareu.web.dto.response.entity.DareResponseDescription;
 import com.dareu.web.dto.response.entity.Page;
+import org.apache.log4j.Logger;
+
 import java.math.BigInteger;
 
 import javax.ejb.Stateless;
@@ -30,7 +31,8 @@ import javax.transaction.Transactional;
 @Stateless
 public class DareUserRepositoryImpl extends AbstractRepository<DareUser> implements DareUserRepository {
 
-    private Logger log = Logger.getLogger("DareUserRepository");
+    @Inject
+    private Logger log;
 
     @Inject
     private DareRepository dareRepository; 
@@ -92,7 +94,7 @@ public class DareUserRepositoryImpl extends AbstractRepository<DareUser> impleme
         } catch (NoResultException ex) {
             throw new AuthenticationException("Username and/or password are incorrect");
         } catch (Exception ex) {
-            log.severe("An error occured signin in a user: " + ex.getMessage());
+            log.error("An error occured signin in a user: " + ex.getMessage());
             throw new AuthenticationException("Could not authenticate user");
         }
     }

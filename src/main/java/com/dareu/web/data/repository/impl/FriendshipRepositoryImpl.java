@@ -3,7 +3,6 @@ package com.dareu.web.data.repository.impl;
 import com.dareu.web.core.service.DareuAssembler;
 import com.dareu.web.data.entity.DareUser;
 import java.util.List;
-import java.util.logging.Logger;
 
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
@@ -14,16 +13,17 @@ import com.dareu.web.data.exception.DataAccessException;
 import com.dareu.web.dto.response.entity.ConnectionRequest;
 import com.dareu.web.dto.response.entity.FriendSearchDescription;
 import com.dareu.web.dto.response.entity.Page;
+import org.apache.log4j.Logger;
+
 import java.math.BigInteger;
-import java.util.HashMap;
-import java.util.Map;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 @Stateless
 public class FriendshipRepositoryImpl extends AbstractRepository<FriendshipRequest> implements FriendshipRepository {
 
-    private static final Logger log = Logger.getLogger(FriendshipRepositoryImpl.class.getName());
+    @Inject
+    private Logger log;
 
     @Inject
     private DareuAssembler assembler;
@@ -93,7 +93,7 @@ public class FriendshipRepositoryImpl extends AbstractRepository<FriendshipReque
                 return count > 0;
             }
         } catch (Exception ex) {
-            log.severe("Exception checking if users are friends: " + ex.getMessage());
+            log.error("Exception checking if users are friends: " + ex.getMessage());
             return false;
         }
     }

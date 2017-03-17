@@ -5,10 +5,8 @@ import java.security.SecureRandom;
 import java.text.SimpleDateFormat;
 import java.util.TimeZone;
 
-import javax.ejb.Stateless;
 
 
-@Stateless
 public class DareUtils {
 	public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("MM/dd/YY");
         public static final SimpleDateFormat DETAILS_DATE_FORMAT = new SimpleDateFormat("MM/dd/yyyy HH:mm");

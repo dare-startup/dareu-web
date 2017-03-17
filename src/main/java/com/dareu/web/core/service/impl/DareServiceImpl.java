@@ -2,7 +2,6 @@ package com.dareu.web.core.service.impl;
 
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Logger;
 
 import javax.inject.Inject;
 import javax.ws.rs.core.Response;
@@ -55,6 +54,8 @@ import com.dareu.web.exception.application.InternalApplicationException;
 import com.dareu.web.exception.application.InvalidRequestException;
 import java.io.IOException;
 import javax.enterprise.event.Event;
+
+import org.apache.log4j.Logger;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 
 public class DareServiceImpl implements DareService {
@@ -122,6 +123,7 @@ public class DareServiceImpl implements DareService {
         if (request.getTimer() <= 0) {
             throw new InvalidRequestException("Time field is not valid");
         }
+        log.info("Creating a new dare");
         //create a new dare 
         Dare dare = new Dare();
         dare.setAccepted(false);
@@ -138,9 +140,11 @@ public class DareServiceImpl implements DareService {
         DareUser challengerUser = null;
 
         try {
+            log.info("Searching users");
             challengedUser = dareUserRepository.find(request.getFriendId());
             challengerUser = dareUserRepository.findUserByToken(authenticationToken);
             //get category
+            log.info("Searching category");
             Category category = categoryRepository.find(request.getCategoryId());
             if (category == null) {
                 throw new InvalidRequestException("Category not valid, try again");
@@ -151,9 +155,16 @@ public class DareServiceImpl implements DareService {
             dare.setChallengerUser(challengerUser);
             dare.setChallengedUser(challengedUser);
 
+            log.info("Saving dare");
             String id = dareRepository.createDare(dare);
+
+            log.info("Getting firebase registration token");
             String dareUserFcmToken = dareUserRepository.getUserFcmToken(challengedUser.getId());
+
+            log.info("Searching an active dare for " + challengedUser.getEmail());
             ActiveDare activeDare = dareRepository.getCurrentActiveDare(challengedUser.getId());
+
+            log.info("Searching pending dare for " + challengedUser.getEmail());
             Dare unacceptedDare = dareRepository.findUnacceptedDare(challengedUser.getId());
             //check if challenged user already has an active dare
             if (activeDare != null) {
@@ -207,6 +218,7 @@ public class DareServiceImpl implements DareService {
             throw new InvalidRequestException("Description field not provided");
         }
 
+        log.info("Creating new dare category");
         //create a category
         Category category = new Category();
         category.setName(request.getName());
@@ -231,8 +243,8 @@ public class DareServiceImpl implements DareService {
             if (pageNumber < 1) {
                 pageNumber = 1;
             }
+            log.info("Getting categories");
             List<Category> categories = categoryRepository.findCategoriesByPage(pageNumber);
-
             Page<CategoryDescription> page = assembler.assembleCategories(categories, pageNumber);
             return Response.ok(page)
                     .build();
@@ -247,6 +259,7 @@ public class DareServiceImpl implements DareService {
             pageNumber = 1;
         }
         try {
+            log.info("Finding unapproved dares");
             List<Dare> dares = dareRepository.findUnapprovedDares(pageNumber);
             Page<DareDescription> dto = assembler.assembleDareDescriptions(dares, pageNumber);
 
@@ -302,6 +315,7 @@ public class DareServiceImpl implements DareService {
         }
 
         try {
+            log.info("Confirming dare request");
             //update dare 
             dareRepository.confirmDareRequest(request.getDareId(), request.isAccepted());
             return Response.ok(new UpdatedEntityResponse("Updated dare", true, "dare"))
@@ -406,14 +420,15 @@ public class DareServiceImpl implements DareService {
 
             log.info("Saving temporal file " + dareResponse.getId() + ".jpg");
             String thumbPath = fileService.saveTemporalfile(request.getThumb(), dareResponse.getId(), FileService.FileType.VIDEO_THUMBNAIL);
-
             String thumbUrl = fileService.saveFile(thumbPath, FileService.FileType.VIDEO_THUMBNAIL, dareResponse.getId().concat(".jpg"));
 
-            //delete both file 
+            //delete both file
+            log.info("Deleting temporal files");
             fileService.deleteTemporalFile(videoPath);
             fileService.deleteTemporalFile(thumbPath);
 
             //populate response
+            log.info("Creating dare response");
             dareResponse.setVideoUrl(videoUrl);
             dareResponse.setThumbUrl(thumbUrl);
             dareResponse.setComment(request.getComment());
@@ -435,7 +450,8 @@ public class DareServiceImpl implements DareService {
                 messagingService.sendDareResponseUploaded(dareResponse, challengerFcmToken);
             }
 
-            //set dare as complete 
+            //set dare as complete
+            log.info("Setting dare as completed");
             dareRepository.setDareCompleted(dare.getId());
             //return response
             return Response.ok(new EntityRegistrationResponse("Dare response has been created", RegistrationType.DARE_RESPONSE,

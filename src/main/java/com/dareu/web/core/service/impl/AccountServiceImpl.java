@@ -8,7 +8,6 @@ package com.dareu.web.core.service.impl;
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Logger;
 
 import com.dareu.web.core.DareUtils;
 import com.dareu.web.dto.request.*;
@@ -52,6 +51,7 @@ import javax.inject.Inject;
 import javax.ws.rs.core.Response;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Logger;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 
 /**
@@ -129,7 +129,7 @@ public class AccountServiceImpl extends AbstractService implements AccountServic
         try {
             dareUserRepository.registerDareUser(user);
         } catch (DataAccessException ex) {
-            log.severe("Could not register new dare user: " + ex.getMessage());
+            log.error("Could not register new dare user: " + ex.getMessage());
             throw new EntityRegistrationException("Could not register dare user, try again");
         }
 
@@ -174,7 +174,7 @@ public class AccountServiceImpl extends AbstractService implements AccountServic
                     try{
                         dareUserRepository.updateFcmRegId(request.getFcmToken(), token);
                     }catch(DataAccessException ex){
-                        log.severe("Could not update firebase registration token: " + ex.getMessage());
+                        log.error("Could not update firebase registration token: " + ex.getMessage());
                     }
                 }
                 //update token
@@ -425,7 +425,7 @@ public class AccountServiceImpl extends AbstractService implements AccountServic
             return Response.ok(accounts)
                     .build();
         } catch (DataAccessException ex) {
-            log.severe("Could not fetch discoverable users: " + ex.getMessage());
+            log.error("Could not fetch discoverable users: " + ex.getMessage());
             throw new InternalApplicationException("Could not fetch discoverable users: " + ex.getMessage());
         }
     }

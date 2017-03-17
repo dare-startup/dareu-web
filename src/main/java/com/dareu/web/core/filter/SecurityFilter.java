@@ -17,16 +17,15 @@ import com.github.roar109.syring.annotation.ApplicationProperty;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
-import java.util.logging.Logger;
-import javax.annotation.security.RolesAllowed;
 
 import javax.inject.Inject;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.ext.Provider;
+
+import org.apache.log4j.Logger;
 import org.jboss.resteasy.core.ResourceMethodInvoker;
 import org.jboss.resteasy.spi.ResteasyProviderFactory;
 
@@ -105,7 +104,7 @@ public class SecurityFilter implements ContainerRequestFilter {
                 return false;
             }
         } catch (DataAccessException ex) {
-            log.severe("Error finding user: " + ex.getMessage());
+            log.error("Error finding user: " + ex.getMessage());
             return false;
         }
     }

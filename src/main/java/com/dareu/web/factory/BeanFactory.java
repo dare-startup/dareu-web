@@ -5,14 +5,10 @@
  */
 package com.dareu.web.factory;
 
-import com.dareu.web.core.security.DareuPrincipal;
-import java.util.logging.Logger;
-import javax.ejb.Stateless;
+import org.apache.log4j.Logger;
+
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.InjectionPoint;
-import javax.inject.Inject;
-import javax.ws.rs.core.Context;
-import org.jboss.resteasy.spi.ResteasyProviderFactory;
 
 /**
  *
@@ -20,8 +16,6 @@ import org.jboss.resteasy.spi.ResteasyProviderFactory;
  */
 
 public class BeanFactory {
-    
-    private static final Logger log = Logger.getAnonymousLogger();
     
     @Produces
     public Logger loggerBean(InjectionPoint ip){

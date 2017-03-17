@@ -6,13 +6,9 @@
 package com.dareu.web.data.repository.impl;
 
 import com.dareu.web.data.entity.BaseEntity;
-import com.dareu.web.data.repository.BaseRepository;
 import com.dareu.web.data.exception.DataAccessException;
 
 import java.util.List;
-import java.util.logging.Logger;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -29,8 +25,6 @@ import javax.transaction.Transactional;
 public class AbstractRepository<T extends BaseEntity> {
 
     private final Class<T> type;
-
-    private transient Logger log = Logger.getLogger("AbstractRepository");
     
     public static final Integer DEFAULT_PAGE_NUMBER = 10; 
 

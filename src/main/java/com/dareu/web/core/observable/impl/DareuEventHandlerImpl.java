@@ -3,9 +3,9 @@ package com.dareu.web.core.observable.impl;
 import com.dareu.web.core.observable.DareEvent;
 import com.dareu.web.core.observable.DareuEventHandler;
 import com.dareu.web.exception.event.EventHandlerException;
-import java.util.logging.Logger;
+import org.apache.log4j.Logger;
+
 import javax.ejb.Asynchronous;
-import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
@@ -16,7 +16,7 @@ import javax.inject.Inject;
 public class DareuEventHandlerImpl implements DareuEventHandler{
     
     @Inject
-    private Logger log; 
+    private Logger log;
 
     @Override
     @Asynchronous

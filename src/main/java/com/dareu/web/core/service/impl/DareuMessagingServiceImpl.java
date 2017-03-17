@@ -1,7 +1,6 @@
 package com.dareu.web.core.service.impl;
 
 import com.dareu.web.core.DareUtils;
-import java.util.logging.Logger;
 
 import javax.inject.Inject;
 
@@ -20,13 +19,16 @@ import de.bytefish.fcmjava.client.FcmClient;
 import de.bytefish.fcmjava.model.enums.PriorityEnum;
 import de.bytefish.fcmjava.model.options.FcmMessageOptions;
 import de.bytefish.fcmjava.requests.data.DataUnicastMessage;
+import org.apache.log4j.Logger;
+
 import java.time.Duration;
 import java.util.Date;
 
 public class DareuMessagingServiceImpl implements DareuMessagingService {
 
-    private Logger log = Logger.getLogger(DareuMessagingServiceImpl.class.getName());
-    
+    @Inject
+    private Logger log;
+
     @Inject
     private FcmClient client; 
     private static final FcmMessageOptions options = FcmMessageOptions.builder()
