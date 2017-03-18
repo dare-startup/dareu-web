@@ -14,11 +14,11 @@ public class AnchoredContent extends BaseEntity {
     private String creationDate; 
     
     @ManyToOne
-    @JoinColumn(name = "id")
+    @JoinColumn(name = "id", insertable = false, updatable = false)
     private DareUser user; 
     
     @ManyToOne
-    @JoinColumn(name = "id")
+    @JoinColumn(name = "id", insertable = false, updatable = false)
     private DareResponse response; 
 
     public AnchoredContent() {
