@@ -571,17 +571,24 @@ public class DareServiceImpl implements DareService {
         }
 
         try {
+            log.info("Finding user");
             DareUser user = dareUserRepository.findUserByToken(token);
+
+            log.info("Finding response");
             DareResponse resp = dareResponseRepository.find(responseId);
+
+            log.info("Getting number of comments");
             int commentsCount = dareResponseRepository.getResponseCommentsCount(responseId);
             if (resp == null) {
                 throw new InvalidRequestException("Invalid id");
             }
+            log.info("Creating response");
             DareResponseDescription desc = assembler.assembleDareResponseDescription(resp, user.getId());
             desc.setComments(commentsCount);
             return Response.ok(desc)
                     .build();
         } catch (Exception ex) {
+            log.error(ex.getMessage());
             throw new InternalApplicationException(ex.getMessage(), ex);
         }
     }
