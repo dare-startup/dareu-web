@@ -12,12 +12,12 @@ public class ResponseClap extends BaseEntity{
 
     @Column(name = "clap_date")
     private String clapDate;
-    
-    @OneToOne(fetch = FetchType.EAGER,  cascade = CascadeType.REFRESH)
+
+    @ManyToOne
     @JoinColumn(name = "response_id")
     private DareResponse response; 
     
-    @OneToOne(fetch = FetchType.EAGER,  cascade = CascadeType.REFRESH)
+    @ManyToOne
     @JoinColumn(name = "user_id")
     private DareUser user; 
     

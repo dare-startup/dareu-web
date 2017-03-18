@@ -35,8 +35,7 @@ public class DareResponse extends BaseEntity {
     @JoinColumn(name = "dare_id")
     private Dare dare;
     
-    @OneToMany(cascade = CascadeType.REFRESH, 
-            fetch = FetchType.LAZY, mappedBy = "response")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "response")
     private List<ResponseClap> claps; 
     
     @Column(name = "last_update")

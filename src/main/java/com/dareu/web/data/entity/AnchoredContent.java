@@ -13,10 +13,12 @@ public class AnchoredContent extends BaseEntity {
     @Column(name = "creation_date")
     private String creationDate; 
     
-    @ManyToOne(targetEntity = DareUser.class)
+    @ManyToOne
+    @JoinColumn(name = "id", table = "dareu_user")
     private DareUser user; 
     
-    @ManyToOne(targetEntity = DareResponse.class)
+    @ManyToOne
+    @JoinColumn(name = "id", table = "dare_response")
     private DareResponse response; 
 
     public AnchoredContent() {
