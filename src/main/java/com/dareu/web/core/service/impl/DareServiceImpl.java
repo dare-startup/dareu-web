@@ -770,12 +770,17 @@ public class DareServiceImpl implements DareService {
                 throw new InvalidRequestException("Invalid");
             if(dareResponseRepository.findAnchoredContent(responseId, token) != null)
                 throw new InvalidRequestException("This response has already been anchored");
+
+            DareUser user = dareUserRepository.findUserByToken(token);
             AnchoredContent content;
-            //anchor 
+            //anchor
+            log.info("Anchoring response to " + user.getEmail());
             content = new AnchoredContent();
             content.setCreationDate(DareUtils.DETAILS_DATE_FORMAT.format(new Date()));
             content.setResponse(dareResponseRepository.find(responseId));
-            content.setUser(dareUserRepository.findUserByToken(token));
+            content.setUser(user);
+
+            log.info("Saving");
             dareResponseRepository.anchorContent(content);
             return Response.ok(new EntityRegistrationResponse("Anchored",
                     RegistrationType.ANCHOR, content.getCreationDate(), content.getId()))
