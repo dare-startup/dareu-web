@@ -47,7 +47,7 @@ public class DareResponse extends BaseEntity {
     @Column(name = "video_url")
     private String videoUrl;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "response")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "response")
     private List<AnchoredContent> anchoredContent;
 
     public DareResponse() {
