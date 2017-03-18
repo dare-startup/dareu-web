@@ -14,11 +14,9 @@ public class AnchoredContent extends BaseEntity {
     private String creationDate; 
     
     @ManyToOne(targetEntity = DareUser.class)
-    @JoinColumn(name = "id")
     private DareUser user; 
     
     @ManyToOne(targetEntity = DareResponse.class)
-    @JoinColumn(name = "id")
     private DareResponse response; 
 
     public AnchoredContent() {
