@@ -36,7 +36,7 @@ public class DareResponse extends BaseEntity {
     private Dare dare;
     
     @OneToMany(cascade = CascadeType.REFRESH, 
-            fetch = FetchType.EAGER, mappedBy = "response")
+            fetch = FetchType.LAZY, mappedBy = "response")
     private List<ResponseClap> claps; 
     
     @Column(name = "last_update")
@@ -48,7 +48,7 @@ public class DareResponse extends BaseEntity {
     @Column(name = "video_url")
     private String videoUrl;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "response")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "response")
     private List<AnchoredContent> anchoredContent;
 
     public DareResponse() {
