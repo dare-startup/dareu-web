@@ -118,8 +118,8 @@ create table response_anchor(
     user_id varchar(36)not null, 
     response_id varchar(36)not null, 
     creation_date varchar(50)not null, 
-foreign key(user_id) references dare_response(id), 
-foreign key(response_id)references dareu_user(id)
+foreign key(user_id) references dareu_user(id),
+foreign key(response_id)references dare_response(id)
 );
     
 -- DARE REQUEST TABLE
@@ -131,6 +131,3 @@ create table dare_request(
     foreign key(challenger_id)references dareu_user(id), 
     foreign key(challenged_id)references dareu_user(id), 
     foreign key(dare_id)references dare(id));     
-
-
--- DARE RESPONSE COMMENT TABLE 

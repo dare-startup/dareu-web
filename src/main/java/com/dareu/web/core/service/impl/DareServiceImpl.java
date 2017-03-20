@@ -806,6 +806,8 @@ public class DareServiceImpl implements DareService {
     @Override
     public Response getAnchoredContent(int pageNumber, String token) throws InternalApplicationException, InvalidRequestException {
         try {
+            DareUser user = dareUserRepository.findUserByToken(token);
+            log.info("Searching " + user.getEmail() + " anchored content");
             Page<AnchoredDescription> page = dareResponseRepository.getAnchoredContent(pageNumber, token);
             return Response.ok(page)
                     .build();
