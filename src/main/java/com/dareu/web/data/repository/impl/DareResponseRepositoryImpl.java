@@ -218,7 +218,7 @@ public class DareResponseRepositoryImpl extends AbstractRepository<DareResponse>
         try{
             return (AnchoredContent)em
                     .createQuery("SELECT a FROM AnchoredContent a WHERE a.response.id = :responseId AND a.user.securityToken = :token")
-                    .setParameter("responseid", responseId)
+                    .setParameter("responseId", responseId)
                     .setParameter("token", token)
                     .getSingleResult();
         }catch(Exception ex){
