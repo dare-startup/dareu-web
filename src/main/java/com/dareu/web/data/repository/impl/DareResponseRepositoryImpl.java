@@ -232,9 +232,9 @@ public class DareResponseRepositoryImpl extends AbstractRepository<DareResponse>
     public boolean isResponseClapped(String userId, String responseId) throws DataAccessException {
         try{
             Long count = (Long)
-                    em.createQuery("SELECT COUNT(c.id) FROM ResponseClap c WHERE c.response.id = :responseId AND c.user.id = userId")
+                    em.createQuery("SELECT COUNT(c.id) FROM ResponseClap c WHERE c.response.id = :responseId AND c.user.id = :userId")
                     .setParameter("userId", userId)
-                            .setParameter("responseId", responseId)
+                    .setParameter("responseId", responseId)
                     .getSingleResult();
             return count.intValue() > 0;
         }catch(Exception ex){
