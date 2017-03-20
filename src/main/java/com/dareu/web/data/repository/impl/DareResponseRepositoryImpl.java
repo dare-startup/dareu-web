@@ -221,7 +221,10 @@ public class DareResponseRepositoryImpl extends AbstractRepository<DareResponse>
                     .setParameter("responseId", responseId)
                     .setParameter("token", token)
                     .getSingleResult();
-        }catch(Exception ex){
+        } catch(NoResultException ex){
+            return null;
+        }
+        catch(Exception ex){
             throw new DataAccessException(ex.getMessage(), ex);
         }
     }
