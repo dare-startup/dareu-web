@@ -201,6 +201,8 @@ public class DareResponseRepositoryImpl extends AbstractRepository<DareResponse>
             Long count = (Long)em.createQuery("SELECT COUNT(a.id) FROM AnchoredContent a WHERE a.user.id = :userId")
                     .setParameter("userId", userId)
                     .getSingleResult();
+
+            log.info("Found " + list.size() + " anchored items");
             List<AnchoredDescription> descs = assembler.assembleAnchoredContent(list, userId);
             Page<AnchoredDescription> page = new Page<AnchoredDescription>();
             page.setItems(descs);

@@ -319,8 +319,12 @@ public class DareuAssemblerImpl implements DareuAssembler {
     @Override
     public List<AnchoredDescription> assembleAnchoredContent(List<AnchoredContent> list, String userId) {
         List<AnchoredDescription> descs = new ArrayList();
-        for(AnchoredContent c : list)
-            descs.add(new AnchoredDescription(c.getCreationDate(), assembleDareResponseDescription(c.getResponse(), userId)));
+        for(AnchoredContent c : list){
+            AnchoredDescription desc = new AnchoredDescription(c.getCreationDate(), assembleDareResponseDescription(c.getResponse(), userId));
+            desc.setAnchorId(c.getId());
+            descs.add(desc);
+        }
+
         return descs;
     }
 
