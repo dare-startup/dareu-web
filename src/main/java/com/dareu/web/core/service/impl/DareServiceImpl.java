@@ -707,30 +707,34 @@ public class DareServiceImpl implements DareService {
         }
 
         try {
+            log.info("Searching dare response");
             DareResponse response = dareResponseRepository.find(request.getResponseId());
-            if (response == null) {
+            if (response == null)
                 throw new InvalidRequestException("Response id not valid");
-            }
 
             DareUser user = dareUserRepository.findUserByToken(token);
 
             if (request.isClapped()) {
                 //creates a new clap entity
-                //create a new clap 
+                //create a new clap
+                log.info("Clapping dare response");
                 ResponseClap clap = new ResponseClap();
                 clap.setResponse(response);
                 clap.setUser(user);
                 //persists
+                log.info("Saving");
                 dareResponseRepository.clapResponse(clap);
 
                 String fcmToken = dareUserRepository.getUserFcmToken(user.getId());
                 if (fcmToken != null && !fcmToken.isEmpty()) {
+                    log.info("Sending notification to response creator");
                     //send a notification to dare response creator 
                     messagingService.sendClappedResponse(response.getId(), fcmToken);
                 }
                 return Response.ok(new UpdatedEntityResponse("Clap has been created", true, "dare_response_clap"))
                         .build();
             } else {
+                log.info("Un-clapping dare response");
                 //delete current clap 
                 dareResponseRepository.unclapResponse(response.getId(), user.getId());
 

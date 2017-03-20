@@ -16,6 +16,8 @@ import com.dareu.web.dto.response.entity.AnchoredDescription;
 import com.dareu.web.dto.response.entity.CommentDescription;
 import com.dareu.web.dto.response.entity.DareResponseDescription;
 import com.dareu.web.dto.response.entity.Page;
+import org.apache.log4j.Logger;
+
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -31,6 +33,9 @@ public class DareResponseRepositoryImpl extends AbstractRepository<DareResponse>
 
     @Inject
     private DareuAssembler assembler;
+
+    @Inject
+    private Logger log;
 
     public DareResponseRepositoryImpl() {
         super(DareResponse.class);
@@ -154,6 +159,7 @@ public class DareResponseRepositoryImpl extends AbstractRepository<DareResponse>
         try {
             em.persist(clap);
         } catch (Exception ex) {
+            log.error(ex.getMessage());
             throw new DataAccessException(ex.getMessage(), ex);
         }
     }
@@ -166,6 +172,7 @@ public class DareResponseRepositoryImpl extends AbstractRepository<DareResponse>
                     .setParameter("userId", userId)
                     .executeUpdate();
         } catch (Exception ex) {
+            log.error(ex.getMessage());
             throw new DataAccessException(ex.getMessage(), ex);
         }
     }
