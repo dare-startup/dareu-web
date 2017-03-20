@@ -566,10 +566,8 @@ public class DareServiceImpl implements DareService {
 
     @Override
     public Response findResponseDescription(String responseId, String token) throws InternalApplicationException, InvalidRequestException {
-        if (responseId == null || responseId.isEmpty()) {
+        if (responseId == null || responseId.isEmpty())
             throw new InvalidRequestException("No response id provided");
-        }
-
         try {
             log.info("Finding user");
             DareUser user = dareUserRepository.findUserByToken(token);
@@ -579,11 +577,11 @@ public class DareServiceImpl implements DareService {
 
             log.info("Getting number of comments");
             int commentsCount = dareResponseRepository.getResponseCommentsCount(responseId);
-            if (resp == null) {
+            if (resp == null)
                 throw new InvalidRequestException("Invalid id");
-            }
             log.info("Creating response");
             DareResponseDescription desc = assembler.assembleDareResponseDescription(resp, user.getId());
+            //TODO: LOOK FOR ANCHORED RESPONSE FLAG HERE
             desc.setComments(commentsCount);
             return Response.ok(desc)
                     .build();

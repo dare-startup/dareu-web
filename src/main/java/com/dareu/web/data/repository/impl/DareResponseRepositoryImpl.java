@@ -227,4 +227,32 @@ public class DareResponseRepositoryImpl extends AbstractRepository<DareResponse>
             throw new DataAccessException(ex.getMessage(), ex);
         }
     }
+
+    @Override
+    public boolean isResponseClapped(String userId, String responseId) throws DataAccessException {
+        try{
+            Long count = (Long)
+                    em.createQuery("SELECT COUNT(c.id) FROM ResponseClap c WHERE c.response.id = :responseId AND c.user.id = userId")
+                    .setParameter("userId", userId)
+                            .setParameter("responseId", responseId)
+                    .getSingleResult();
+            return count.intValue() > 0;
+        }catch(Exception ex){
+            throw new DataAccessException(ex.getMessage(), ex);
+        }
+    }
+
+    @Override
+    public boolean isResponseAnchored(String userId, String responseId) throws DataAccessException {
+        try{
+            Long count = (Long)
+                    em.createQuery("SELECT COUNT(a.id) FROM AnchoredContent a WHERE a.user.id = :userId AND a.response.id = :responseId")
+                    .setParameter("userId", userId)
+                    .setParameter("responseId", responseId)
+                    .getSingleResult();
+            return count.intValue() > 0;
+        } catch(Exception ex){
+            throw new DataAccessException(ex.getMessage(), ex);
+        }
+    }
 }

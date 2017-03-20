@@ -4,6 +4,8 @@ import com.dareu.web.core.DareUtils;
 import com.dareu.web.data.entity.*;
 import com.dareu.web.core.service.DareuAssembler;
 import com.dareu.web.core.service.FileService;
+import com.dareu.web.data.exception.DataAccessException;
+import com.dareu.web.data.repository.DareResponseRepository;
 import com.dareu.web.dto.request.GoogleSignupRequest;
 import com.dareu.web.dto.response.entity.AccountProfile;
 import com.dareu.web.dto.response.entity.ActiveDare;
@@ -22,6 +24,7 @@ import com.dareu.web.dto.response.entity.UnacceptedDare;
 import com.dareu.web.dto.response.entity.UserAccount;
 import com.dareu.web.dto.response.entity.UserDescription;
 import com.dareu.web.dto.security.SecurityRole;
+import org.apache.log4j.Logger;
 
 import java.util.*;
 import javax.inject.Inject;
@@ -34,6 +37,12 @@ public class DareuAssemblerImpl implements DareuAssembler {
 
     @Inject
     private FileService fileService;
+
+    @Inject
+    private DareResponseRepository dareResponseRepository;
+
+    @Inject
+    private Logger log;
 
     public DareuAssemblerImpl() {
     }
@@ -231,19 +240,11 @@ public class DareuAssemblerImpl implements DareuAssembler {
         desc.setVideoUrl(resp.getVideoUrl());
         desc.setViews(resp.getViewsCount());
         //check if current user has already clapped this response
-        for(ResponseClap clap : resp.getClaps()){
-            if(clap.getUser().getId().equals(userId)){
-                desc.setClapped(true);
-                break;
-            }
-        }
-
-        //check is user anchored response
-        for(AnchoredContent content : resp.getAnchoredContent()){
-            if(content.getUser().getId().equals(userId)){
-                desc.setAnchored(true);
-                break;
-            }
+        try{
+            desc.setClapped(dareResponseRepository.isResponseClapped(userId, resp.getId()));
+            desc.setAnchored(dareResponseRepository.isResponseAnchored(userId, resp.getId()));
+        }catch(DataAccessException ex){
+            log.error(ex.getMessage());
         }
         return desc;
     }

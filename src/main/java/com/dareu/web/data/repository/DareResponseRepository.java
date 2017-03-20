@@ -126,4 +126,21 @@ public interface DareResponseRepository extends BaseRepository<DareResponse>{
      * @throws DataAccessException 
      */
     public void unpinContent(String responseId, String token) throws DataAccessException;
+
+    /**
+     * Checks if a user has already clapped a dare response
+     * @param userId
+     * @return
+     * @throws DataAccessException
+     */
+    public boolean isResponseClapped(String userId, String responseId)throws DataAccessException;
+
+    /**
+     *
+     * @param userId
+     * @param responseId
+     * @return
+     * @throws DataAccessException
+     */
+    public boolean isResponseAnchored(String userId, String responseId)throws DataAccessException;
 }
