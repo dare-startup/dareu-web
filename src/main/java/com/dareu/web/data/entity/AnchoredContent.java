@@ -13,12 +13,12 @@ public class AnchoredContent extends BaseEntity {
     @Column(name = "creation_date")
     private String creationDate; 
     
-    @ManyToOne(cascade = CascadeType.REFRESH)
-    @JoinColumn(referencedColumnName = "id", updatable = false)
+    @ManyToOne()
+    @JoinColumn(referencedColumnName = "id")
     private DareUser user;
 
-    @ManyToOne(cascade = CascadeType.REFRESH)
-    @JoinColumn(referencedColumnName = "id", updatable = false)
+    @ManyToOne()
+    @JoinColumn(referencedColumnName = "id")
     private DareResponse response; 
 
     public AnchoredContent() {
