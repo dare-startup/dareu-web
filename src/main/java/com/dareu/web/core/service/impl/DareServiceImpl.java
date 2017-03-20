@@ -808,7 +808,7 @@ public class DareServiceImpl implements DareService {
         try {
             DareUser user = dareUserRepository.findUserByToken(token);
             log.info("Searching " + user.getEmail() + " anchored content");
-            Page<AnchoredDescription> page = dareResponseRepository.getAnchoredContent(pageNumber, token);
+            Page<AnchoredDescription> page = dareResponseRepository.getAnchoredContent(pageNumber, user.getId());
             return Response.ok(page)
                     .build();
         } catch (DataAccessException ex) {
