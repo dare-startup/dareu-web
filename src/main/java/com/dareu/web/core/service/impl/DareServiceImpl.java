@@ -775,11 +775,15 @@ public class DareServiceImpl implements DareService {
         }
 
         try {
+            log.info("Finding dare response");
             if(dareResponseRepository.find(responseId) == null)
-                throw new InvalidRequestException("Invalid");
+                throw new InvalidRequestException("Invalid response id");
+
+            log.info("Finding previous anchored content");
             if(dareResponseRepository.findAnchoredContent(responseId, token) != null)
                 throw new InvalidRequestException("This response has already been anchored");
 
+            log.info("Finding user");
             DareUser user = dareUserRepository.findUserByToken(token);
             AnchoredContent content;
             //anchor
