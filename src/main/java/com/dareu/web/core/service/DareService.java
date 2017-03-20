@@ -231,13 +231,13 @@ public interface DareService {
 
     /**
      * Unpin an anchored response
-     * @param responseId
+     * @param anchoredContentId
      * @param token
      * @return
      * @throws InternalApplicationException
      * @throws InvalidRequestException 
      */
-    public Response unpinAnchoredContent(String responseId, String token)throws InternalApplicationException, InvalidRequestException;
+    public Response unpinAnchoredContent(String anchoredContentId, String token)throws InternalApplicationException, InvalidRequestException;
     
     /**
      * Get a user anchored content

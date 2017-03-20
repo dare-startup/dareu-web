@@ -232,11 +232,10 @@ public class DareResponseRepositoryImpl extends AbstractRepository<DareResponse>
     }
 
     @Override
-    public void unpinContent(String responseId, String token) throws DataAccessException {
+    public void unpinContent(String anchoredContentId) throws DataAccessException {
         try{
-            em.createQuery("DELETE FROM AnchoredContent a WHERE a.response.id = :id AND a.user.securityToken = :token")
-                .setParameter("id", responseId)
-                    .setParameter("token", token)
+            em.createQuery("DELETE FROM AnchoredContent a WHERE a.id = :id")
+                .setParameter("id", anchoredContentId)
                 .executeUpdate();
         }catch(Exception ex){
             throw new DataAccessException(ex.getMessage(), ex);
@@ -266,6 +265,17 @@ public class DareResponseRepositoryImpl extends AbstractRepository<DareResponse>
                     .setParameter("responseId", responseId)
                     .getSingleResult();
             return count.intValue() > 0;
+        } catch(Exception ex){
+            throw new DataAccessException(ex.getMessage(), ex);
+        }
+    }
+
+    @Override
+    public AnchoredContent findAnchoredContent(String id) throws DataAccessException {
+        try{
+            return em.find(AnchoredContent.class, id);
+        } catch(NoResultException ex){
+            return null;
         } catch(Exception ex){
             throw new DataAccessException(ex.getMessage(), ex);
         }

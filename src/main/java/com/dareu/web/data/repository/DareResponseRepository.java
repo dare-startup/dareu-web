@@ -15,6 +15,7 @@ import com.dareu.web.dto.response.entity.AnchoredDescription;
 import com.dareu.web.dto.response.entity.CommentDescription;
 import com.dareu.web.dto.response.entity.DareResponseDescription;
 import com.dareu.web.dto.response.entity.Page;
+import com.google.api.client.util.Data;
 
 /**
  *
@@ -121,11 +122,10 @@ public interface DareResponseRepository extends BaseRepository<DareResponse>{
 
     /**
      * unpin anchored content
-     * @param responseId
-     * @param token
+     * @param anchoredContentId
      * @throws DataAccessException 
      */
-    public void unpinContent(String responseId, String token) throws DataAccessException;
+    public void unpinContent(String anchoredContentId) throws DataAccessException;
 
     /**
      * Checks if a user has already clapped a dare response
@@ -143,4 +143,12 @@ public interface DareResponseRepository extends BaseRepository<DareResponse>{
      * @throws DataAccessException
      */
     public boolean isResponseAnchored(String userId, String responseId)throws DataAccessException;
+
+    /**
+     * Finds an anchored content using an id
+     * @param id
+     * @return
+     * @throws DataAccessException
+     */
+    public AnchoredContent findAnchoredContent(String id)throws DataAccessException;
 }

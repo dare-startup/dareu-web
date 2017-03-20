@@ -44,10 +44,10 @@ public class ResponseAnchorResource {
     @Produces(MediaType.APPLICATION_JSON)
     @POST
     @Secured
-    public Response unpinAnchoredContent(@QueryParam("responseId")String responseId,
+    public Response unpinAnchoredContent(@QueryParam("anchorContentId")String anchoredContentId,
                                 @HeaderParam("Authorization")String token)throws InternalApplicationException, 
                                                             InvalidRequestException{
-        return dareService.unpinAnchoredContent(responseId, token);
+        return dareService.unpinAnchoredContent(anchoredContentId, token);
     }
     
     

@@ -817,21 +817,31 @@ public class DareServiceImpl implements DareService {
     }
 
     @Override
-    public Response unpinAnchoredContent(String responseId, String token) throws InternalApplicationException, InvalidRequestException {
+    public Response unpinAnchoredContent(String anchoredContentId, String token) throws InternalApplicationException, InvalidRequestException {
         try{
             log.info("Finding anchored content");
             //search anchored content
-            AnchoredContent content = dareResponseRepository.findAnchoredContent(responseId, token);
+            AnchoredContent content = dareResponseRepository.findAnchoredContent(anchoredContentId);
             if(content == null)
                 throw new InvalidRequestException("Anchored content not valid");
 
-            log.info("Deleting anchored content");
-            //delete anchored content
-            dareResponseRepository.unpinContent(responseId, token);
+            log.info("Finding user by token");
+            DareUser user = dareUserRepository.findUserByToken(token);
 
-            log.info("Anchored content has been removed");
-            return Response.ok(new UpdatedEntityResponse("Success", true, "anchoredContent"))
-                    .build();
+            //validate if user owns this anchor
+            if(content.getUser().getId().equals(user.getId())){
+                log.info("Deleting anchored content");
+                //delete anchored content
+                dareResponseRepository.unpinContent(anchoredContentId);
+
+                log.info("Anchored content has been removed");
+                return Response.ok(new UpdatedEntityResponse("Success", true, "anchoredContent"))
+                        .build();
+            }else{
+                log.error("User doe3s not owns anchored content, invalid request");
+                throw new InvalidRequestException("User does not own this anchored content");
+            }
+
         }catch(DataAccessException ex){
             throw new InternalApplicationException(ex.getMessage(), ex);
         }
