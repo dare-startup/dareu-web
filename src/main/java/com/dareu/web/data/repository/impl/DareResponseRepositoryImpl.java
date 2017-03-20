@@ -5,6 +5,7 @@
  */
 package com.dareu.web.data.repository.impl;
 
+import com.dareu.web.core.DareUtils;
 import com.dareu.web.core.service.DareuAssembler;
 import com.dareu.web.data.entity.AnchoredContent;
 import com.dareu.web.data.entity.Comment;
@@ -18,6 +19,7 @@ import com.dareu.web.dto.response.entity.DareResponseDescription;
 import com.dareu.web.dto.response.entity.Page;
 import org.apache.log4j.Logger;
 
+import java.util.Date;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -157,6 +159,7 @@ public class DareResponseRepositoryImpl extends AbstractRepository<DareResponse>
     @Override
     public void clapResponse(ResponseClap clap) throws DataAccessException {
         try {
+            clap.setClapDate(DareUtils.DATE_FORMAT.format(new Date()));
             em.persist(clap);
         } catch (Exception ex) {
             log.error(ex.getMessage());
