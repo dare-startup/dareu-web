@@ -819,14 +819,17 @@ public class DareServiceImpl implements DareService {
     @Override
     public Response unpinAnchoredContent(String responseId, String token) throws InternalApplicationException, InvalidRequestException {
         try{
+            log.info("Finding anchored content");
             //search anchored content
             AnchoredContent content = dareResponseRepository.findAnchoredContent(responseId, token);
             if(content == null)
                 throw new InvalidRequestException("Anchored content not valid");
 
+            log.info("Deleting anchored content");
             //delete anchored content
             dareResponseRepository.unpinContent(responseId, token);
 
+            log.info("Anchored content has been removed");
             return Response.ok(new UpdatedEntityResponse("Success", true, "anchoredContent"))
                     .build();
         }catch(DataAccessException ex){
