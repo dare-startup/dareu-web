@@ -97,7 +97,7 @@ public class AbstractRepository<T extends BaseEntity> {
             T t = find(entity.getId());
             if (t != null) {
                 //utx.begin();
-                em.remove(entity);
+                em.remove(em.contains(entity) ? entity : em.merge(entity));
                 //utx.commit();
             }
         } catch (Exception ex) {
