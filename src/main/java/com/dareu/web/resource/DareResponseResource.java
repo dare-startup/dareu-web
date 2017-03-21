@@ -134,7 +134,7 @@ public class DareResponseResource {
                 response = AuthorizationResponse.class)
     })
     @Path("view")
-    @GET
+    @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Secured
     public Response findResponseComments(@QueryParam("responseId")String responseId) throws InternalApplicationException, InvalidRequestException {
