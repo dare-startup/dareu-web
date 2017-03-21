@@ -271,7 +271,7 @@ public class DareuAssemblerImpl implements DareuAssembler {
     }
 
     @Override
-    public AccountProfile getAccountProfile(DareUser user, Page<CreatedDare> createdDares, Page<DareResponseDescription> responses) {
+    public AccountProfile getAccountProfile(DareUser user, Page<CreatedDare> createdDares, Page<DareResponseDescription> responses, Page<FriendSearchDescription> contacts) {
         AccountProfile profile = new AccountProfile();
         profile.setCoins(user.getCoins());
         profile.setId(user.getId());
@@ -282,6 +282,7 @@ public class DareuAssemblerImpl implements DareuAssembler {
         profile.setCreatedResponses(responses);
         profile.setEmail(user.getEmail());
         profile.setImageUrl(user.getImageUrl());
+        profile.setContacts(contacts);
         return profile;
     }
 

@@ -171,7 +171,7 @@ public interface DareuAssembler {
      * @param responses
      * @return 
      */
-    public AccountProfile getAccountProfile(DareUser user, Page<CreatedDare> createdDares, Page<DareResponseDescription> responses);
+    public AccountProfile getAccountProfile(DareUser user, Page<CreatedDare> createdDares, Page<DareResponseDescription> responses, Page<FriendSearchDescription> contacts);
     
     /**
      * Get an unaccepted dare

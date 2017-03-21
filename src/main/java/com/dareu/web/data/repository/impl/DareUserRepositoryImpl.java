@@ -10,10 +10,8 @@ import com.dareu.web.data.exception.AuthenticationException;
 import com.dareu.web.data.exception.DataAccessException;
 import com.dareu.web.data.repository.DareRepository;
 import com.dareu.web.data.repository.DareResponseRepository;
-import com.dareu.web.dto.response.entity.AccountProfile;
-import com.dareu.web.dto.response.entity.CreatedDare;
-import com.dareu.web.dto.response.entity.DareResponseDescription;
-import com.dareu.web.dto.response.entity.Page;
+import com.dareu.web.data.repository.FriendshipRepository;
+import com.dareu.web.dto.response.entity.*;
 import org.apache.log4j.Logger;
 
 import java.math.BigInteger;
@@ -41,7 +39,10 @@ public class DareUserRepositoryImpl extends AbstractRepository<DareUser> impleme
     private FileService fileService; 
     
     @Inject
-    private DareResponseRepository dareResponseRepository; 
+    private DareResponseRepository dareResponseRepository;
+
+    @Inject
+    private FriendshipRepository friendshipRepository;
     
     @Inject
     private DareuAssembler assembler;
@@ -277,7 +278,8 @@ public class DareUserRepositoryImpl extends AbstractRepository<DareUser> impleme
             DareUser user = (DareUser)q.getSingleResult(); 
             Page<CreatedDare> dares = dareRepository.findCreatedDares(id, 1);
             Page<DareResponseDescription> descs = dareResponseRepository.getResponses(id, 1);
-            return assembler.getAccountProfile(user, dares, descs);
+            Page<FriendSearchDescription> contacts = friendshipRepository.findFriendDescriptions(id, 1);
+            return assembler.getAccountProfile(user, dares, descs, contacts);
         }catch(Exception ex){
             throw new DataAccessException(ex.getMessage()); 
         }
