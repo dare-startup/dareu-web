@@ -632,6 +632,20 @@ public class AccountServiceImpl extends AbstractService implements AccountServic
 
     }
 
+    @Override
+    public Response getUserProfile(String userId, String auth) throws InternalApplicationException, InvalidRequestException {
+        try{
+            DareUser user = dareUserRepository.find(userId);
+            if(user == null)
+                throw new InvalidRequestException("Invalid user id");
+            AccountProfile profile = dareUserRepository.getAccountProfile(userId);
+
+            return Response.ok(profile)
+                    .build();
+        } catch(DataAccessException ex){
+            throw new InternalApplicationException(ex.getMessage(), ex);
+        }
+    }
 
 
 }

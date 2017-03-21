@@ -173,4 +173,7 @@ public class AccountResource {
             @ApiParam(name = "request", required = true) ChangeEmailAddressRequest request, @HeaderParam("Authorization")String auth)throws InternalApplicationException, InvalidRequestException{
         return accountService.changeEmailAddress(request, auth); 
     }
+
+
+
 }

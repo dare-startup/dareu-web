@@ -187,5 +187,22 @@ public interface AccountService {
      */
     public Response cancelFriendshipRequest(String connId, String token)throws InternalApplicationException, InvalidRequestException;
 
+    /**
+     * Sign up a user using google authentication
+     * @param request
+     * @return
+     * @throws InternalApplicationException
+     * @throws InvalidRequestException
+     */
     public Response signupGoogle(GoogleSignupRequest request) throws InternalApplicationException, InvalidRequestException;
+
+    /**
+     * get a user profile
+     * @param userId
+     * @param auth
+     * @return
+     * @throws InternalApplicationException
+     * @throws InvalidRequestException
+     */
+    public Response getUserProfile(String userId, String auth) throws InternalApplicationException, InvalidRequestException;
 }
