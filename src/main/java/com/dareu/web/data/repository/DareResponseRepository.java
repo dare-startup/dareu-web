@@ -151,4 +151,11 @@ public interface DareResponseRepository extends BaseRepository<DareResponse>{
      * @throws DataAccessException
      */
     public AnchoredContent findAnchoredContent(String id)throws DataAccessException;
+
+    /**
+     * Increment number of views by one
+     * @param id
+     * @throws DataAccessException
+     */
+    public void viewedResponse(String id)throws DataAccessException;
 }

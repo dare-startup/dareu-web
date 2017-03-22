@@ -280,4 +280,15 @@ public class DareResponseRepositoryImpl extends AbstractRepository<DareResponse>
             throw new DataAccessException(ex.getMessage(), ex);
         }
     }
+
+    @Override
+    public void viewedResponse(String id) throws DataAccessException {
+        try{
+            em.createQuery("UPDATE DareResponse r SET r.viewsCount = r.viewsCount + 1 WHERE r.id = :id")
+                    .setParameter("id", id)
+                    .executeUpdate();
+        }catch(Exception ex){
+            throw new DataAccessException(ex.getMessage(), ex);
+        }
+    }
 }

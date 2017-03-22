@@ -688,8 +688,7 @@ public class DareServiceImpl implements DareService {
                 throw new InvalidRequestException("Invalid response id");
             }
 
-            response.setViewsCount(response.getViewsCount() + 1);
-
+            dareResponseRepository.viewedResponse(response.getId());
             return Response.ok(new UpdatedEntityResponse("Success", true, "dare_response"))
                     .build();
         } catch (DataAccessException ex) {
