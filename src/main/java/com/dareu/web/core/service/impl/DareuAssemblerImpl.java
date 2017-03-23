@@ -264,7 +264,11 @@ public class DareuAssemblerImpl implements DareuAssembler {
         desc.setComment(comment.getComment());
         desc.setCommentDate(comment.getCommentDate());
         desc.setId(comment.getId());
-        desc.setLikes(comment.getLikes());
+        try{
+            desc.setClapped(dareResponseRepository.isCommentClapped(userId, comment.getId()));
+        }catch(DataAccessException ex){
+            log.error(ex.getMessage());
+        }
         desc.setResponse(assembleDareResponseDescription(comment.getResponse(), userId));
         desc.setUser(assembleUserDescription(comment.getUser()));
         return desc;

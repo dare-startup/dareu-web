@@ -205,4 +205,13 @@ public interface AccountService {
      * @throws InvalidRequestException
      */
     public Response getUserProfile(String userId, String auth) throws InternalApplicationException, InvalidRequestException;
+
+    /**
+     *
+     * @param email
+     * @return
+     * @throws InvalidRequestException
+     * @throws InternalApplicationException
+     */
+    public Response forgotPassword(String email)throws InvalidRequestException, InternalApplicationException;
 }

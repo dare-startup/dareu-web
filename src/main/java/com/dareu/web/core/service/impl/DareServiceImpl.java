@@ -11,9 +11,7 @@ import com.dareu.web.core.codec.ThumbManager;
 import com.dareu.web.core.observable.DareEvent;
 import com.dareu.web.core.observable.DareuEventHandler;
 import com.dareu.web.core.service.DareService;
-import com.dareu.web.data.entity.Category;
-import com.dareu.web.data.entity.Dare;
-import com.dareu.web.data.entity.DareUser;
+import com.dareu.web.data.entity.*;
 import com.dareu.web.data.repository.CategoryRepository;
 import com.dareu.web.data.repository.DareRepository;
 import com.dareu.web.data.repository.DareUserRepository;
@@ -26,11 +24,6 @@ import com.dareu.web.core.service.DareuAssembler;
 import com.dareu.web.core.service.DareuMessagingService;
 import com.dareu.web.core.service.FileService;
 import com.dareu.web.core.service.MultipartService;
-import com.dareu.web.data.entity.AnchoredContent;
-import com.dareu.web.data.entity.Comment;
-import com.dareu.web.data.entity.DareFlag;
-import com.dareu.web.data.entity.DareResponse;
-import com.dareu.web.data.entity.ResponseClap;
 import com.dareu.web.data.repository.DareResponseRepository;
 import com.dareu.web.dto.request.AnchorContentRequest;
 import com.dareu.web.dto.request.ClapRequest;
@@ -618,7 +611,6 @@ public class DareServiceImpl implements DareService {
             Comment comment = new Comment();
             comment.setCommentDate(DareUtils.DETAILS_DATE_FORMAT.format(new Date()));
             comment.setComment(request.getComment());
-            comment.setLikes(0);
             comment.setResponse(dareResponse);
             comment.setUser(user);
 
@@ -811,6 +803,46 @@ public class DareServiceImpl implements DareService {
             return Response.ok(page)
                     .build();
         } catch (DataAccessException ex) {
+            throw new InternalApplicationException(ex.getMessage(), ex);
+        }
+    }
+
+    @Override
+    public Response clapResponseComment(String commentId, String token) throws InternalApplicationException, InvalidRequestException {
+        if(commentId == null || commentId.isEmpty())
+            throw new InvalidRequestException("No comment id was provided");
+
+        try{
+            Comment comment = dareResponseRepository.findComment(commentId);
+            if(comment == null)
+                throw new InvalidRequestException("Invalid comment id");
+
+            DareUser user = dareUserRepository.findUserByToken(token);
+
+            //check if this comment is already clapped by this user
+
+            if(dareResponseRepository.isCommentClapped(user.getId(), comment.getId())){
+                dareResponseRepository.unClapComment(comment.getId(), user.getId()); // un clap it
+                return Response.ok(new EntityRegistrationResponse("Un-clapped", RegistrationType.COMMENT_CLAP,
+                        DareUtils.DETAILS_DATE_FORMAT.format(new Date()), "N/A"))
+                        .build();
+            } else{
+                CommentClap clap = new CommentClap();
+                clap.setUser(user);
+                clap.setClapDate(DareUtils.DETAILS_DATE_FORMAT.format(new Date()));
+                clap.setComment(comment);
+
+                //persists
+                dareResponseRepository.clapResponseComment(clap);
+
+                return Response.ok(new EntityRegistrationResponse("Clapped", RegistrationType.COMMENT_CLAP,
+                        DareUtils.DETAILS_DATE_FORMAT.format(new Date()), clap.getId()))
+                        .build();
+            }
+
+
+
+        } catch(DataAccessException ex){
             throw new InternalApplicationException(ex.getMessage(), ex);
         }
     }

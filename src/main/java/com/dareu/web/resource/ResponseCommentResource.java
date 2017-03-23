@@ -93,5 +93,23 @@ public class ResponseCommentResource {
                                            @HeaderParam("Authorization")String token) throws InternalApplicationException, InvalidRequestException {
         return dareService.findResponseComment(commentId, token);
     }
+
+    @ApiOperation(value = "Clap a response comment",
+            produces = "application/json",
+            notes = "clap a response comment")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "The operation ran successfuly",
+                    response = EntityRegistrationResponse.class),
+            @ApiResponse(code = 401, message = "User is not authorized to access this resource",
+                    response = AuthorizationResponse.class)
+    })
+    @Path("clap")
+    @POST
+    @Produces(MediaType.APPLICATION_JSON)
+    @Secured
+    public Response clapResponseComment(@QueryParam("commentId")String commentId,
+                                           @HeaderParam("Authorization")String token) throws InternalApplicationException, InvalidRequestException {
+        return dareService.clapResponseComment(commentId, token);
+    }
     
 }

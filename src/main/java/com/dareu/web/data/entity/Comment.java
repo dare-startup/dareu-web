@@ -22,9 +22,6 @@ public class Comment extends BaseEntity{
     @Column(name = "comment")
     private String comment;
     
-    @Column(name = "likes")
-    private int likes; 
-    
     @OneToOne(fetch = FetchType.EAGER,  cascade = CascadeType.REFRESH)
     @JoinColumn(name = "response_id")
     private DareResponse response;
@@ -51,14 +48,6 @@ public class Comment extends BaseEntity{
 
     public void setComment(String comment) {
         this.comment = comment;
-    }
-
-    public int getLikes() {
-        return likes;
-    }
-
-    public void setLikes(int likes) {
-        this.likes = likes;
     }
 
     public DareResponse getResponse() {

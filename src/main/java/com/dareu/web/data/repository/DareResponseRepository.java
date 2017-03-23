@@ -5,11 +5,7 @@
  */
 package com.dareu.web.data.repository;
 
-import com.dareu.web.data.entity.AnchoredContent;
-import com.dareu.web.data.entity.Comment;
-import com.dareu.web.data.entity.DareResponse;
-import com.dareu.web.data.entity.DareUser;
-import com.dareu.web.data.entity.ResponseClap;
+import com.dareu.web.data.entity.*;
 import com.dareu.web.data.exception.DataAccessException;
 import com.dareu.web.dto.response.entity.AnchoredDescription;
 import com.dareu.web.dto.response.entity.CommentDescription;
@@ -78,6 +74,20 @@ public interface DareResponseRepository extends BaseRepository<DareResponse>{
      * @throws DataAccessException 
      */
     public int getResponseCommentsCount(String responseId) throws DataAccessException;
+
+    /**
+     * Check whether a comment is clapped by a user
+     * @param userId
+     * @return
+     * @throws DataAccessException
+     */
+    public boolean isCommentClapped(String userId, String commentId) throws DataAccessException;
+
+    /**
+     * Clap a response comment
+     * @throws DataAccessException
+     */
+    public void clapResponseComment(CommentClap clap)throws DataAccessException;
 
     /**
      * Creates a clap response
@@ -158,4 +168,10 @@ public interface DareResponseRepository extends BaseRepository<DareResponse>{
      * @throws DataAccessException
      */
     public void viewedResponse(String id)throws DataAccessException;
+
+    /**
+     * un clap a dare response comment
+     * @throws DataAccessException
+     */
+    public void unClapComment(String commentId, String userId)throws DataAccessException;
 }

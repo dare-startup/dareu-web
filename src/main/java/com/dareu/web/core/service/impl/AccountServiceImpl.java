@@ -647,5 +647,12 @@ public class AccountServiceImpl extends AbstractService implements AccountServic
         }
     }
 
+    @Override
+    public Response forgotPassword(String email) throws InvalidRequestException, InternalApplicationException {
+        log.info("Received forgot password request from " + email);
+        return Response.ok()
+                .build();
+    }
+
 
 }

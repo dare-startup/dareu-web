@@ -1,28 +1,19 @@
 package com.dareu.web.resource.open;
 
+import com.dareu.web.core.annotation.Secured;
 import com.dareu.web.core.service.AccountService;
+import com.dareu.web.dto.request.ChangeEmailAddressRequest;
 import com.dareu.web.dto.request.ContactRequest;
 import com.dareu.web.dto.request.GoogleSignupRequest;
 import com.dareu.web.dto.request.SignupRequest;
-import com.dareu.web.dto.response.AuthenticationResponse;
-import com.dareu.web.dto.response.AuthorizationResponse;
-import com.dareu.web.dto.response.EntityRegistrationResponse;
-import com.dareu.web.dto.response.ResourceAvailableResponse;
+import com.dareu.web.dto.response.*;
 import com.dareu.web.dto.response.entity.ActiveDare;
 import com.dareu.web.exception.application.InternalApplicationException;
 import com.dareu.web.exception.application.InvalidRequestException;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
-import io.swagger.annotations.Authorization;
+import io.swagger.annotations.*;
+
 import javax.inject.Inject;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -113,5 +104,20 @@ public class OpenResource {
     @POST
     public Response signupGoogle(GoogleSignupRequest request)throws InternalApplicationException, InvalidRequestException{
         return  accountService.signupGoogle(request);
+    }
+
+    @ApiOperation(value = "process a forgot password request", produces = "application/json",
+            notes = "Send an email to change a password")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "The operation ran successfuly",
+                    response = UpdatedEntityResponse.class),
+            @ApiResponse(code = 401, message = "User is not authorized to access this resource",
+                    response = AuthorizationResponse.class)
+    })
+    @Path("forgotPassword")
+    @POST
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response changeEmailAddress(@QueryParam(value = "email") String email)throws InternalApplicationException, InvalidRequestException{
+        return accountService.forgotPassword(email);
     }
 }

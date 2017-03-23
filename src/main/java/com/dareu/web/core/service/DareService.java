@@ -250,4 +250,13 @@ public interface DareService {
     public Response getAnchoredContent(int pageNumber, String token)throws InternalApplicationException, 
                                                             InvalidRequestException;
 
+    /**
+     * Clap a response comment
+     * @param commentId
+     * @param token
+     * @return
+     * @throws InternalApplicationException
+     * @throws InvalidRequestException
+     */
+    public Response clapResponseComment(String commentId, String token) throws InternalApplicationException, InvalidRequestException;
 }

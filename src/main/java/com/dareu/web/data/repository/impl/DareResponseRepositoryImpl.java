@@ -7,10 +7,7 @@ package com.dareu.web.data.repository.impl;
 
 import com.dareu.web.core.DareUtils;
 import com.dareu.web.core.service.DareuAssembler;
-import com.dareu.web.data.entity.AnchoredContent;
-import com.dareu.web.data.entity.Comment;
-import com.dareu.web.data.entity.DareResponse;
-import com.dareu.web.data.entity.ResponseClap;
+import com.dareu.web.data.entity.*;
 import com.dareu.web.data.exception.DataAccessException;
 import com.dareu.web.data.repository.DareResponseRepository;
 import com.dareu.web.dto.response.entity.AnchoredDescription;
@@ -157,6 +154,28 @@ public class DareResponseRepositoryImpl extends AbstractRepository<DareResponse>
     }
 
     @Override
+    public boolean isCommentClapped(String userId, String commentId) throws DataAccessException {
+        try{
+            Long count = (Long)em.createQuery("SELECT COUNT(c.id) FROM CommentClap c WHERE c.userId = :userId AND c.comment.id = :commentId")
+                    .setParameter("userId", userId)
+                    .setParameter("commentId", commentId)
+                    .getSingleResult();
+            return count.intValue() > 0;
+        }catch(Exception ex){
+            throw new DataAccessException(ex.getMessage(), ex);
+        }
+    }
+
+    @Override
+    public void clapResponseComment(CommentClap clap) throws DataAccessException {
+        try{
+            em.persist(clap);
+        }catch(Exception ex){
+            throw new DataAccessException(ex.getMessage(), ex);
+        }
+    }
+
+    @Override
     public void clapResponse(ResponseClap clap) throws DataAccessException {
         try {
             clap.setClapDate(DareUtils.DATE_FORMAT.format(new Date()));
@@ -287,6 +306,18 @@ public class DareResponseRepositoryImpl extends AbstractRepository<DareResponse>
             em.createQuery("UPDATE DareResponse r SET r.viewsCount = r.viewsCount + 1 WHERE r.id = :id")
                     .setParameter("id", id)
                     .executeUpdate();
+        }catch(Exception ex){
+            throw new DataAccessException(ex.getMessage(), ex);
+        }
+    }
+
+    @Override
+    public void unClapComment(String commentId, String userId) throws DataAccessException {
+        try{
+            em.createQuery("DELETE FROM CommentClap c WHERE c.comment.id = :commentId AND c.user.id = :userId")
+                .setParameter("commentId", commentId)
+                .setParameter("userId", userId)
+                .executeUpdate();
         }catch(Exception ex){
             throw new DataAccessException(ex.getMessage(), ex);
         }

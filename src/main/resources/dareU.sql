@@ -85,11 +85,19 @@ create table response_comment(
     id varchar(36) not null primary key, 
     comment_date varchar(50) not null, 
     comment varchar(100)not null,
-    likes int default 0,
     response_id varchar(36) not null, 
     user_id varchar(36)not null, 
     foreign key(response_id) references dare_response(id), 
     foreign key(user_id)references dareu_user(id)
+);
+
+create table comment_clap(
+    id varchar(36)not null primary key,
+    comment_id varchar(36)not null,
+    user_id varchar(36)not null,
+    clap_date varchar(50)not null,
+    foreign key(comment_id)references response_comment(id),
+    foreign key(user_id) references dareu_user(id)
 );
 
 -- RESPONSE CLAP
