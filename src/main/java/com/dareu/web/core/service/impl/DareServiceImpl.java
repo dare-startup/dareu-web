@@ -822,11 +822,13 @@ public class DareServiceImpl implements DareService {
             //check if this comment is already clapped by this user
 
             if(dareResponseRepository.isCommentClapped(user.getId(), comment.getId())){
+                log.info("Removing comment clap");
                 dareResponseRepository.unClapComment(comment.getId(), user.getId()); // un clap it
                 return Response.ok(new EntityRegistrationResponse("Un-clapped", RegistrationType.COMMENT_CLAP,
                         DareUtils.DETAILS_DATE_FORMAT.format(new Date()), "N/A"))
                         .build();
             } else{
+                log.info("Clapping a response comment");
                 CommentClap clap = new CommentClap();
                 clap.setUser(user);
                 clap.setClapDate(DareUtils.DETAILS_DATE_FORMAT.format(new Date()));

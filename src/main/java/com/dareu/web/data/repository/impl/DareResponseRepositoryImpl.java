@@ -156,7 +156,7 @@ public class DareResponseRepositoryImpl extends AbstractRepository<DareResponse>
     @Override
     public boolean isCommentClapped(String userId, String commentId) throws DataAccessException {
         try{
-            Long count = (Long)em.createQuery("SELECT COUNT(c.id) FROM CommentClap c WHERE c.userId = :userId AND c.comment.id = :commentId")
+            Long count = (Long)em.createQuery("SELECT COUNT(c.id) FROM CommentClap c WHERE c.user.id = :userId AND c.comment.id = :commentId")
                     .setParameter("userId", userId)
                     .setParameter("commentId", commentId)
                     .getSingleResult();
