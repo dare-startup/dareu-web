@@ -10,10 +10,13 @@ import java.util.Date;
 import java.util.List;
 
 import com.dareu.web.core.DareUtils;
+import com.dareu.web.core.service.*;
+import com.dareu.web.dto.jms.PayloadMessage;
+import com.dareu.web.dto.jms.QueueMessage;
 import com.dareu.web.dto.request.*;
+import com.dareu.web.dto.response.message.ConnectionAcceptedMessage;
+import com.dareu.web.dto.response.message.ConnectionRequestMessage;
 import com.dareu.web.dto.security.SecurityRole;
-import com.dareu.web.core.service.AccountService;
-import com.dareu.web.core.service.FileService;
 import com.dareu.web.core.service.FileService.FileType;
 import com.dareu.web.data.entity.DareUser;
 import com.dareu.web.data.entity.FriendshipRequest;
@@ -25,9 +28,6 @@ import com.dareu.web.dto.response.EntityRegistrationResponse.RegistrationType;
 import com.dareu.web.dto.response.ResourceAvailableResponse;
 import com.dareu.web.data.exception.AuthenticationException;
 import com.dareu.web.data.exception.DataAccessException;
-import com.dareu.web.core.service.DareuAssembler;
-import com.dareu.web.core.service.DareuMessagingService;
-import com.dareu.web.core.service.MultipartService;
 import com.dareu.web.data.entity.ContactMessage;
 import com.dareu.web.data.repository.ContactMessageRepository;
 import com.dareu.web.data.repository.DareRepository;
@@ -88,13 +88,13 @@ public class AccountServiceImpl extends AbstractService implements AccountServic
     private DareuAssembler assembler;
 
     @Inject
-    private DareuMessagingService messagingService;
-
-    @Inject
     private ContactMessageRepository contactMessageRepository;
 
     @Inject
     private MultipartService multipartService;
+
+    @Inject
+    private MessagingService messagingService;
 
     @Override
     public Response registerDareUser(SignupRequest request)
@@ -272,7 +272,9 @@ public class AccountServiceImpl extends AbstractService implements AccountServic
                 String fcmToken = friendship.getRequestedUser().getGCM();
 
                 if (fcmToken != null && !fcmToken.isEmpty()) {
-                    messagingService.sendConnectionRequestedNotification(friendship, fcmToken);
+                    messagingService.sendPushNotificationMessage(new QueueMessage(fcmToken,
+                            new PayloadMessage("friendship.request",
+                                    new ConnectionRequestMessage(friendship.getUser().getId(), friendship.getId(), friendship.getUser().getName()))));
                 }
 
                 return Response
@@ -315,13 +317,14 @@ public class AccountServiceImpl extends AbstractService implements AccountServic
                 //get fcm token from user id 
                 String userFcmToken = dareUserRepository.getUserFcmToken(f.getUser().getGCM());
                 if (userFcmToken != null && !userFcmToken.isEmpty()) //check if user updated token
-                {
-                    messagingService.sendConnectionAcceptedNotification(userFcmToken, f);
+                     {
+                    messagingService.sendPushNotificationMessage(new QueueMessage(userFcmToken,
+                            new PayloadMessage("friendship.response",
+                                    new ConnectionAcceptedMessage(f.getId()))));
                 }
             }
 
-            //send notification to requested user 
-            //
+            //send notification to requested user
             return Response
                     .ok(new EntityRegistrationResponse("You are now friends with " + f.getUser().getName(),
                                     RegistrationType.FRIENDSHIP_RESPONSE,
@@ -343,7 +346,6 @@ public class AccountServiceImpl extends AbstractService implements AccountServic
         try {
             //try to update
             dareUserRepository.updateFcmRegId(regId, auth);
-
             //return response 
             return Response.ok(new UpdatedEntityResponse("Registration ID successfully updated", true, "user"))
                     .build();

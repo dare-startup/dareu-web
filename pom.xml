@@ -13,151 +13,93 @@
     </properties>
 
     <dependencies>
-        <!-- https://mvnrepository.com/artifact/javax.transaction/javax.transaction-api -->
-        <dependency>
-            <groupId>javax.transaction</groupId>
-            <artifactId>javax.transaction-api</artifactId>
-            <version>1.2</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <!-- Syring to inject properties from file, jndi,... -->
-        <dependency>
-            <groupId>com.github.roar109</groupId>
-            <artifactId>syring</artifactId>
-            <version>1.0.1</version>
-        </dependency>
-
-        <!-- Junit dependency -->
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>3.8.1</version>
-            <scope>test</scope>
-        </dependency>
-
-        <!-- Java EE web api -->
-        <dependency>
-            <groupId>javax</groupId>
-            <artifactId>javaee-web-api</artifactId>
-            <version>${javax.version}</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <!-- https://mvnrepository.com/artifact/javax.ws.rs/javax.ws.rs-api -->
-        <dependency>
-            <groupId>javax.ws.rs</groupId>
-            <artifactId>javax.ws.rs-api</artifactId>
-            <version>2.0</version>
-        </dependency>
-
-        <!-- https://mvnrepository.com/artifact/org.jboss.spec/jboss-javaee-6.0 -->
-        <dependency>
-            <groupId>org.jboss.resteasy</groupId>
-            <artifactId>resteasy-jaxrs</artifactId>
-            <version>3.0.11.Final</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <!-- Multipart support -->
-        <dependency>
-            <groupId>org.jboss.resteasy</groupId>
-            <artifactId>resteasy-multipart-provider</artifactId>
-            <version>3.0.11.Final</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient -->
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient</artifactId>
-            <version>4.5.2</version>
-        </dependency>
-
-
-        <!-- Firebase server sdk -->
-        <dependency>
-            <groupId>com.google.firebase</groupId>
-            <artifactId>firebase-server-sdk</artifactId>
-            <version>3.0.1</version>
-        </dependency>
-        
-        <dependency>
-            <groupId>de.bytefish.fcmjava</groupId>
-            <artifactId>fcmjava-core</artifactId>
-            <version>0.6</version>
-        </dependency>
         <dependency>
             <groupId>com.amazonaws</groupId>
             <artifactId>amazon-sqs-java-messaging-lib</artifactId>
             <version>1.0.3</version>
             <type>jar</type>
         </dependency>
-
         <dependency>
-            <groupId>de.bytefish.fcmjava</groupId>
-            <artifactId>fcmjava-client</artifactId>
-            <version>0.6</version>
+            <groupId>javax.transaction</groupId>
+            <artifactId>javax.transaction-api</artifactId>
+            <version>1.2</version>
+            <scope>provided</scope>
         </dependency>
-        
+        <dependency>
+            <groupId>com.github.roar109</groupId>
+            <artifactId>syring</artifactId>
+            <version>1.0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>3.8.1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax</groupId>
+            <artifactId>javaee-web-api</artifactId>
+            <version>${javax.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.ws.rs</groupId>
+            <artifactId>javax.ws.rs-api</artifactId>
+            <version>2.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-jaxrs</artifactId>
+            <version>3.0.11.Final</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-multipart-provider</artifactId>
+            <version>3.0.11.Final</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.5.2</version>
+        </dependency>
         <dependency>
             <groupId>joda-time</groupId>
             <artifactId>joda-time</artifactId>
             <version>2.9.7</version>
         </dependency>
-
-
-        <!-- Swagger -->
         <dependency>
             <groupId>io.swagger</groupId>
             <artifactId>swagger-jaxrs</artifactId>
             <version>1.5.10</version>
         </dependency>
-        
         <dependency>
             <groupId>io.swagger</groupId>
             <artifactId>swagger-annotations</artifactId>
             <version>1.5.10</version>
         </dependency>
-
-        <!-- application data transfer objects -->
         <dependency>
             <groupId>com.dareu.web.dto</groupId>
             <artifactId>dareu-dto</artifactId>
             <version>1.0</version>
         </dependency>
-
-        <!-- testing only... -->
-        <dependency>
-            <groupId>org.bytedeco</groupId>
-            <artifactId>javacv</artifactId>
-            <version>1.3</version>
-        </dependency>
-
-        <!-- amazon S3 -->
         <dependency>
             <groupId>com.amazonaws</groupId>
             <artifactId>aws-java-sdk-s3</artifactId>
             <version>1.11.98</version>
         </dependency>
-
-        <!-- apache commons -->
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
             <version>3.0</version>
         </dependency>
-
-        <!-- https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-api -->
         <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-api</artifactId>
-            <version>2.7</version>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.17</version>
             <scope>provided</scope>
         </dependency>
-
-
-
     </dependencies>
  
     <build>

@@ -9,11 +9,7 @@ import com.amazonaws.services.sqs.AmazonSQSClientBuilder;
 import com.dareu.web.dto.security.PasswordEncryptor;
 import com.dareu.web.dto.security.impl.PasswordEncryptorImpl;
 import com.github.roar109.syring.annotation.ApplicationProperty;
-import de.bytefish.fcmjava.client.FcmClient;
-import de.bytefish.fcmjava.client.settings.PropertiesBasedSettings;
 import io.swagger.jaxrs.config.BeanConfig;
-import java.nio.charset.Charset;
-import java.nio.file.Paths;
 import java.util.logging.Logger;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
@@ -57,12 +53,6 @@ public class AppConfig extends Application {
         config.setBasePath("dareu-services/rest");
         config.setResourcePackage("com.dareu.web.resource");
         config.setScan(true);
-    }
-    
-    @Produces
-    public FcmClient fcmClient(){
-        PropertiesBasedSettings settings = PropertiesBasedSettings.createFromFile(Paths.get(propertiesFile), Charset.forName("UTF-8"));
-        return new FcmClient(settings); 
     }
 
     @Produces

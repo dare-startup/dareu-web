@@ -11,7 +11,6 @@ import com.dareu.web.dto.response.entity.AnchoredDescription;
 import com.dareu.web.dto.response.entity.CommentDescription;
 import com.dareu.web.dto.response.entity.DareResponseDescription;
 import com.dareu.web.dto.response.entity.Page;
-import com.google.api.client.util.Data;
 
 /**
  *
