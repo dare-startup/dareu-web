@@ -113,7 +113,7 @@ public class FriendshipResource {
      * @return
      * @throws com.dareu.web.exception.application.InternalApplicationException
      */
-    @ApiOperation(value = "Find frinds using a search query and pagination", produces = "application/json",
+    @ApiOperation(value = "Find friends using a search query and pagination", produces = "application/json",
             authorizations = {
                 @Authorization(value = "MEMBER"),
                 @Authorization(value = "ADMIN"),

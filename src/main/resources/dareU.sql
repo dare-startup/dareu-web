@@ -27,7 +27,8 @@ create table contact_message(
     message_date varchar(50)not null, 
     status int not null
 );
-    
+
+
 -- CATEGORY TABLE
 create table category(
     id varchar(36) not null primary key, 

@@ -92,7 +92,6 @@ public class DareuMessagingServiceImpl implements DareuMessagingService {
         newCommentMessage.setComment(comment);
         newCommentMessage.setCommentId(commentId);
         newCommentMessage.setResponseId(responseId);
-
         log.info("Sending new comment notification");
         client.send(new DataUnicastMessage(options, fcmToken, newCommentMessage));
     }

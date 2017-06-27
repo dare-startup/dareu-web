@@ -39,7 +39,7 @@ public class SecurityResource {
     @ApiOperation(value = "authenticate", consumes = "application/json", httpMethod = "POST", 
             produces = "application/json", response = SigninRequest.class, notes = "Authenticates against Dareu services")
     @ApiResponses(value = { 
-        @ApiResponse(code = 200, message = "Authentication has been executed successfuly"), 
+        @ApiResponse(code = 200, message = "Authentication has been executed successfully"),
         @ApiResponse(code = 401, message = "Authentication failed")})
     public Response signin(@ApiParam(required = true, name = "signinRequest", allowableValues = "SigninRequest class")
             SigninRequest request) throws AuthenticationException {

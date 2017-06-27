@@ -218,7 +218,7 @@ public class DareResource {
     @ApiOperation(value = "set a dare as expired", produces = "application/json", 
             notes = "Set a dare as expired")
     @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "The operation ran successfuly", 
+        @ApiResponse(code = 200, message = "The operation ran successfully",
                 response = EntityRegistrationResponse.class), 
         @ApiResponse(code = 401, message = "User is not authorized to access this resource", 
                 response = AuthorizationResponse.class)

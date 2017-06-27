@@ -108,7 +108,7 @@ public class DareResponseResource {
     }
     
     @ApiOperation(value = "Get a response description", produces = "application/json", 
-            notes = "Find an exisiting response description")
+            notes = "Find an existing response description")
     @ApiResponses(value = {
         @ApiResponse(code = 200, message = "The operation ran successfuly", 
                 response = EntityRegistrationResponse.class), 
