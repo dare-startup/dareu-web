@@ -1,5 +1,11 @@
 package com.dareu.web.config;
 
+import com.amazonaws.auth.AWSCredentials;
+import com.amazonaws.auth.AWSCredentialsProvider;
+import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.regions.Regions;
+import com.amazonaws.services.sqs.AmazonSQS;
+import com.amazonaws.services.sqs.AmazonSQSClientBuilder;
 import com.dareu.web.dto.security.PasswordEncryptor;
 import com.dareu.web.dto.security.impl.PasswordEncryptorImpl;
 import com.github.roar109.syring.annotation.ApplicationProperty;
@@ -31,7 +37,15 @@ public class AppConfig extends Application {
     @Inject
     @ApplicationProperty(name = "com.dareu.web.message.database.url", type = ApplicationProperty.Types.SYSTEM) 
     private String databaseUrl;
-    
+
+    @Inject
+    @ApplicationProperty(name = "sqs.aws.access.key", type = ApplicationProperty.Types.SYSTEM)
+    private String awsAccessKey;
+
+    @Inject
+    @ApplicationProperty(name = "sqs.aws.secret.key", type = ApplicationProperty.Types.SYSTEM)
+    private String awsSecretKey;
+
     public AppConfig() {
         
         //swagger
@@ -54,5 +68,21 @@ public class AppConfig extends Application {
     @Produces
     public PasswordEncryptor encryptor() {
         return new PasswordEncryptorImpl();
+    }
+
+    @Produces
+    public AmazonSQS amazonSQS(){
+        log.info("Creating AmazonSQS service");
+        return AmazonSQSClientBuilder.standard()
+                .withCredentials(new AWSCredentialsProvider() {
+                    public AWSCredentials getCredentials() {
+                        return new BasicAWSCredentials(awsAccessKey, awsSecretKey);
+                    }
+                    public void refresh() {
+
+                    }
+                })
+                .withRegion(Regions.US_WEST_2)
+                .build();
     }
 }
