@@ -1,4 +1,4 @@
-package com.dareu.web.config;
+package com.dareu.web.resource.config;
 
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.AWSCredentialsProvider;

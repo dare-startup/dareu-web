@@ -11,6 +11,7 @@ import java.util.List;
 
 import com.dareu.web.core.DareUtils;
 import com.dareu.web.core.service.*;
+import com.dareu.web.dto.jms.FileUploadProperties;
 import com.dareu.web.dto.jms.PayloadMessage;
 import com.dareu.web.dto.jms.QueueMessage;
 import com.dareu.web.dto.request.*;
@@ -477,17 +478,11 @@ public class AccountServiceImpl extends AbstractService implements AccountServic
             InputStream stream = multipartService.getImageProfile(input);
             //get user id 
             DareUser dareUser = dareUserRepository.findUserByToken(auth);
-            
             //save file to local tmp folder 
-            String filePath = fileService.saveTemporalfile(stream, dareUser.getId(), FileType.PROFILE_IMAGE); 
-            
-            //save file using path
-            String url = fileService.saveFile(filePath, FileType.PROFILE_IMAGE, dareUser.getId() + ".jpg");
-            
-            //update file path 
-            dareUserRepository.updateImageUrl(dareUser.getId(), url);
-
-            return Response.ok(new UpdatedEntityResponse(url, true, "user"))
+            String filePath = fileService.saveTemporalfile(stream, dareUser.getId(), FileType.PROFILE_IMAGE);
+            messagingService.sendAwsFileUpload(new QueueMessage(dareUser.getGCM(),
+                    new PayloadMessage("dareu.upload.pending", new FileUploadProperties(filePath, FileUploadProperties.DareuFileType.PROFILE))));
+            return Response.ok(new UpdatedEntityResponse("Uploading profile image", true, "user"))
                     .build();
         } catch (IOException ex) {
             throw new InternalApplicationException(ex.getMessage());

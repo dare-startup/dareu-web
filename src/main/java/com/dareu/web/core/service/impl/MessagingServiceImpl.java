@@ -16,11 +16,21 @@ public class MessagingServiceImpl implements MessagingService {
     private String pushNotificationsDestinationName;
 
     @Inject
+    @ApplicationProperty(name = "com.dareu.web.jms.file.queue", type = ApplicationProperty.Types.SYSTEM)
+    private String awsFileUploadDestinationName;
+
+    @Inject
     private AmazonSQS amazonSQS;
 
     @Override
     public void sendPushNotificationMessage(QueueMessage data) {
         final String queueUrl = amazonSQS.getQueueUrl(pushNotificationsDestinationName).getQueueUrl();
         amazonSQS.sendMessage(new SendMessageRequest(queueUrl, new Gson().toJson(data)));
+    }
+
+    @Override
+    public void sendAwsFileUpload(QueueMessage queueMessage) {
+        final String queueUrl = amazonSQS.getQueueUrl(awsFileUploadDestinationName).getQueueUrl();
+        amazonSQS.sendMessage(new SendMessageRequest(queueUrl, new Gson().toJson(queueMessage.getPayloadMessage())));
     }
 }

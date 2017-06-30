@@ -7,7 +7,6 @@ import javax.inject.Inject;
 import javax.ws.rs.core.Response;
 
 import com.dareu.web.core.DareUtils;
-import com.dareu.web.core.codec.ThumbManager;
 import com.dareu.web.core.observable.DareEvent;
 import com.dareu.web.core.observable.DareuEventHandler;
 import com.dareu.web.core.service.*;
@@ -15,6 +14,7 @@ import com.dareu.web.data.entity.*;
 import com.dareu.web.data.repository.CategoryRepository;
 import com.dareu.web.data.repository.DareRepository;
 import com.dareu.web.data.repository.DareUserRepository;
+import com.dareu.web.dto.jms.FileUploadProperties;
 import com.dareu.web.dto.jms.PayloadMessage;
 import com.dareu.web.dto.jms.QueueMessage;
 import com.dareu.web.dto.request.CreateCategoryRequest;
@@ -78,16 +78,7 @@ public class DareServiceImpl implements DareService {
     private FileService fileService;
 
     @Inject
-    private ThumbManager thumbManager;
-
-    @Inject
     private Logger log;
-
-    private Event<DareEvent> expiredDaresEvent;
-
-    public DareServiceImpl() {
-
-    }
 
     @Override
     public Response createNewDare(CreateDareRequest request, String authenticationToken)
@@ -401,27 +392,23 @@ public class DareServiceImpl implements DareService {
             }
             //create new Dare response 
             DareResponse dareResponse = new DareResponse();
-            //save tmp file 
-            log.info("Saving temporal file " + dareResponse.getId() + ".mp4");
+            //save tmp file
             String videoPath = fileService.saveTemporalfile(request.getStream(), dareResponse.getId(), FileService.FileType.DARE_VIDEO);
-
-            //save video file to where it belongs
-            String videoUrl = fileService.saveFile(videoPath, FileService.FileType.DARE_VIDEO, dareResponse.getId() + ".mp4");
-            //String videoUrl = fileService.saveFile(request.getStream(), FileService.FileType.DARE_VIDEO, dareResponse.getId().concat(".mp4"));
-
-            log.info("Saving temporal file " + dareResponse.getId() + ".jpg");
             String thumbPath = fileService.saveTemporalfile(request.getThumb(), dareResponse.getId(), FileService.FileType.VIDEO_THUMBNAIL);
-            String thumbUrl = fileService.saveFile(thumbPath, FileService.FileType.VIDEO_THUMBNAIL, dareResponse.getId().concat(".jpg"));
 
-            //delete both file
-            log.info("Deleting temporal files");
-            fileService.deleteTemporalFile(videoPath);
-            fileService.deleteTemporalFile(thumbPath);
+            //send video upload message
+            messagingService.sendAwsFileUpload(new QueueMessage(user.getGCM(),
+                    new PayloadMessage("dareu.upload.pending",
+                            new FileUploadProperties(videoPath, FileUploadProperties.DareuFileType.RESPONSE))));
+
+            //send thumb upload message
+            messagingService.sendAwsFileUpload(new QueueMessage(user.getGCM(),
+                    new PayloadMessage("dareu.upload.pending",
+                            new FileUploadProperties(thumbPath, FileUploadProperties.DareuFileType.RESPONSE_THUMB))));
 
             //populate response
-            log.info("Creating dare response");
-            dareResponse.setVideoUrl(videoUrl);
-            dareResponse.setThumbUrl(thumbUrl);
+            dareResponse.setVideoUrl("");
+            dareResponse.setThumbUrl("");
             dareResponse.setComment(request.getComment());
             dareResponse.setViewsCount(0);
             dareResponse.setUser(user);
