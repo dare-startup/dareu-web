@@ -51,6 +51,7 @@ import java.util.ArrayList;
 import javax.inject.Inject;
 import javax.ws.rs.core.Response;
 
+import com.github.roar109.syring.annotation.ApplicationProperty;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
@@ -96,6 +97,18 @@ public class AccountServiceImpl extends AbstractService implements AccountServic
 
     @Inject
     private MessagingService messagingService;
+
+    @Inject
+    @ApplicationProperty(name = "com.dareu.web.admin.token", type = ApplicationProperty.Types.SYSTEM)
+    private String adminUsername;
+
+    @Inject
+    @ApplicationProperty(name = "com.dareu.web.admin.username", type = ApplicationProperty.Types.SYSTEM)
+    private String adminPassword;
+
+    @Inject
+    @ApplicationProperty(name = "com.dareu.web.admin.username", type = ApplicationProperty.Types.SYSTEM)
+    private String adminToken;
 
     @Override
     public Response registerDareUser(SignupRequest request)
@@ -155,7 +168,16 @@ public class AccountServiceImpl extends AbstractService implements AccountServic
     public Response authenticate(SigninRequest request)
             throws AuthenticationException {
         if (request == null) {
-            throw new AuthenticationException("No signin body provided");
+            throw new AuthenticationException("No sign in body provided");
+        }
+        AuthenticationResponse response = null;
+        //check if admin user
+        if(request.getUser().equals(adminUsername) && request.getPassword().equals(adminPassword)){
+            response = new AuthenticationResponse(adminToken, DareUtils.DATE_FORMAT.format(new Date()), "Admin are welcome");
+            response.setUserRole(SecurityRole.ADMIN.getValue().toLowerCase());
+            //user logged in as admin user
+            return Response.ok(response)
+                    .build();
         }
         DareUser user;
         //generate a new token
@@ -180,7 +202,9 @@ public class AccountServiceImpl extends AbstractService implements AccountServic
                 }
                 //update token
                 dareUserRepository.updateSecurityToken(token, user.getId());
-                return Response.ok(new AuthenticationResponse(token, DareUtils.DATE_FORMAT.format(new Date()), "Welcome"))
+                response = new AuthenticationResponse(token, DareUtils.DATE_FORMAT.format(new Date()), "Welcome");
+                response.setUserRole(user.getRole().getValue().toLowerCase());
+                return Response.ok(response)
                         .build();
 
             case GOOGLE:
