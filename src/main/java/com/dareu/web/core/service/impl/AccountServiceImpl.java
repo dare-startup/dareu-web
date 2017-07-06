@@ -99,15 +99,15 @@ public class AccountServiceImpl extends AbstractService implements AccountServic
     private MessagingService messagingService;
 
     @Inject
-    @ApplicationProperty(name = "com.dareu.web.admin.token", type = ApplicationProperty.Types.SYSTEM)
+    @ApplicationProperty(name = "com.dareu.web.admin.username", type = ApplicationProperty.Types.SYSTEM)
     private String adminUsername;
 
     @Inject
-    @ApplicationProperty(name = "com.dareu.web.admin.username", type = ApplicationProperty.Types.SYSTEM)
+    @ApplicationProperty(name = "com.dareu.web.admin.password", type = ApplicationProperty.Types.SYSTEM)
     private String adminPassword;
 
     @Inject
-    @ApplicationProperty(name = "com.dareu.web.admin.username", type = ApplicationProperty.Types.SYSTEM)
+    @ApplicationProperty(name = "com.dareu.web.admin.token", type = ApplicationProperty.Types.SYSTEM)
     private String adminToken;
 
     @Override
