@@ -172,6 +172,7 @@ public class AccountServiceImpl extends AbstractService implements AccountServic
         }
         AuthenticationResponse response = null;
         //check if admin user
+        log.info("DELETE LOG: ADMIN USER : %s, PASSWORD: %s, TOKEN: %s");
         if(request.getUser().equals(adminUsername) && request.getPassword().equals(adminPassword)){
             log.info("ADMIN USER LOGGED IN\nusername: $s");
             response = new AuthenticationResponse(adminToken, DareUtils.DATE_FORMAT.format(new Date()), "Admin are welcome");
