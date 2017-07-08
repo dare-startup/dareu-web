@@ -17,17 +17,11 @@ import com.dareu.web.data.repository.DareUserRepository;
 import com.dareu.web.dto.jms.FileUploadProperties;
 import com.dareu.web.dto.jms.PayloadMessage;
 import com.dareu.web.dto.jms.QueueMessage;
-import com.dareu.web.dto.request.CreateCategoryRequest;
-import com.dareu.web.dto.request.CreateDareRequest;
+import com.dareu.web.dto.request.*;
 import com.dareu.web.dto.response.EntityRegistrationResponse;
 import com.dareu.web.dto.response.EntityRegistrationResponse.RegistrationType;
 import com.dareu.web.data.exception.DataAccessException;
 import com.dareu.web.data.repository.DareResponseRepository;
-import com.dareu.web.dto.request.ClapRequest;
-import com.dareu.web.dto.request.DareConfirmationRequest;
-import com.dareu.web.dto.request.DareUploadRequest;
-import com.dareu.web.dto.request.FlagDareRequest;
-import com.dareu.web.dto.request.NewCommentRequest;
 import com.dareu.web.dto.response.UpdatedEntityResponse;
 import com.dareu.web.dto.response.entity.ActiveDare;
 import com.dareu.web.dto.response.entity.AnchoredDescription;
@@ -45,6 +39,7 @@ import com.dareu.web.exception.application.InvalidRequestException;
 import java.io.IOException;
 import javax.enterprise.event.Event;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 
@@ -836,6 +831,27 @@ public class DareServiceImpl implements DareService {
 
 
         } catch(DataAccessException ex){
+            throw new InternalApplicationException(ex.getMessage(), ex);
+        }
+    }
+
+    @Override
+    public Response editCategory(EditCategoryRequest request) throws InvalidRequestException, InternalApplicationException {
+        if(request == null)
+            throw new InvalidRequestException("No category update body was provided");
+        if(StringUtils.isBlank(request.getId()))
+            throw new InvalidRequestException("Category ID was not provided");
+        if(StringUtils.isBlank(request.getName()))
+            throw new InvalidRequestException("Category Name was not provided");
+        if(StringUtils.isBlank(request.getId()))
+            throw new InvalidRequestException("Category Description was not provided");
+
+        try{
+            log.info(String.format("Updating category %s", request.getName()));
+            categoryRepository.update(request);
+            return Response.ok(new UpdatedEntityResponse("Category was updated", true, "category"))
+                    .build();
+        }catch(DataAccessException ex){
             throw new InternalApplicationException(ex.getMessage(), ex);
         }
     }

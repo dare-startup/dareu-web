@@ -5,6 +5,7 @@ import javax.ejb.Stateless;
 import com.dareu.web.data.entity.Category;
 import com.dareu.web.data.exception.DataAccessException;
 import com.dareu.web.data.repository.CategoryRepository;
+import com.dareu.web.dto.request.EditCategoryRequest;
 import com.dareu.web.dto.response.entity.Page;
 import java.util.List;
 import javax.persistence.Query;
@@ -30,6 +31,22 @@ public class CategoryRepositoryImpl extends AbstractRepository<Category> impleme
             throw new DataAccessException("Could not get categories: " + ex.getMessage(), ex);
         }
         
+    }
+
+    @Override
+    public void update(EditCategoryRequest request) throws DataAccessException {
+        Category category = em.find(Category.class, request.getId());
+        if(category == null)
+            throw new DataAccessException("Invalid category ID");
+        category.setName(request.getName());
+        category.setDescription(request.getDescription());
+
+        try{
+            em.merge(category);
+        }catch(Exception ex){
+            throw new DataAccessException(ex.getMessage(), ex);
+        }
+
     }
 
 }

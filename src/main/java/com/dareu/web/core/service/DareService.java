@@ -1,14 +1,9 @@
 package com.dareu.web.core.service;
 
-import com.dareu.web.dto.request.AnchorContentRequest;
-import com.dareu.web.dto.request.ClapRequest;
+import com.dareu.web.dto.request.*;
+
 import javax.ws.rs.core.Response;
 
-import com.dareu.web.dto.request.CreateCategoryRequest;
-import com.dareu.web.dto.request.CreateDareRequest;
-import com.dareu.web.dto.request.DareConfirmationRequest;
-import com.dareu.web.dto.request.FlagDareRequest;
-import com.dareu.web.dto.request.NewCommentRequest;
 import com.dareu.web.exception.application.InternalApplicationException;
 import com.dareu.web.exception.application.InvalidRequestException;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
@@ -259,4 +254,13 @@ public interface DareService {
      * @throws InvalidRequestException
      */
     public Response clapResponseComment(String commentId, String token) throws InternalApplicationException, InvalidRequestException;
+
+    /**
+     * Edit a category
+     * @param request
+     * @return
+     * @throws InvalidRequestException
+     * @throws InternalApplicationException
+     */
+    public Response editCategory(EditCategoryRequest request)throws InvalidRequestException, InternalApplicationException;
 }
