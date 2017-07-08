@@ -14,13 +14,6 @@
     <orderEntry type="library" name="Maven: com.amazonaws:amazon-sqs-java-messaging-lib:1.0.3" level="project" />
     <orderEntry type="library" name="Maven: com.amazonaws:aws-java-sdk-sqs:1.11.106" level="project" />
     <orderEntry type="library" name="Maven: org.apache.geronimo.specs:geronimo-jms_1.1_spec:1.1.1" level="project" />
-    <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-core:2.4.5" level="project" />
-    <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-databind:2.4.5" level="project" />
-    <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.6.3" level="project" />
-    <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-annotations:2.4.5" level="project" />
-    <orderEntry type="library" name="Maven: com.amazonaws:amazon-sqs-java-messaging-lib:1.0.3" level="project" />
-    <orderEntry type="library" name="Maven: com.amazonaws:aws-java-sdk-sqs:1.11.106" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.geronimo.specs:geronimo-jms_1.1_spec:1.1.1" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: javax.transaction:javax.transaction-api:1.2" level="project" />
     <orderEntry type="library" name="Maven: com.github.roar109:syring:1.0.1" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: junit:junit:3.8.1" level="project" />

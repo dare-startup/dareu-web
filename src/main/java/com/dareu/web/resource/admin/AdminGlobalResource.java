@@ -37,6 +37,7 @@ public class AdminGlobalResource {
             @ApiResponse(code = 401, message = "User is not authorized to access this resource",
                     response = AuthorizationResponse.class)
     })
+    @Path("pending/contact")
     @GET
     @Secured
     @Produces(MediaType.APPLICATION_JSON)
