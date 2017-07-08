@@ -1,30 +1,10 @@
 package com.dareu.web.core.service;
 
-import com.dareu.web.data.entity.AnchoredContent;
-import com.dareu.web.data.entity.Category;
-import com.dareu.web.data.entity.Comment;
-import com.dareu.web.data.entity.Dare;
-import com.dareu.web.data.entity.DareResponse;
-import com.dareu.web.data.entity.DareUser;
-import com.dareu.web.data.entity.FriendshipRequest;
+import com.dareu.web.data.entity.*;
 import com.dareu.web.dto.request.GoogleSignupRequest;
 import com.dareu.web.dto.request.SignupRequest;
-import com.dareu.web.dto.response.entity.AccountProfile;
-import com.dareu.web.dto.response.entity.ActiveDare;
-import com.dareu.web.dto.response.entity.AnchoredDescription;
-import com.dareu.web.dto.response.entity.CategoryDescription;
-import com.dareu.web.dto.response.entity.CommentDescription;
-import com.dareu.web.dto.response.entity.ConnectionDetails;
-import com.dareu.web.dto.response.entity.ConnectionRequest;
-import com.dareu.web.dto.response.entity.CreatedDare;
-import com.dareu.web.dto.response.entity.DareDescription;
-import com.dareu.web.dto.response.entity.DareResponseDescription;
-import com.dareu.web.dto.response.entity.DiscoverUserAccount;
-import com.dareu.web.dto.response.entity.FriendSearchDescription;
-import com.dareu.web.dto.response.entity.Page;
-import com.dareu.web.dto.response.entity.UnacceptedDare;
-import com.dareu.web.dto.response.entity.UserAccount;
-import com.dareu.web.dto.response.entity.UserDescription;
+import com.dareu.web.dto.response.entity.*;
+
 import java.util.List;
 import javax.persistence.Query;
 
@@ -201,4 +181,11 @@ public interface DareuAssembler {
      * @return
      */
     public DareUser getDareUser(GoogleSignupRequest request);
+
+    /**
+     *
+     * @param messages
+     * @return
+     */
+    List<ContactMessageDescription> assembleContactMessageDescriptions(List<ContactMessage> messages);
 }

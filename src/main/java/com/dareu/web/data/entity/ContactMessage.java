@@ -86,9 +86,14 @@ public class ContactMessage extends BaseEntity {
 
     
     public static enum ContactMessageStatus{
-        REPLIED, 
-        PENDING, 
-        DISCARDED, 
+        REPLIED("replied"),
+        PENDING("pending"),
+        DISCARDED("discarded");
+
+        String value;
+        ContactMessageStatus(String value){
+            this.value = value;
+        }
         
     }
 }

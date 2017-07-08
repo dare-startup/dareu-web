@@ -7,22 +7,7 @@ import com.dareu.web.core.service.FileService;
 import com.dareu.web.data.exception.DataAccessException;
 import com.dareu.web.data.repository.DareResponseRepository;
 import com.dareu.web.dto.request.GoogleSignupRequest;
-import com.dareu.web.dto.response.entity.AccountProfile;
-import com.dareu.web.dto.response.entity.ActiveDare;
-import com.dareu.web.dto.response.entity.AnchoredDescription;
-import com.dareu.web.dto.response.entity.CategoryDescription;
-import com.dareu.web.dto.response.entity.CommentDescription;
-import com.dareu.web.dto.response.entity.ConnectionDetails;
-import com.dareu.web.dto.response.entity.ConnectionRequest;
-import com.dareu.web.dto.response.entity.CreatedDare;
-import com.dareu.web.dto.response.entity.DareDescription;
-import com.dareu.web.dto.response.entity.DareResponseDescription;
-import com.dareu.web.dto.response.entity.DiscoverUserAccount;
-import com.dareu.web.dto.response.entity.FriendSearchDescription;
-import com.dareu.web.dto.response.entity.Page;
-import com.dareu.web.dto.response.entity.UnacceptedDare;
-import com.dareu.web.dto.response.entity.UserAccount;
-import com.dareu.web.dto.response.entity.UserDescription;
+import com.dareu.web.dto.response.entity.*;
 import com.dareu.web.dto.security.SecurityRole;
 import org.apache.log4j.Logger;
 
@@ -350,6 +335,15 @@ public class DareuAssemblerImpl implements DareuAssembler {
         user.setVerified(false);
         user.setUserSince(DareUtils.DATE_FORMAT.format(new Date()));
         return user;
+    }
+
+    @Override
+    public List<ContactMessageDescription> assembleContactMessageDescriptions(List<ContactMessage> messages) {
+        List<ContactMessageDescription> descs = new ArrayList<>();
+        messages.stream().forEach((cm) -> {
+            descs.add(new ContactMessageDescription(cm.getId(), cm.getName(), cm.getEmail(), cm.getComment(), cm.getStatus().toString(), cm.getDatetime()));
+        });
+        return descs;
     }
 
 }

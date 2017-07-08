@@ -22,7 +22,7 @@ public interface DareService {
     public Response createNewDare(CreateDareRequest request, String authenticationToken) throws InvalidRequestException, InternalApplicationException;
 
     /**
-     * Creates a new dare category TODO: Should be authenticated...
+     * Creates a new dare category
      *
      * @param request
      * @return
@@ -263,4 +263,12 @@ public interface DareService {
      * @throws InternalApplicationException
      */
     public Response editCategory(EditCategoryRequest request)throws InvalidRequestException, InternalApplicationException;
+
+    /**
+     * Get a page of flagged dares
+     * @param pageNumber
+     * @return
+     * @throws InternalApplicationException
+     */
+    //public Response findFlaggedDares(int pageNumber)throws InternalApplicationException;
 }

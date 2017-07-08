@@ -124,4 +124,25 @@ public class AdminDareResource {
     public Response createSponsoredDare(){
         return null; 
     }
+
+
+    @ApiOperation(value = "Get a page of flagged dares", produces = "application/json",
+            consumes = "application/json",
+            authorizations = {
+                    @Authorization(value = "MEMBER"),
+                    @Authorization(value = "ADMIN"),
+                    @Authorization(value = "SPONSOR")},
+            notes = "Get a list of flagged dares")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "The operation ran successfully",
+                    response = Page.class),
+            @ApiResponse(code = 401, message = "User is not authorized to access this resource",
+                    response = AuthorizationResponse.class)
+    })
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Secured
+    public Response getFlaggedDares(@QueryParam("pageNumber")int pageNumber){
+        return null; //TODO
+    }
 }
