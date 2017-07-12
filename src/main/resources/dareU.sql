@@ -1,8 +1,5 @@
-create database dareu; 
-
-use dareu; 
-
--- DAREU USER TABLE
+create database dareu;
+use dareu;
 create table dareu_user(
 	id varchar(36)not null primary key, 
     name varchar(150) not null, 
@@ -16,9 +13,10 @@ create table dareu_user(
     role int not null,
     uscore int not null default 1,
     birthday varchar(10),
-    verified tinyint default 0);
+    verified tinyint default 0,
+    g_id varchar(100),
+    account_type int);
 
--- CONTACT MESSAGE TABLE
 create table contact_message(
     id varchar(36) not null primary key, 
     name varchar(50)not null, 
@@ -28,21 +26,17 @@ create table contact_message(
     status int not null
 );
 
-
--- CATEGORY TABLE
 create table category(
     id varchar(36) not null primary key, 
     name varchar(100)not null, 
     description varchar(200));
 
--- DARE FLAG TABLE
 create table dare_flag(
     id varchar(36)not null primary key, 
     comment varchar(100)not null, 
     flag_date varchar(50)not null
 ); 
-    
---DARE TABLE
+
 create table dare(
     id varchar(36) not null primary key, 
     name varchar(100)not null, 
@@ -65,9 +59,6 @@ create table dare(
     foreign key(challenger_user_id) references dareu_user(id), 
     foreign key(challenged_user_id)references dareu_user(id)); 
 
-
-    
--- DARE RESPONSE (VIDEO)
 create table dare_response(
     id varchar(36) not null primary key, 
     comment varchar(100)not null,
@@ -81,7 +72,7 @@ create table dare_response(
     foreign key(user_id) references dareu_user(id),
     foreign key(dare_id)references dare(id)); 
 
--- RESPONSE COMMENT
+
 create table response_comment(
     id varchar(36) not null primary key, 
     comment_date varchar(50) not null, 
@@ -101,7 +92,6 @@ create table comment_clap(
     foreign key(user_id) references dareu_user(id)
 );
 
--- RESPONSE CLAP
 create table response_clap(
     id varchar(36)not null primary key,
     clap_date varchar(50)not null,
@@ -111,7 +101,6 @@ create table response_clap(
     foreign key(user_id)references dareu_user(id)
 );
 
--- FRIENDSHIP TABLE
 create table friendship(
 	id varchar(36)not null primary key, 
 	user_id varchar(36)not null, 
@@ -130,13 +119,3 @@ create table response_anchor(
 foreign key(user_id) references dareu_user(id),
 foreign key(response_id)references dare_response(id)
 );
-    
--- DARE REQUEST TABLE
-create table dare_request(
-    id varchar(36) not null primary key, 
-    challenger_id varchar(36) not null, 
-    challenged_id varchar(36) not null, 
-    dare_id varchar(36) not null,
-    foreign key(challenger_id)references dareu_user(id), 
-    foreign key(challenged_id)references dareu_user(id), 
-    foreign key(dare_id)references dare(id));     

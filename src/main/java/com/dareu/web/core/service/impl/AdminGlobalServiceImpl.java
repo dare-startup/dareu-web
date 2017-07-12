@@ -53,7 +53,7 @@ public class AdminGlobalServiceImpl implements AdminGlobalService{
             //send email jms message
             //TODO:
         }catch(DataAccessException ex){
-
+            throw new InternalApplicationException("Could not update contact message: " + ex.getMessage());
         }
     }
 }
