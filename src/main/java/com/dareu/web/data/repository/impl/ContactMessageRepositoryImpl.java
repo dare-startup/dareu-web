@@ -17,7 +17,7 @@ import java.util.List;
  * @author Alberto Rubalcaba <arubalcaba@24hourfit.com>
  */
 @Stateless
-public class ContactMessageRepositoryImpl extends AbstractRepository 
+public class ContactMessageRepositoryImpl extends AbstractRepository <ContactMessage>
 implements ContactMessageRepository{
 
     @Inject

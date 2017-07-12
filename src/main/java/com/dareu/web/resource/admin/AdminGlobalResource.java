@@ -3,20 +3,20 @@ package com.dareu.web.resource.admin;
 import com.dareu.web.core.annotation.AllowedUsers;
 import com.dareu.web.core.annotation.Secured;
 import com.dareu.web.core.service.AdminGlobalService;
+import com.dareu.web.dto.request.ContactReplyRequest;
 import com.dareu.web.dto.response.AuthorizationResponse;
+import com.dareu.web.dto.response.EntityRegistrationResponse;
 import com.dareu.web.dto.response.entity.Page;
 import com.dareu.web.dto.security.SecurityRole;
 import com.dareu.web.exception.application.InternalApplicationException;
+import com.dareu.web.exception.application.InvalidRequestException;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import io.swagger.annotations.Authorization;
 
 import javax.inject.Inject;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -37,11 +37,29 @@ public class AdminGlobalResource {
             @ApiResponse(code = 401, message = "User is not authorized to access this resource",
                     response = AuthorizationResponse.class)
     })
-    @Path("pending/contact")
+    @Path("contact/pending")
     @GET
     @Secured
     @Produces(MediaType.APPLICATION_JSON)
     public Response getPendingContactMessages(@QueryParam("pageNumber") int pageNumber)throws InternalApplicationException{
         return adminGlobalService.getPendingContactMessages(pageNumber);
+    }
+
+    @ApiOperation(value = "Replies a contact message using admin console CMS", produces = "application/json",
+            authorizations = {
+                    @Authorization(value = "ADMIN")})
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "The operation ran successfully",
+                    response = EntityRegistrationResponse.class),
+            @ApiResponse(code = 401, message = "User is not authorized to access this resource",
+                    response = AuthorizationResponse.class)
+    })
+    @Path("contact/reply")
+    @POST
+    @Secured
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response replyContactMessage(ContactReplyRequest request)throws InvalidRequestException, InternalApplicationException{
+        return adminGlobalService.replyContactMessage(request);
     }
 }
