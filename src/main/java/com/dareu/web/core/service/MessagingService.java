@@ -1,10 +1,10 @@
 package com.dareu.web.core.service;
 
-import com.dareu.web.dto.jms.QueueMessage;
-import com.dareu.web.dto.request.email.EmailRequest;
+import com.dareu.web.dto.jms.PushNotificationRequest;
+import com.dareu.web.dto.jms.EmailRequest;
 
 public interface MessagingService {
-    public void sendPushNotificationMessage(QueueMessage data);
-    public void sendAwsFileUpload(QueueMessage queueMessage);
+    public void sendPushNotificationMessage(PushNotificationRequest data);
+    public void sendAwsFileUpload(PushNotificationRequest pushNotificationRequest);
     public void sendEmailMessage(EmailRequest emailRequest);
 }

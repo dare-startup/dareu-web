@@ -7,16 +7,15 @@ import javax.inject.Inject;
 import javax.ws.rs.core.Response;
 
 import com.dareu.web.core.DareUtils;
-import com.dareu.web.core.observable.DareEvent;
 import com.dareu.web.core.observable.DareuEventHandler;
 import com.dareu.web.core.service.*;
 import com.dareu.web.data.entity.*;
 import com.dareu.web.data.repository.CategoryRepository;
 import com.dareu.web.data.repository.DareRepository;
 import com.dareu.web.data.repository.DareUserRepository;
-import com.dareu.web.dto.jms.FileUploadProperties;
-import com.dareu.web.dto.jms.PayloadMessage;
-import com.dareu.web.dto.jms.QueueMessage;
+import com.dareu.web.dto.jms.FileUploadRequest;
+import com.dareu.web.dto.jms.PushNotificationPayload;
+import com.dareu.web.dto.jms.PushNotificationRequest;
 import com.dareu.web.dto.request.*;
 import com.dareu.web.dto.response.EntityRegistrationResponse;
 import com.dareu.web.dto.response.EntityRegistrationResponse.RegistrationType;
@@ -37,7 +36,6 @@ import com.dareu.web.dto.response.message.*;
 import com.dareu.web.exception.application.InternalApplicationException;
 import com.dareu.web.exception.application.InvalidRequestException;
 import java.io.IOException;
-import javax.enterprise.event.Event;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
@@ -144,8 +142,8 @@ public class DareServiceImpl implements DareService {
                 log.info("User has an active dare, sending queued notification");
                 //send a notification of another dare waiting for
                 if (dareUserFcmToken != null && !dareUserFcmToken.isEmpty()) {
-                    messagingService.sendPushNotificationMessage(new QueueMessage(dareUserFcmToken,
-                            new PayloadMessage("active.dare",
+                    messagingService.sendPushNotificationMessage(new PushNotificationRequest(dareUserFcmToken,
+                            new PushNotificationPayload("active.dare",
                                     new QueuedDareMessage(MessageType.QUEUED_DARE_MESSAGE,
                                             dare.getId(), DareUtils.DETAILS_DATE_FORMAT.format(new Date()), QueuedDareMessage.ACTIVE))));
                 }
@@ -154,8 +152,8 @@ public class DareServiceImpl implements DareService {
                 log.info("User has an unaccepted dare, sending queued notification");
                 //send a notification for another dare waiting for
                 if (dareUserFcmToken != null && !dareUserFcmToken.isEmpty()) {
-                    messagingService.sendPushNotificationMessage(new QueueMessage(dareUserFcmToken,
-                            new PayloadMessage("active.dare",
+                    messagingService.sendPushNotificationMessage(new PushNotificationRequest(dareUserFcmToken,
+                            new PushNotificationPayload("active.dare",
                                     new QueuedDareMessage(MessageType.QUEUED_DARE_MESSAGE,
                                             dare.getId(), DareUtils.DETAILS_DATE_FORMAT.format(new Date()), QueuedDareMessage.PENDING))));
                 }
@@ -163,8 +161,8 @@ public class DareServiceImpl implements DareService {
                 //user does not have any dare request
                 //send push notification to the dared user 
                 if (dareUserFcmToken != null && !dareUserFcmToken.isEmpty()) {
-                    messagingService.sendPushNotificationMessage(new QueueMessage(dareUserFcmToken,
-                            new PayloadMessage("new.dare", new NewDareMessage(dare.getId(), dare.getName(),
+                    messagingService.sendPushNotificationMessage(new PushNotificationRequest(dareUserFcmToken,
+                            new PushNotificationPayload("new.dare", new NewDareMessage(dare.getId(), dare.getName(),
                                     dare.getDescription(), dare.getEstimatedDareTime(), dare.getChallengerUser().getName()))));
                 }
             }
@@ -392,14 +390,14 @@ public class DareServiceImpl implements DareService {
             String thumbPath = fileService.saveTemporalfile(request.getThumb(), dareResponse.getId(), FileService.FileType.VIDEO_THUMBNAIL);
 
             //send video upload message
-            messagingService.sendAwsFileUpload(new QueueMessage(user.getGCM(),
-                    new PayloadMessage("dareu.upload.pending",
-                            new FileUploadProperties(videoPath, FileUploadProperties.DareuFileType.RESPONSE))));
+            messagingService.sendAwsFileUpload(new PushNotificationRequest(user.getGCM(),
+                    new PushNotificationPayload("dareu.upload.pending",
+                            new FileUploadRequest(videoPath, FileUploadRequest.DareuFileType.RESPONSE.toString()))));
 
             //send thumb upload message
-            messagingService.sendAwsFileUpload(new QueueMessage(user.getGCM(),
-                    new PayloadMessage("dareu.upload.pending",
-                            new FileUploadProperties(thumbPath, FileUploadProperties.DareuFileType.RESPONSE_THUMB))));
+            messagingService.sendAwsFileUpload(new PushNotificationRequest(user.getGCM(),
+                    new PushNotificationPayload("dareu.upload.pending",
+                            new FileUploadRequest(thumbPath, FileUploadRequest.DareuFileType.RESPONSE_THUMB.toString()))));
 
             //populate response
             dareResponse.setVideoUrl("");
@@ -420,8 +418,8 @@ public class DareServiceImpl implements DareService {
             String challengerFcmToken = dareUserRepository.getUserFcmToken(dare.getChallengerUser().getId());
             //send notification
             if (challengerFcmToken != null && !challengerFcmToken.isEmpty()) {
-                messagingService.sendPushNotificationMessage(new QueueMessage(challengerFcmToken,
-                        new PayloadMessage("dare.response", new UploadedResponseMessage(MessageType.DARE_RESPONSE_UPLOADED,
+                messagingService.sendPushNotificationMessage(new PushNotificationRequest(challengerFcmToken,
+                        new PushNotificationPayload("dare.response", new UploadedResponseMessage(MessageType.DARE_RESPONSE_UPLOADED,
                                 dareResponse.getId(), "Dare response has been uploaded!"))));
             }
 
@@ -605,8 +603,8 @@ public class DareServiceImpl implements DareService {
                         .getUserFcmToken(dareResponse.getDare().getChallengerUser().getId());
 
                 if (dareCreatorId != null && !dareCreatorId.isEmpty()) {
-                    messagingService.sendPushNotificationMessage(new QueueMessage(dareCreatorId,
-                            new PayloadMessage("dare.response.comment",
+                    messagingService.sendPushNotificationMessage(new PushNotificationRequest(dareCreatorId,
+                            new PushNotificationPayload("dare.response.comment",
                                     new NewCommentMessage(comment.getId(), dareResponse.getId(), comment.getComment()))));
                 }
             }
@@ -617,8 +615,8 @@ public class DareServiceImpl implements DareService {
 
                 //response creator 
                 if (videoCreatorId != null && !videoCreatorId.isEmpty()) {
-                    messagingService.sendPushNotificationMessage(new QueueMessage(videoCreatorId,
-                            new PayloadMessage("dare.response.comment",
+                    messagingService.sendPushNotificationMessage(new PushNotificationRequest(videoCreatorId,
+                            new PushNotificationPayload("dare.response.comment",
                                     new NewCommentMessage(comment.getId(), dareResponse.getId(), comment.getComment()))));
                 }
             }
@@ -704,8 +702,8 @@ public class DareServiceImpl implements DareService {
                 if (fcmToken != null && !fcmToken.isEmpty()) {
                     log.info("Sending notification to response creator");
                     //send a notification to dare response creator
-                    messagingService.sendPushNotificationMessage(new QueueMessage(fcmToken,
-                            new PayloadMessage("dare.response.clap",
+                    messagingService.sendPushNotificationMessage(new PushNotificationRequest(fcmToken,
+                            new PushNotificationPayload("dare.response.clap",
                                     new ClappedResponseMessage(response.getId()))));
                 }
                 return Response.ok(new UpdatedEntityResponse("Clap has been created", true, "dare_response_clap"))

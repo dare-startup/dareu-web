@@ -1,14 +1,18 @@
 package com.dareu.web.core.service.impl;
 
 import com.amazonaws.services.sqs.AmazonSQS;
+import com.amazonaws.services.sqs.model.MessageAttributeValue;
 import com.amazonaws.services.sqs.model.SendMessageRequest;
 import com.dareu.web.core.service.MessagingService;
-import com.dareu.web.dto.jms.QueueMessage;
-import com.dareu.web.dto.request.email.EmailRequest;
+import com.dareu.web.dto.jms.EmailType;
+import com.dareu.web.dto.jms.PushNotificationRequest;
+import com.dareu.web.dto.jms.EmailRequest;
 import com.github.roar109.syring.annotation.ApplicationProperty;
 import com.google.gson.Gson;
 
 import javax.inject.Inject;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MessagingServiceImpl implements MessagingService {
 
@@ -28,20 +32,24 @@ public class MessagingServiceImpl implements MessagingService {
     private AmazonSQS amazonSQS;
 
     @Override
-    public void sendPushNotificationMessage(QueueMessage data) {
+    public void sendPushNotificationMessage(PushNotificationRequest data, String fcmToken) {
         final String queueUrl = amazonSQS.getQueueUrl(pushNotificationsDestinationName).getQueueUrl();
         amazonSQS.sendMessage(new SendMessageRequest(queueUrl, new Gson().toJson(data)));
     }
 
     @Override
-    public void sendAwsFileUpload(QueueMessage queueMessage) {
+    public void sendAwsFileUpload(PushNotificationRequest pushNotificationRequest, String uploadType) {
         final String queueUrl = amazonSQS.getQueueUrl(awsFileUploadDestinationName).getQueueUrl();
-        amazonSQS.sendMessage(new SendMessageRequest(queueUrl, new Gson().toJson(queueMessage.getPayloadMessage())));
+        amazonSQS.sendMessage(new SendMessageRequest(queueUrl, new Gson().toJson(pushNotificationRequest.getPushNotificationPayload())));
     }
 
     @Override
-    public void sendEmailMessage(EmailRequest emailRequest) {
+    public void sendEmailMessage(EmailRequest emailRequest, EmailType emailType) {
         final String queueUrl = amazonSQS.getQueueUrl(emailRequestDestinationName).getQueueUrl();
-        amazonSQS.sendMessage(new SendMessageRequest(queueUrl, new Gson().toJson(emailRequest)));
+        SendMessageRequest sendMessageRequest = new SendMessageRequest(queueUrl, new Gson().toJson(emailRequest));
+        Map<String, MessageAttributeValue> messageAttributes = new HashMap();
+        messageAttributes.put("emailType", new MessageAttributeValue().withStringValue(emailType.toString()));
+        sendMessageRequest.setMessageAttributes(messageAttributes);
+        amazonSQS.sendMessage(sendMessageRequest);
     }
 }

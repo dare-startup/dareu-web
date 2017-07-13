@@ -11,9 +11,10 @@ import java.util.List;
 
 import com.dareu.web.core.DareUtils;
 import com.dareu.web.core.service.*;
-import com.dareu.web.dto.jms.FileUploadProperties;
-import com.dareu.web.dto.jms.PayloadMessage;
-import com.dareu.web.dto.jms.QueueMessage;
+import com.dareu.web.dto.jms.EmailRequest;
+import com.dareu.web.dto.jms.FileUploadRequest;
+import com.dareu.web.dto.jms.PushNotificationPayload;
+import com.dareu.web.dto.jms.PushNotificationRequest;
 import com.dareu.web.dto.request.*;
 import com.dareu.web.dto.response.message.ConnectionAcceptedMessage;
 import com.dareu.web.dto.response.message.ConnectionRequestMessage;
@@ -142,6 +143,8 @@ public class AccountServiceImpl extends AbstractService implements AccountServic
         //save the entity 
         try {
             dareUserRepository.registerDareUser(user);
+            //send email notification as user just registered
+            messagingService.sendEmailMessage(assembler.assembleWelcomeEmailRequest(user));
         } catch (DataAccessException ex) {
             log.error("Could not register new dare user: " + ex.getMessage());
             throw new EntityRegistrationException("Could not register dare user, try again");
@@ -298,8 +301,8 @@ public class AccountServiceImpl extends AbstractService implements AccountServic
                 String fcmToken = friendship.getRequestedUser().getGCM();
 
                 if (fcmToken != null && !fcmToken.isEmpty()) {
-                    messagingService.sendPushNotificationMessage(new QueueMessage(fcmToken,
-                            new PayloadMessage("friendship.request",
+                    messagingService.sendPushNotificationMessage(new PushNotificationRequest(fcmToken,
+                            new PushNotificationPayload("friendship.request",
                                     new ConnectionRequestMessage(friendship.getUser().getId(), friendship.getId(), friendship.getUser().getName()))));
                 }
 
@@ -344,8 +347,8 @@ public class AccountServiceImpl extends AbstractService implements AccountServic
                 String userFcmToken = dareUserRepository.getUserFcmToken(f.getUser().getGCM());
                 if (userFcmToken != null && !userFcmToken.isEmpty()) //check if user updated token
                      {
-                    messagingService.sendPushNotificationMessage(new QueueMessage(userFcmToken,
-                            new PayloadMessage("friendship.response",
+                    messagingService.sendPushNotificationMessage(new PushNotificationRequest(userFcmToken,
+                            new PushNotificationPayload("friendship.response",
                                     new ConnectionAcceptedMessage(f.getId()))));
                 }
             }
@@ -505,8 +508,8 @@ public class AccountServiceImpl extends AbstractService implements AccountServic
             DareUser dareUser = dareUserRepository.findUserByToken(auth);
             //save file to local tmp folder 
             String filePath = fileService.saveTemporalfile(stream, dareUser.getId(), FileType.PROFILE_IMAGE);
-            messagingService.sendAwsFileUpload(new QueueMessage(dareUser.getGCM(),
-                    new PayloadMessage("dareu.upload.pending", new FileUploadProperties(filePath, FileUploadProperties.DareuFileType.PROFILE))));
+            messagingService.sendAwsFileUpload(new PushNotificationRequest(dareUser.getGCM(),
+                    new PushNotificationPayload("dareu.upload.pending", new FileUploadRequest(filePath, FileUploadRequest.DareuFileType.PROFILE.toString()))));
             return Response.ok(new UpdatedEntityResponse("Uploading profile image", true, "user"))
                     .build();
         } catch (IOException ex) {

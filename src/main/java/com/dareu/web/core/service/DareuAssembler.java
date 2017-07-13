@@ -1,6 +1,7 @@
 package com.dareu.web.core.service;
 
 import com.dareu.web.data.entity.*;
+import com.dareu.web.dto.jms.EmailRequest;
 import com.dareu.web.dto.request.GoogleSignupRequest;
 import com.dareu.web.dto.request.SignupRequest;
 import com.dareu.web.dto.response.entity.*;
@@ -188,4 +189,11 @@ public interface DareuAssembler {
      * @return
      */
     List<ContactMessageDescription> assembleContactMessageDescriptions(List<ContactMessage> messages);
+
+    /**
+     * assembles an email request to send a welcome email to userId
+     * @param userId
+     * @return
+     */
+    public EmailRequest assembleWelcomeEmailRequest(DareUser userId);
 }

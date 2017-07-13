@@ -6,6 +6,9 @@ import com.dareu.web.core.service.DareuAssembler;
 import com.dareu.web.core.service.FileService;
 import com.dareu.web.data.exception.DataAccessException;
 import com.dareu.web.data.repository.DareResponseRepository;
+import com.dareu.web.dto.jms.EmailRequest;
+import com.dareu.web.dto.jms.EmailType;
+import com.dareu.web.dto.jms.WelcomeEmailPayload;
 import com.dareu.web.dto.request.GoogleSignupRequest;
 import com.dareu.web.dto.response.entity.*;
 import com.dareu.web.dto.security.SecurityRole;
@@ -344,6 +347,16 @@ public class DareuAssemblerImpl implements DareuAssembler {
             descs.add(new ContactMessageDescription(cm.getId(), cm.getName(), cm.getEmail(), cm.getComment(), cm.getStatus().toString(), cm.getDatetime()));
         });
         return descs;
+    }
+
+    @Override
+    public EmailRequest assembleWelcomeEmailRequest(DareUser user) {
+        final EmailRequest<WelcomeEmailPayload> emailRequest = new EmailRequest();
+        emailRequest.setDate(DareUtils.DATE_FORMAT.format(new Date()));
+        emailRequest.setApplicationId("com.dareu.web");
+        emailRequest.setBody(new WelcomeEmailPayload(user.getId(), user.getName(), user.getEmail()));
+        emailRequest.setEmailType(EmailType.USER_REGISTRATION.toString());
+        return emailRequest;
     }
 
 }
