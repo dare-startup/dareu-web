@@ -37,8 +37,7 @@ import org.jboss.resteasy.spi.ResteasyProviderFactory;
 @Provider
 public class SecurityFilter implements ContainerRequestFilter {
 
-    @Inject
-    private Logger log;
+    private final Logger log = Logger.getLogger(getClass());
 
     @Inject
     private DareUserRepository dareUserRepository;
@@ -58,7 +57,7 @@ public class SecurityFilter implements ContainerRequestFilter {
         String auth = crc.getHeaderString("Authorization");
         //check if the incoming request is from the admin token 
         if(auth != null && auth.equals(adminToken)){
-            //let it pass.. TODO:(can this be secure)
+            //let it pass..
             return;
         }
         //first check if the class checks if is annotated with @AllowedUsers

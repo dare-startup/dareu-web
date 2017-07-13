@@ -7,15 +7,11 @@ import javax.inject.Inject;
 import javax.ws.rs.core.Response;
 
 import com.dareu.web.core.DareUtils;
-import com.dareu.web.core.observable.DareuEventHandler;
 import com.dareu.web.core.service.*;
 import com.dareu.web.data.entity.*;
 import com.dareu.web.data.repository.CategoryRepository;
 import com.dareu.web.data.repository.DareRepository;
 import com.dareu.web.data.repository.DareUserRepository;
-import com.dareu.web.dto.jms.FileUploadRequest;
-import com.dareu.web.dto.jms.PushNotificationPayload;
-import com.dareu.web.dto.jms.PushNotificationRequest;
 import com.dareu.web.dto.request.*;
 import com.dareu.web.dto.response.EntityRegistrationResponse;
 import com.dareu.web.dto.response.EntityRegistrationResponse.RegistrationType;
@@ -37,14 +33,15 @@ import com.dareu.web.exception.application.InternalApplicationException;
 import com.dareu.web.exception.application.InvalidRequestException;
 import java.io.IOException;
 
+import com.messaging.dto.upload.DareuFileType;
+import com.messaging.dto.upload.FileUploadRequest;
+import com.messaging.dto.push.PushNotificationPayload;
+import com.messaging.dto.push.PushNotificationRequest;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 
 public class DareServiceImpl implements DareService {
-
-    @Inject
-    private DareuEventHandler eventHandler;
 
     @Inject
     private DareRepository dareRepository;
@@ -70,8 +67,7 @@ public class DareServiceImpl implements DareService {
     @Inject
     private FileService fileService;
 
-    @Inject
-    private Logger log;
+    private final Logger log = Logger.getLogger(getClass());
 
     @Override
     public Response createNewDare(CreateDareRequest request, String authenticationToken)
@@ -386,18 +382,14 @@ public class DareServiceImpl implements DareService {
             //create new Dare response 
             DareResponse dareResponse = new DareResponse();
             //save tmp file
-            String videoPath = fileService.saveTemporalfile(request.getStream(), dareResponse.getId(), FileService.FileType.DARE_VIDEO);
-            String thumbPath = fileService.saveTemporalfile(request.getThumb(), dareResponse.getId(), FileService.FileType.VIDEO_THUMBNAIL);
+            String videoPath = fileService.saveTemporalFile(request.getStream(), dareResponse.getId(), FileService.FileType.DARE_VIDEO);
+            String thumbPath = fileService.saveTemporalFile(request.getThumb(), dareResponse.getId(), FileService.FileType.VIDEO_THUMBNAIL);
 
             //send video upload message
-            messagingService.sendAwsFileUpload(new PushNotificationRequest(user.getGCM(),
-                    new PushNotificationPayload("dareu.upload.pending",
-                            new FileUploadRequest(videoPath, FileUploadRequest.DareuFileType.RESPONSE.toString()))));
+            messagingService.sendAwsFileUpload(new FileUploadRequest(videoPath, DareuFileType.RESPONSE.toString()));
 
             //send thumb upload message
-            messagingService.sendAwsFileUpload(new PushNotificationRequest(user.getGCM(),
-                    new PushNotificationPayload("dareu.upload.pending",
-                            new FileUploadRequest(thumbPath, FileUploadRequest.DareuFileType.RESPONSE_THUMB.toString()))));
+            messagingService.sendAwsFileUpload(new FileUploadRequest(thumbPath, DareuFileType.RESPONSE_THUMB.toString()));
 
             //populate response
             dareResponse.setVideoUrl("");

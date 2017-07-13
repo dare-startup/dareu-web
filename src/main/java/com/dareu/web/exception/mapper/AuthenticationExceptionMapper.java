@@ -3,7 +3,6 @@ package com.dareu.web.exception.mapper;
 import com.dareu.web.core.DareUtils;
 import java.util.Date;
 
-import javax.inject.Inject;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
@@ -15,8 +14,7 @@ import org.apache.log4j.Logger;
 @Provider
 public class AuthenticationExceptionMapper implements ExceptionMapper<AuthenticationException>{
 
-	@Inject
-    private Logger log;
+    private final Logger log = Logger.getLogger(getClass());
 	/**
 	 * returns an authentication response object
 	 */

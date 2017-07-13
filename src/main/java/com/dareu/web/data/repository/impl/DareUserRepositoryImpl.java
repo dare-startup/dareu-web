@@ -29,8 +29,7 @@ import javax.transaction.Transactional;
 @Stateless
 public class DareUserRepositoryImpl extends AbstractRepository<DareUser> implements DareUserRepository {
 
-    @Inject
-    private Logger log;
+    private final Logger log = Logger.getLogger(getClass());
 
     @Inject
     private DareRepository dareRepository; 
@@ -72,11 +71,6 @@ public class DareUserRepositoryImpl extends AbstractRepository<DareUser> impleme
         return register.getId();
     }
 
-    @Override
-    public String loginFacebook(String email, String name) {
-        // TODO Auto-generated method stub
-        return null;
-    }
 
     @Override
     public DareUser login(String nickname, String pass) throws AuthenticationException {
@@ -118,15 +112,6 @@ public class DareUserRepositoryImpl extends AbstractRepository<DareUser> impleme
     }
 
     @Override
-    public List<DareUser> findFriends(String userId) throws DataAccessException {
-        List<DareUser> users = null;
-        /**
-         * try{ Query q = em.createQuery("SELECT u FROM User u WHERE "); }*
-         */
-        return users;
-    }
-
-    @Override
     public DareUser findUserByToken(String token) throws DataAccessException {
         try {
             Query q = em.createQuery("SELECT u FROM User u WHERE u.securityToken = :token")
@@ -158,7 +143,7 @@ public class DareUserRepositoryImpl extends AbstractRepository<DareUser> impleme
         }
     }
 
-    @Override
+    /**@Override
     public boolean isUserFriend(String userId, String anotherUserId) throws DataAccessException {
         try {
             Query q = em.createQuery("SELECT count(c) FROM Friendship c WHERE c.user_id = :userId AND u.requested_user_id = :anotherUserId AND u.accepted = 1")
@@ -169,7 +154,7 @@ public class DareUserRepositoryImpl extends AbstractRepository<DareUser> impleme
         } catch (Exception ex) {
             throw new DataAccessException("Could not get count: " + ex.getMessage());
         }
-    }
+    }**/
 
     @Override
     public DareUser findUserByEmail(String email) throws DataAccessException {
@@ -255,18 +240,6 @@ public class DareUserRepositoryImpl extends AbstractRepository<DareUser> impleme
         }
     }
 
-    @Override
-    public void updateImageUrl(String id, String url) throws DataAccessException {
-        try {
-            Query q = em.createQuery("UPDATE User u SET u.imageUrl = :url WHERE u.id = :id")
-                    .setParameter("id", id)
-                    .setParameter("url", url);
-
-            q.executeUpdate();
-        } catch (Exception ex) {
-            throw new DataAccessException(ex.getMessage());
-        }
-    }
 
     @Override
     public AccountProfile getAccountProfile(String id) throws DataAccessException {

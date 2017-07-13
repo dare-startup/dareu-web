@@ -11,10 +11,6 @@ import java.util.List;
 
 import com.dareu.web.core.DareUtils;
 import com.dareu.web.core.service.*;
-import com.dareu.web.dto.jms.EmailRequest;
-import com.dareu.web.dto.jms.FileUploadRequest;
-import com.dareu.web.dto.jms.PushNotificationPayload;
-import com.dareu.web.dto.jms.PushNotificationRequest;
 import com.dareu.web.dto.request.*;
 import com.dareu.web.dto.response.message.ConnectionAcceptedMessage;
 import com.dareu.web.dto.response.message.ConnectionRequestMessage;
@@ -53,6 +49,11 @@ import javax.inject.Inject;
 import javax.ws.rs.core.Response;
 
 import com.github.roar109.syring.annotation.ApplicationProperty;
+import com.messaging.dto.email.EmailType;
+import com.messaging.dto.push.PushNotificationPayload;
+import com.messaging.dto.push.PushNotificationRequest;
+import com.messaging.dto.upload.DareuFileType;
+import com.messaging.dto.upload.FileUploadRequest;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
@@ -85,9 +86,6 @@ public class AccountServiceImpl extends AbstractService implements AccountServic
     private DareResponseRepository dareResponseRepository;
 
     @Inject
-    private Logger log;
-
-    @Inject
     private DareuAssembler assembler;
 
     @Inject
@@ -110,6 +108,8 @@ public class AccountServiceImpl extends AbstractService implements AccountServic
     @Inject
     @ApplicationProperty(name = "com.dareu.web.admin.token", type = ApplicationProperty.Types.SYSTEM)
     private String adminToken;
+
+    private final Logger log = Logger.getLogger(getClass());
 
     @Override
     public Response registerDareUser(SignupRequest request)
@@ -144,7 +144,7 @@ public class AccountServiceImpl extends AbstractService implements AccountServic
         try {
             dareUserRepository.registerDareUser(user);
             //send email notification as user just registered
-            messagingService.sendEmailMessage(assembler.assembleWelcomeEmailRequest(user));
+            messagingService.sendEmailMessage(assembler.assembleWelcomeEmailRequest(user), EmailType.USER_REGISTRATION);
         } catch (DataAccessException ex) {
             log.error("Could not register new dare user: " + ex.getMessage());
             throw new EntityRegistrationException("Could not register dare user, try again");
@@ -507,9 +507,8 @@ public class AccountServiceImpl extends AbstractService implements AccountServic
             //get user id 
             DareUser dareUser = dareUserRepository.findUserByToken(auth);
             //save file to local tmp folder 
-            String filePath = fileService.saveTemporalfile(stream, dareUser.getId(), FileType.PROFILE_IMAGE);
-            messagingService.sendAwsFileUpload(new PushNotificationRequest(dareUser.getGCM(),
-                    new PushNotificationPayload("dareu.upload.pending", new FileUploadRequest(filePath, FileUploadRequest.DareuFileType.PROFILE.toString()))));
+            String filePath = fileService.saveTemporalFile(stream, dareUser.getId(), FileType.PROFILE_IMAGE);
+            messagingService.sendAwsFileUpload(new FileUploadRequest(filePath, DareuFileType.PROFILE.toString()));
             return Response.ok(new UpdatedEntityResponse("Uploading profile image", true, "user"))
                     .build();
         } catch (IOException ex) {

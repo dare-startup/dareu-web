@@ -3,22 +3,19 @@ package com.dareu.web.exception.mapper;
 import com.dareu.web.core.DareUtils;
 import java.util.Date;
 
-import javax.inject.Inject;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
 import com.dareu.web.dto.response.ApplicationErrorResponse;
-import com.dareu.web.exception.application.DareuException;
 import com.dareu.web.exception.EntityRegistrationException;
 import org.apache.log4j.Logger;
 
 @Provider
 public class EntityRegistrationExceptionMapper implements ExceptionMapper<EntityRegistrationException>{
 
-	@Inject
-	private Logger log;
+	private final Logger log = Logger.getLogger(getClass());
 
 	@Override
 	public Response toResponse(EntityRegistrationException ex) {

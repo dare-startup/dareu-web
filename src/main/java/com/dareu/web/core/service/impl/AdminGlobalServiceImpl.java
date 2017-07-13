@@ -1,15 +1,18 @@
 package com.dareu.web.core.service.impl;
 
 import com.dareu.web.core.service.AdminGlobalService;
+import com.dareu.web.core.service.DareuAssembler;
 import com.dareu.web.core.service.MessagingService;
 import com.dareu.web.data.entity.ContactMessage;
 import com.dareu.web.data.exception.DataAccessException;
 import com.dareu.web.data.repository.ContactMessageRepository;
 import com.dareu.web.dto.request.ContactReplyRequest;
+import com.dareu.web.dto.response.UpdatedEntityResponse;
 import com.dareu.web.dto.response.entity.ContactMessageDescription;
 import com.dareu.web.dto.response.entity.Page;
 import com.dareu.web.exception.application.InternalApplicationException;
 import com.dareu.web.exception.application.InvalidRequestException;
+import com.messaging.dto.email.EmailType;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.inject.Inject;
@@ -22,6 +25,9 @@ public class AdminGlobalServiceImpl implements AdminGlobalService{
 
     @Inject
     private MessagingService messagingService;
+
+    @Inject
+    private DareuAssembler dareuAssembler;
 
     @Override
     public Response getPendingContactMessages(int pageNumber) throws InternalApplicationException {
@@ -50,8 +56,10 @@ public class AdminGlobalServiceImpl implements AdminGlobalService{
             ContactMessage contactMessage = contactMessageRepository.find(request.getContactMessageId());
             if(contactMessage == null)
                 throw new InvalidRequestException("Contact message id is not valid");
-            //send email jms message
-            //TODO:
+            messagingService.sendEmailMessage(dareuAssembler.assembleContactMessageEmailReply(request, contactMessage.getEmail()),
+                                                            EmailType.CONTACT_MESSAGE_REPLY);
+            return Response.ok(new UpdatedEntityResponse("Contact message has been replied", true, "contact_message"))
+                    .build();
         }catch(DataAccessException ex){
             throw new InternalApplicationException("Could not update contact message: " + ex.getMessage());
         }

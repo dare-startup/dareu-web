@@ -1,5 +1,7 @@
 package com.dareu.web.core;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.text.SimpleDateFormat;
@@ -27,5 +29,17 @@ public class DareUtils {
 	 */
 	public String getNextSessionToken(){
 		return new BigInteger(130, random).toString(); 
+	}
+
+	/**
+	 * Return the throwable stack trace string message
+	 * @param throwable
+	 * @return
+     */
+	public static String getStackTraceString(Throwable throwable){
+		StringWriter writer = new StringWriter();
+		PrintWriter printWriter = new PrintWriter(writer);
+		throwable.printStackTrace(printWriter);
+		return writer.toString();
 	}
 }

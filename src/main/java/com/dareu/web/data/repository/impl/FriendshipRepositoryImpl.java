@@ -22,8 +22,7 @@ import javax.inject.Inject;
 @Stateless
 public class FriendshipRepositoryImpl extends AbstractRepository<FriendshipRequest> implements FriendshipRepository {
 
-    @Inject
-    private Logger log;
+    private final Logger log = Logger.getLogger(getClass());
 
     @Inject
     private DareuAssembler assembler;

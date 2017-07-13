@@ -1,13 +1,13 @@
 package com.dareu.web.core.service;
 
 import com.dareu.web.data.entity.*;
-import com.dareu.web.dto.jms.EmailRequest;
+import com.dareu.web.dto.request.ContactReplyRequest;
 import com.dareu.web.dto.request.GoogleSignupRequest;
-import com.dareu.web.dto.request.SignupRequest;
 import com.dareu.web.dto.response.entity.*;
+import com.dareu.web.exception.application.InternalApplicationException;
+import com.messaging.dto.email.EmailRequest;
 
 import java.util.List;
-import javax.persistence.Query;
 
 /**
  *
@@ -196,4 +196,18 @@ public interface DareuAssembler {
      * @return
      */
     public EmailRequest assembleWelcomeEmailRequest(DareUser userId);
+
+    /**
+     *
+     * @param request
+     * @param email
+     * @return
+     */
+    public EmailRequest assembleContactMessageEmailReply(ContactReplyRequest request, String email);
+
+    /**
+     *
+     * @param ex
+     */
+    public EmailRequest assembleErrorEmailRequest(InternalApplicationException ex);
 }

@@ -8,7 +8,6 @@
     <class>com.dareu.data.entity.DareUser</class>
     <class>com.dareu.data.entity.DareUserDare</class>
     <class>com.dareu.data.entity.Friendship</class>
-    <class>com.dareu.web.data.entity.VFriendship</class>
     <exclude-unlisted-classes>false</exclude-unlisted-classes>
     <properties>
       <!--Hibernate properties-->

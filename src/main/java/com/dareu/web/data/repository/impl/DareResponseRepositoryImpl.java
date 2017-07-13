@@ -33,8 +33,7 @@ public class DareResponseRepositoryImpl extends AbstractRepository<DareResponse>
     @Inject
     private DareuAssembler assembler;
 
-    @Inject
-    private Logger log;
+    private final Logger log = Logger.getLogger(getClass());
 
     public DareResponseRepositoryImpl() {
         super(DareResponse.class);

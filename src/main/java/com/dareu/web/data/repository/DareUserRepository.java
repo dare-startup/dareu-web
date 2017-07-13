@@ -46,15 +46,6 @@ public interface DareUserRepository extends BaseRepository<DareUser> {
     public String registerDareUser(DareUser register) throws DataAccessException;
 
     /**
-     * Login using a facebook account
-     *
-     * @param email
-     * @param name
-     * @return
-     */
-    public String loginFacebook(String email, String name);
-
-    /**
      * Login using a nickname and a password
      *
      * @param nickname
@@ -64,14 +55,6 @@ public interface DareUserRepository extends BaseRepository<DareUser> {
      */
     public DareUser login(String nickname, String pass) throws AuthenticationException;
 
-    /**
-     * Find a list of friends in function of a user id
-     *
-     * @param userId
-     * @return
-     * @throws DataAccessException
-     */
-    public List<DareUser> findFriends(String userId) throws DataAccessException;
 
     /**
      * Find a user using an authentication token
@@ -99,7 +82,7 @@ public interface DareUserRepository extends BaseRepository<DareUser> {
      * @return
      * @throws DataAccessException 
      */
-    public boolean isUserFriend(String userId, String anotherUserId)throws DataAccessException; 
+    //public boolean isUserFriend(String userId, String anotherUserId)throws DataAccessException;
     
     /**
      * 
@@ -137,14 +120,6 @@ public interface DareUserRepository extends BaseRepository<DareUser> {
      * @throws DataAccessException 
      */
     public String getUserFcmToken(String userId)throws DataAccessException; 
-
-    /**
-     * 
-     * @param id
-     * @param url
-     * @throws DataAccessException 
-     */
-    public void updateImageUrl(String id, String url) throws DataAccessException;
 
     /**
      * Returns an account profile from a user id

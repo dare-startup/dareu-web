@@ -12,7 +12,6 @@ import com.dareu.web.dto.response.ApplicationErrorResponse;
 import com.dareu.web.exception.application.InvalidRequestException;
 import org.apache.log4j.Logger;
 
-import javax.inject.Inject;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
@@ -25,8 +24,7 @@ import javax.ws.rs.ext.Provider;
 @Provider
 public class InvalidRequestExceptionMapper implements ExceptionMapper<InvalidRequestException>{
 
-	@Inject
-	private Logger log;
+	private final Logger log = Logger.getLogger(getClass());
 
 	/**
 	 * 

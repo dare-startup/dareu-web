@@ -14,7 +14,7 @@ import java.io.InputStream;
  */
 public interface FileService {
     
-    public String saveTemporalfile(InputStream is, String name, FileType type)throws IOException;
+    public String saveTemporalFile(InputStream is, String name, FileType type)throws IOException;
     
     public enum FileType{
     	PROFILE_IMAGE, DARE_VIDEO, VIDEO_THUMBNAIL; 

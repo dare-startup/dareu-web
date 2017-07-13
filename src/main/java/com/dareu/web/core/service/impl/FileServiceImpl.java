@@ -33,11 +33,10 @@ public class FileServiceImpl implements FileService {
     @ApplicationProperty(name = "dareu.multipart.tmp.directory", type = Types.SYSTEM)
     private String tmpDirectory; 
 
-    @Inject
-    private Logger log;
+    private final Logger log = Logger.getLogger(getClass());
 
     @Override
-    public String saveTemporalfile(InputStream is, String name, FileType type) throws IOException {
+    public String saveTemporalFile(InputStream is, String name, FileType type) throws IOException {
         String ext = ""; 
         switch(type){
             case DARE_VIDEO: 

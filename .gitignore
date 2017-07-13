@@ -9,6 +9,7 @@
 .tern-project
 bin/
 .idea/
+*.iml
 
 # NetBeans IDE
 nbbuild/

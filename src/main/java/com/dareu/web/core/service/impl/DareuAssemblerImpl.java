@@ -6,12 +6,14 @@ import com.dareu.web.core.service.DareuAssembler;
 import com.dareu.web.core.service.FileService;
 import com.dareu.web.data.exception.DataAccessException;
 import com.dareu.web.data.repository.DareResponseRepository;
-import com.dareu.web.dto.jms.EmailRequest;
-import com.dareu.web.dto.jms.EmailType;
-import com.dareu.web.dto.jms.WelcomeEmailPayload;
+import com.dareu.web.dto.request.ContactReplyRequest;
 import com.dareu.web.dto.request.GoogleSignupRequest;
 import com.dareu.web.dto.response.entity.*;
 import com.dareu.web.dto.security.SecurityRole;
+import com.dareu.web.exception.application.InternalApplicationException;
+import com.messaging.dto.email.EmailRequest;
+import com.messaging.dto.email.WelcomeEmailPayload;
+import com.messaging.dto.email.ContactReplyEmailPayload;
 import org.apache.log4j.Logger;
 
 import java.util.*;
@@ -29,8 +31,9 @@ public class DareuAssemblerImpl implements DareuAssembler {
     @Inject
     private DareResponseRepository dareResponseRepository;
 
-    @Inject
-    private Logger log;
+    private final Logger log =  Logger.getLogger(getClass());
+
+    private static final String APPLICATION_ID = "com.dareu.web";
 
     public DareuAssemblerImpl() {
     }
@@ -353,9 +356,32 @@ public class DareuAssemblerImpl implements DareuAssembler {
     public EmailRequest assembleWelcomeEmailRequest(DareUser user) {
         final EmailRequest<WelcomeEmailPayload> emailRequest = new EmailRequest();
         emailRequest.setDate(DareUtils.DATE_FORMAT.format(new Date()));
-        emailRequest.setApplicationId("com.dareu.web");
+        emailRequest.setApplicationId(APPLICATION_ID);
         emailRequest.setBody(new WelcomeEmailPayload(user.getId(), user.getName(), user.getEmail()));
-        emailRequest.setEmailType(EmailType.USER_REGISTRATION.toString());
+        return emailRequest;
+    }
+
+    @Override
+    public EmailRequest<ContactReplyEmailPayload> assembleContactMessageEmailReply(ContactReplyRequest request, String email) {
+        final EmailRequest<ContactReplyEmailPayload> emailRequest = new EmailRequest<>();
+        ContactReplyEmailPayload payload = new ContactReplyEmailPayload(request.getBody(), request.getBody());
+        List<String> recipients = new ArrayList();
+        recipients.add(email);
+        emailRequest.setRecipients(recipients);
+        emailRequest.setDate(DareUtils.DATE_FORMAT.format(new Date()));
+        emailRequest.setApplicationId(APPLICATION_ID);
+        emailRequest.setBody(payload);
+        return emailRequest;
+    }
+
+    @Override
+    public EmailRequest assembleErrorEmailRequest(InternalApplicationException ex) {
+        final EmailRequest emailRequest = new EmailRequest<>();
+        //get stack trace string
+        emailRequest.setRecipients(null);
+        emailRequest.setBody(DareUtils.getStackTraceString(ex));
+        emailRequest.setApplicationId(APPLICATION_ID);
+        emailRequest.setDate(DareUtils.DATE_FORMAT.format(new Date()));
         return emailRequest;
     }
 

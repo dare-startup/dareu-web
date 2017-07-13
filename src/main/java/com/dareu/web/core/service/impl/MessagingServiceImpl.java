@@ -4,11 +4,12 @@ import com.amazonaws.services.sqs.AmazonSQS;
 import com.amazonaws.services.sqs.model.MessageAttributeValue;
 import com.amazonaws.services.sqs.model.SendMessageRequest;
 import com.dareu.web.core.service.MessagingService;
-import com.dareu.web.dto.jms.EmailType;
-import com.dareu.web.dto.jms.PushNotificationRequest;
-import com.dareu.web.dto.jms.EmailRequest;
 import com.github.roar109.syring.annotation.ApplicationProperty;
 import com.google.gson.Gson;
+import com.messaging.dto.email.EmailRequest;
+import com.messaging.dto.email.EmailType;
+import com.messaging.dto.upload.FileUploadRequest;
+import com.messaging.dto.push.PushNotificationRequest;
 
 import javax.inject.Inject;
 import java.util.HashMap;
@@ -32,15 +33,15 @@ public class MessagingServiceImpl implements MessagingService {
     private AmazonSQS amazonSQS;
 
     @Override
-    public void sendPushNotificationMessage(PushNotificationRequest data, String fcmToken) {
+    public void sendPushNotificationMessage(PushNotificationRequest data) {
         final String queueUrl = amazonSQS.getQueueUrl(pushNotificationsDestinationName).getQueueUrl();
         amazonSQS.sendMessage(new SendMessageRequest(queueUrl, new Gson().toJson(data)));
     }
 
     @Override
-    public void sendAwsFileUpload(PushNotificationRequest pushNotificationRequest, String uploadType) {
+    public void sendAwsFileUpload(FileUploadRequest fileUploadRequest) {
         final String queueUrl = amazonSQS.getQueueUrl(awsFileUploadDestinationName).getQueueUrl();
-        amazonSQS.sendMessage(new SendMessageRequest(queueUrl, new Gson().toJson(pushNotificationRequest.getPushNotificationPayload())));
+        amazonSQS.sendMessage(new SendMessageRequest(queueUrl, new Gson().toJson(fileUploadRequest)));
     }
 
     @Override
@@ -52,4 +53,5 @@ public class MessagingServiceImpl implements MessagingService {
         sendMessageRequest.setMessageAttributes(messageAttributes);
         amazonSQS.sendMessage(sendMessageRequest);
     }
+
 }
