@@ -306,6 +306,10 @@ public class AccountServiceImpl extends AbstractService implements AccountServic
                                     new ConnectionRequestMessage(friendship.getUser().getId(), friendship.getId(), friendship.getUser().getName()))));
                 }
 
+                //send email to requested user TODO: CHECK IF CONFIGURATION ENABLED THIS EMAIL TO NOT BE SPAMING USERS
+                messagingService.sendEmailMessage(assembler.assembleRequestedFriendshipEmailRequest(requestedUser.getName(), requestedUser.getEmail()),
+                                                   EmailType.REQUESTED_FRIENDSHIP);
+
                 return Response
                         .ok(new EntityRegistrationResponse("Friendship request sent to " + requestedUser.getName(),
                                         RegistrationType.FRIENDSHIP_REQUEST,
@@ -567,7 +571,8 @@ public class AccountServiceImpl extends AbstractService implements AccountServic
             entity.setName(message.getName());
             //set as pending 
             entity.setStatus(ContactMessage.ContactMessageStatus.PENDING);
-            
+
+            messagingService.sendEmailMessage(assembler.assembleContactEmailRequest(message), EmailType.CONTACT_MESSAGE);
             contactMessageRepository.persist(entity);
             
             return Response.ok(new EntityRegistrationResponse("Contact message sent", 
@@ -645,7 +650,12 @@ public class AccountServiceImpl extends AbstractService implements AccountServic
             //generate a new token for this user
             String token = utils.getNextSessionToken();
 
+            //update security token
             dareUserRepository.updateSecurityToken(token, user.getId());
+
+            //send email
+            messagingService.sendEmailMessage(assembler.assembleWelcomeEmailRequest(user), EmailType.USER_REGISTRATION);
+
 
             //TODO: add coins and send notification?
             return Response.ok(new AuthenticationResponse(token, DareUtils.DETAILS_DATE_FORMAT.format(new Date()), "Welcome"))

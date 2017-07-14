@@ -56,7 +56,7 @@ public class AdminGlobalServiceImpl implements AdminGlobalService{
             ContactMessage contactMessage = contactMessageRepository.find(request.getContactMessageId());
             if(contactMessage == null)
                 throw new InvalidRequestException("Contact message id is not valid");
-            messagingService.sendEmailMessage(dareuAssembler.assembleContactMessageEmailReply(request, contactMessage.getEmail()),
+            messagingService.sendEmailMessage(dareuAssembler.assembleContactMessageEmailReply(request, contactMessage.getEmail(), contactMessage.getName()),
                                                             EmailType.CONTACT_MESSAGE_REPLY);
             return Response.ok(new UpdatedEntityResponse("Contact message has been replied", true, "contact_message"))
                     .build();

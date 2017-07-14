@@ -2,6 +2,7 @@ package com.dareu.web.core.service;
 
 import com.dareu.web.data.entity.*;
 import com.dareu.web.dto.request.ContactReplyRequest;
+import com.dareu.web.dto.request.ContactRequest;
 import com.dareu.web.dto.request.GoogleSignupRequest;
 import com.dareu.web.dto.response.entity.*;
 import com.dareu.web.exception.application.InternalApplicationException;
@@ -203,11 +204,15 @@ public interface DareuAssembler {
      * @param email
      * @return
      */
-    public EmailRequest assembleContactMessageEmailReply(ContactReplyRequest request, String email);
+    public EmailRequest assembleContactMessageEmailReply(ContactReplyRequest request, String email, String recipientName);
 
     /**
      *
      * @param ex
      */
     public EmailRequest assembleErrorEmailRequest(InternalApplicationException ex);
+
+    public EmailRequest assembleRequestedFriendshipEmailRequest(String name, String email);
+
+    public EmailRequest assembleContactEmailRequest(ContactRequest contactRequest);
 }

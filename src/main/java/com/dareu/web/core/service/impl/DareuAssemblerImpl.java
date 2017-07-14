@@ -7,10 +7,12 @@ import com.dareu.web.core.service.FileService;
 import com.dareu.web.data.exception.DataAccessException;
 import com.dareu.web.data.repository.DareResponseRepository;
 import com.dareu.web.dto.request.ContactReplyRequest;
+import com.dareu.web.dto.request.ContactRequest;
 import com.dareu.web.dto.request.GoogleSignupRequest;
 import com.dareu.web.dto.response.entity.*;
 import com.dareu.web.dto.security.SecurityRole;
 import com.dareu.web.exception.application.InternalApplicationException;
+import com.messaging.dto.email.ContactEmailRequest;
 import com.messaging.dto.email.EmailRequest;
 import com.messaging.dto.email.WelcomeEmailPayload;
 import com.messaging.dto.email.ContactReplyEmailPayload;
@@ -362,9 +364,11 @@ public class DareuAssemblerImpl implements DareuAssembler {
     }
 
     @Override
-    public EmailRequest<ContactReplyEmailPayload> assembleContactMessageEmailReply(ContactReplyRequest request, String email) {
+    public EmailRequest<ContactReplyEmailPayload> assembleContactMessageEmailReply(ContactReplyRequest request, String email, String recipientName) {
         final EmailRequest<ContactReplyEmailPayload> emailRequest = new EmailRequest<>();
-        ContactReplyEmailPayload payload = new ContactReplyEmailPayload(request.getBody(), request.getBody());
+        ContactReplyEmailPayload payload = new ContactReplyEmailPayload();
+        payload.setBody(request.getBody());
+        //payload.setRecipientName(); TODO: create replyContact operation to continue with this...
         List<String> recipients = new ArrayList();
         recipients.add(email);
         emailRequest.setRecipients(recipients);
@@ -383,6 +387,26 @@ public class DareuAssemblerImpl implements DareuAssembler {
         emailRequest.setApplicationId(APPLICATION_ID);
         emailRequest.setDate(DareUtils.DATE_FORMAT.format(new Date()));
         return emailRequest;
+    }
+
+    @Override
+    public EmailRequest assembleRequestedFriendshipEmailRequest(String name, String email) {
+        return null;
+    }
+
+    @Override
+    public EmailRequest assembleContactEmailRequest(ContactRequest contactRequest) {
+        EmailRequest request = new EmailRequest();
+        List<String> recipients = new ArrayList<>();
+        recipients.add(contactRequest.getEmail());
+        request.setRecipients(recipients);
+        request.setDate(DareUtils.DATE_FORMAT.format(new Date()));
+        request.setApplicationId(APPLICATION_ID);
+        ContactEmailRequest contactEmailRequest = new ContactEmailRequest();
+        contactEmailRequest.setDate(DareUtils.DATE_FORMAT.format(new Date()));
+        contactEmailRequest.setBody(contactRequest.getComment());
+        contactEmailRequest.setName(contactRequest.getName());
+        return request;
     }
 
 }
