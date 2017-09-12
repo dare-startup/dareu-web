@@ -2,10 +2,6 @@ package com.dareu.web.data.entity;
 
 import javax.persistence.*;
 
-/**
- *
- * @author Alberto Rubalcaba <arubalcaba@24hourfit.com>
- */
 @Table(name = "response_anchor")
 @Entity(name = "AnchoredContent")
 public class AnchoredContent extends BaseEntity {

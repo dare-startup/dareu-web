@@ -77,6 +77,6 @@
     <orderEntry type="library" name="Maven: software.amazon.ion:ion-java:1.0.2" level="project" />
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.dataformat:jackson-dataformat-cbor:2.6.6" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: log4j:log4j:1.2.17" level="project" />
-    <orderEntry type="module" module-name="server-messaging-dto" />
+    <orderEntry type="library" name="Maven: com.messaging.dto:server-messaging-dto:1.0-SNAPSHOT" level="project" />
   </component>
 </module>

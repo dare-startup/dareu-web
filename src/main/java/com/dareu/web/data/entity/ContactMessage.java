@@ -6,10 +6,6 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Table;
 
-/**
- *
- * @author Alberto Rubalcaba <arubalcaba@24hourfit.com>
- */
 @Table(name = "contact_message")
 @Entity(name = "ContactMessage")
 public class ContactMessage extends BaseEntity {

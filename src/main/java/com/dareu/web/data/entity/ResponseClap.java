@@ -2,10 +2,6 @@ package com.dareu.web.data.entity;
 
 import javax.persistence.*;
 
-/**
- *
- * @author Alberto Rubalcaba <arubalcaba@24hourfit.com>
- */
 @Entity(name = "ResponseClap")
 @Table(name = "response_clap")
 public class ResponseClap extends BaseEntity{

@@ -12,10 +12,7 @@ import javax.inject.Inject;
 import javax.persistence.Query;
 import java.util.List;
 
-/**
- *
- * @author Alberto Rubalcaba <arubalcaba@24hourfit.com>
- */
+
 @Stateless
 public class ContactMessageRepositoryImpl extends AbstractRepository <ContactMessage>
 implements ContactMessageRepository{

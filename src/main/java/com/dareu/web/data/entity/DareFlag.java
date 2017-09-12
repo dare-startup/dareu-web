@@ -8,10 +8,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-/**
- *
- * @author Alberto Rubalcaba <arubalcaba@24hourfit.com>
- */
 @Entity(name = "DareFlag")
 @Table(name = "dare_flag")
 public class DareFlag extends BaseEntity{

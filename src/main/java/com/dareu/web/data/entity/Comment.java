@@ -8,10 +8,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-/**
- *
- * @author Alberto Rubalcaba <arubalcaba@24hourfit.com>
- */
 @Table(name = "response_comment")
 @Entity(name = "Comment")
 public class Comment extends BaseEntity{
